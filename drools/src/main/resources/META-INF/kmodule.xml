@@ -1,0 +1,13 @@
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+
+    <!-- 练习 -->
+    <kbase name="Exercise" packages="rules.exercise" default="false">
+
+    </kbase>
+
+    <!-- demo 练习 -->
+    <kbase name="BookDisCount" packages="rules.demo" default="true">
+
+    </kbase>
+
+</kmodule>

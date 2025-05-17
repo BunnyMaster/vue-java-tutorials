@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: drools
+
+logging:
+  level:
+    cn.bunny.service.mapper: info
+    cn.bunny.service.controller: info
+    cn.bunny.service.service: info
+    root: info
