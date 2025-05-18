@@ -1,0 +1,79 @@
+package rules.exercise.card;
+import cn.bunny.drools.bean.exercise.CreditCardApply;
+
+rule "如果申请人有房有车，或者月收入在20000以上，那么发放的信用卡额度为15000"
+    salience 1
+    no-loop true
+    activation-group "credit_card_apply_group"
+
+    // && 可以写成 ,
+    when
+        $creditCard:CreditCardApply(
+            checkResult == true
+            &&
+            (hasHouse == true && hasCar == true)
+            ||
+            (monthlyIncome > 20000)
+        )
+    then
+        $creditCard.setQuota(15000);
+end
+
+rule "如果申请人没房没车，但月收入在10000~20000之间，那么发放的信用卡额度为6000"
+    salience 1
+    no-loop true
+    activation-group "credit_card_apply_group"
+
+    when
+        $creditCard:CreditCardApply(
+            checkResult == true && hasHouse == false && hasCar == false
+            && monthlyIncome >= 10000 && monthlyIncome <= 20000
+        )
+    then
+        $creditCard.setQuota(6000);
+end
+
+rule "如果申请人没房没车，月收入在10000以下，那么发放的信用卡额度为3000"
+    salience 1
+    no-loop true
+    activation-group "credit_card_apply_group"
+
+    when
+        $creditCard:CreditCardApply(
+            checkResult == true && hasHouse == false && hasCar == false
+            && monthlyIncome < 10000
+        )
+    then
+        $creditCard.setQuota(3000);
+end
+
+rule "如果申请人有房没车或者没房但有车，月收入在1000以下，那么发放的信用卡额度为5000"
+    salience 1
+    no-loop true
+    activation-group "credit_card_apply_group"
+
+    when
+        $creditCard:CreditCardApply(
+            checkResult == true && (hasHouse == true || hasCar == false)
+            && monthlyIncome < 10000
+        )
+    then
+        $creditCard.setQuota(5000);
+end
+
+rule "如果申请人有房没车或者是没房但有车，月收入在10000~20000之间，那么发放的信用卡额度为8000"
+    salience 1
+    no-loop true
+    activation-group "credit_card_apply_group"
+
+    when
+        $creditCard:CreditCardApply(
+            checkResult == true
+            &&
+            ((hasHouse == true && hasCar == false) || (hasHouse == false && hasCar == true))
+            &&
+            monthlyIncome >= 10000 && monthlyIncome <= 20000
+        )
+    then
+        $creditCard.setQuota(8000);
+end

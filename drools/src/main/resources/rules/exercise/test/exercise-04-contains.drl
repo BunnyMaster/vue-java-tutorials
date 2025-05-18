@@ -1,4 +1,4 @@
-package rules.exercise;
+package rules.exercise.test;
 import cn.bunny.drools.bean.exercise.ComparisonOperation;
 
 rule "exercise-04-contains"
