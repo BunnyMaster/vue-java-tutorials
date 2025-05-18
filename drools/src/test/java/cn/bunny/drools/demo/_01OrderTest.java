@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 class _01OrderTest {
     public static void main(String[] args) {
-        try (KieSession kieSession = DroolsConfiguration.createKieSession("order.drl")) {
+        try (KieSession kieSession = DroolsConfiguration.createKieSession("demo/order.drl")) {
 
             Order order = new Order();
             order.setAmount(new BigDecimal(99));

@@ -17,6 +17,7 @@ public class Exercise01ComparisonOperationTest {
     /* contains */
     @Test
     void test1() {
+        System.setProperty("drools.dateformat", "yyyy-MM-dd");
         KieServices kieServices = KieServices.Factory.get();
         KieContainer container = kieServices.getKieClasspathContainer();
         KieBase kieBase = container.getKieBase("Exercise");
@@ -36,6 +37,7 @@ public class Exercise01ComparisonOperationTest {
     /* not contains */
     @Test
     void test2() {
+        System.setProperty("drools.dateformat", "yyyy-MM-dd");
         KieServices kieServices = KieServices.Factory.get();
         KieContainer container = kieServices.getKieClasspathContainer();
         KieBase kieBase = container.getKieBase("Exercise");
@@ -55,6 +57,8 @@ public class Exercise01ComparisonOperationTest {
     /* memberOf */
     @Test
     void test3() {
+        System.setProperty("drools.dateformat", "yyyy-MM-dd");
+
         KieServices kieServices = KieServices.Factory.get();
         KieContainer container = kieServices.getKieClasspathContainer();
         KieBase kieBase = container.getKieBase("Exercise");
@@ -74,6 +78,7 @@ public class Exercise01ComparisonOperationTest {
     /* matches & not matches */
     @Test
     void test4() {
+        System.setProperty("drools.dateformat", "yyyy-MM-dd");
         KieServices kieServices = KieServices.Factory.get();
         KieContainer container = kieServices.getKieClasspathContainer();
         KieBase kieBase = container.getKieBase("Exercise");
@@ -93,6 +98,7 @@ public class Exercise01ComparisonOperationTest {
     /* 指定规则后缀进行匹配 */
     @Test
     void test5() {
+        System.setProperty("drools.dateformat", "yyyy-MM-dd");
         KieServices kieServices = KieServices.Factory.get();
         KieContainer container = kieServices.getKieClasspathContainer();
         KieBase kieBase = container.getKieBase("Exercise");
@@ -112,6 +118,7 @@ public class Exercise01ComparisonOperationTest {
     /* 以什么前缀匹配 */
     @Test
     void test6() {
+        System.setProperty("drools.dateformat", "yyyy-MM-dd");
         KieServices kieServices = KieServices.Factory.get();
         KieContainer container = kieServices.getKieClasspathContainer();
         KieBase kieBase = container.getKieBase("Exercise");
@@ -130,6 +137,7 @@ public class Exercise01ComparisonOperationTest {
     /* 以正则匹配regexp */
     @Test
     void test7() {
+        System.setProperty("drools.dateformat", "yyyy-MM-dd");
         KieServices kieServices = KieServices.Factory.get();
         KieContainer container = kieServices.getKieClasspathContainer();
         KieBase kieBase = container.getKieBase("Exercise");

@@ -14,7 +14,7 @@ public class _02AgeVerifyTest {
         // 默认允许
         request.setGranted(true);
 
-        try (KieSession kieSession = DroolsConfiguration.createKieSession("age-verify.drl")) {
+        try (KieSession kieSession = DroolsConfiguration.createKieSession("demo/age-verify.drl")) {
 
             kieSession.insert(request);
             kieSession.insert(adult);

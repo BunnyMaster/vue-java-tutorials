@@ -1,9 +1,9 @@
-package rules;
+package rules.demo;
 
-import cn.bunny.drools.bean.demo2.User;
-import cn.bunny.drools.bean.demo2.AccessRequest;
-import cn.bunny.drools.bean.demo2.Content;
-import cn.bunny.drools.bean.demo2.ContentType;
+import cn.bunny.drools.bean.demo.demo2.User;
+import cn.bunny.drools.bean.demo.demo2.AccessRequest;
+import cn.bunny.drools.bean.demo.demo2.Content;
+import cn.bunny.drools.bean.demo.demo2.ContentType;
 
 /**
 场景：年龄限制内容访问控制

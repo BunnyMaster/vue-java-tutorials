@@ -63,7 +63,7 @@ public class _03CreditCardApplicationTest {
     }
 
     public static CreditCardApplication processApplication(CreditCardApplication application) {
-        try (KieSession kieSession = DroolsConfiguration.createKieSession("credit-card-approval.drl")) {
+        try (KieSession kieSession = DroolsConfiguration.createKieSession("demo/credit-card-approval.drl")) {
             kieSession.insert(application);
             kieSession.fireAllRules();
             return application;

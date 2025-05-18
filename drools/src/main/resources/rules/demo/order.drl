@@ -1,6 +1,6 @@
-package rules;
+package rules.demo;
 
-import cn.bunny.drools.bean.demo1.Order;
+import cn.bunny.drools.bean.demo.demo1.Order;
 
 /**
 * 当订单金额超过100元时，给予5%折扣
