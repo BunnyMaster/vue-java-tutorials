@@ -1,0 +1,10 @@
+server:
+  port: 7070
+
+bunny:
+  rabbitmq:
+    host: 192.168.3.144
+    port: 5672
+    virtual-host: /
+    username: admin
+    password: admin
