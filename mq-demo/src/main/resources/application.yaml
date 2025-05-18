@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: mq-demo
+server:
+  port: 7070
