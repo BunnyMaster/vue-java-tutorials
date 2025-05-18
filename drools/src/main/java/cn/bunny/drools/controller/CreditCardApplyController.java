@@ -4,7 +4,6 @@ import cn.bunny.drools.bean.exercise.CreditCardApply;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.SneakyThrows;
-import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -24,13 +23,13 @@ public class CreditCardApplyController {
     public CreditCardApply creditCardApply(@RequestBody CreditCardApply creditCardApply) {
         KieServices kieServices = KieServices.Factory.get();
         KieContainer kieContainer = kieServices.getKieClasspathContainer();
-        KieBase kieBase = kieContainer.getKieBase("CreditCardApply");
-        KieSession kieSession = kieBase.newKieSession();
+        // KieBase kieBase = kieContainer.getKieBase("CreditCardApply");
+        KieSession session = kieContainer.newKieSession("credit_card_apply_card_1");
 
-        kieSession.insert(creditCardApply);
-        kieSession.fireAllRules();
-        kieSession.dispose();
-        kieSession.close();
+        session.insert(creditCardApply);
+        session.fireAllRules();
+        session.dispose();
+        session.close();
         return creditCardApply;
     }
 }
