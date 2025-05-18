@@ -13,8 +13,8 @@ spring:
     username: ${bunny.rabbitmq.username}
     password: ${bunny.rabbitmq.password}
     virtual-host: ${bunny.rabbitmq.virtual-host}
-    # publisher-confirm-type: correlated # 交换机确认
-    # publisher-returns: true # 队列确认
+    publisher-confirm-type: correlated # 交换机确认
+    publisher-returns: true # 队列确认
     # listener:
     #   simple:
     #     acknowledge-mode: manual # 手动处理消息
