@@ -931,3 +931,588 @@ public void processMessagePriority(String dataString, Channel channel, Message m
     log.info("<<优先级队列>>----<priority>{}", dataString);
 }
 ```
+
+## 集群搭建
+
+完成示例参考
+
+![image-20250519224811858](./images/image-20250519224811858.png)
+
+![image-20250519224836326](./images/image-20250519224836326.png)
+
+> [!TIP]
+>
+> 在操作之前可以拍摄虚拟机快照，方便回滚，要保证这个环境没有RabbitMQ或妨碍搭建的内容。
+
+### 修改Ubuntu网络(可选)
+
+> [!IMPORTANT]
+>
+> 如果需要修改，记得修改网关和IP地址。
+
+看自己是否有这个需求。
+
+```yaml
+network:
+  ethernets:
+    ens33:
+      dhcp4: false
+      addresses: [192.168.3.144/24]
+      optional: true
+      routes:
+        - to: default
+          via: 192.168.3.1
+      nameservers:
+        addresses: [8.8.8.8]
+  version: 2
+```
+
+应用修改
+
+```bash
+sudo netplan apply
+# or
+sudo reboot
+```
+
+### Docker方式
+
+集群环境搭建版本是：
+
+#### 1、配置docker镜像源
+
+```bash
+# 创建目录
+sudo mkdir -p /etc/docker
+# 写入配置文件
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+    "registry-mirrors": [
+    	"https://docker-0.unsee.tech",
+        "https://docker-cf.registry.cyou",
+        "https://docker.1panel.live"
+    ]
+}
+EOF
+# 重启docker服务
+sudo systemctl daemon-reload && sudo systemctl restart docker
+```
+
+#### 2、docker-compose.yaml
+
+> [!IMPORTANT]
+>
+> 执行前确保有权限！！！
+>
+> ```bash
+> # 1. 停止容器
+> docker compose stop
+> 
+> # 2. 清理旧目录（可选）
+> sudo rm -rf ~/docker/docker_data/rabbitmq
+> 
+> # 3. 重建目录并设置权限
+> mkdir -p ~/docker/docker_data/rabbitmq/{rabbit1,rabbit2,rabbit3}/{data,conf,log}
+> sudo chown -R 999:999 ~/docker/docker_data/rabbitmq
+> sudo chmod -R 775 ~/docker/docker_data/rabbitmq
+> 
+> # 4. 重新启动
+> docker compose up -d
+> ```
+
+创建文件：`docker-compose.yaml`。
+
+```yaml
+name: 'rabbitmq-cluster'
+
+services:
+  rabbit1:
+    image: rabbitmq:3.13.7-management
+    container_name: rabbit1
+    hostname: rabbit1
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=SECRETCOOKIE
+      - RABBITMQ_NODENAME=rabbit@rabbit1
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - ~/docker/docker_data/rabbitmq/rabbit1/data:/var/lib/rabbitmq
+      - ~/docker/docker_data/rabbitmq/rabbit1/conf:/etc/rabbitmq
+      - ~/docker/docker_data/rabbitmq/rabbit1/log:/var/log/rabbitmq
+    networks:
+      - rabbitmq-cluster
+
+  rabbit2:
+    image: rabbitmq:3.13.7-management
+    container_name: rabbit2
+    hostname: rabbit2
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=SECRETCOOKIE
+      - RABBITMQ_NODENAME=rabbit@rabbit2
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - ~/docker/docker_data/rabbitmq/rabbit2/data:/var/lib/rabbitmq
+      - ~/docker/docker_data/rabbitmq/rabbit2/conf:/etc/rabbitmq
+      - ~/docker/docker_data/rabbitmq/rabbit2/log:/var/log/rabbitmq
+    networks:
+      - rabbitmq-cluster
+    depends_on:
+      - rabbit1
+
+  rabbit3:
+    image: rabbitmq:3.13.7-management
+    container_name: rabbit3
+    hostname: rabbit3
+    ports:
+      - "5674:5672"
+      - "15674:15672"
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=SECRETCOOKIE
+      - RABBITMQ_NODENAME=rabbit@rabbit3
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - ~/docker/docker_data/rabbitmq/rabbit3/data:/var/lib/rabbitmq
+      - ~/docker/docker_data/rabbitmq/rabbit3/conf:/etc/rabbitmq
+      - ~/docker/docker_data/rabbitmq/rabbit3/log:/var/log/rabbitmq
+    networks:
+      - rabbitmq-cluster
+    depends_on:
+      - rabbit1
+      - rabbit2
+
+networks:
+  rabbitmq-cluster:
+    external: true
+```
+
+#### 3、启动docker-compose
+
+```bash
+docker compose up -d
+```
+
+#### 4、加入集群
+
+> [!IMPORTANT]
+>
+> 注意你的名称是否和我的一样，直接复制忽略。
+
+```bash
+# 将rabbit2加入集群
+docker exec -it rabbit2 rabbitmqctl stop_app
+docker exec -it rabbit2 rabbitmqctl reset
+docker exec -it rabbit2 rabbitmqctl join_cluster rabbit@rabbit1
+docker exec -it rabbit2 rabbitmqctl start_app
+
+# 将rabbit3加入集群
+docker exec -it rabbit3 rabbitmqctl stop_app
+docker exec -it rabbit3 rabbitmqctl reset
+docker exec -it rabbit3 rabbitmqctl join_cluster rabbit@rabbit1
+docker exec -it rabbit3 rabbitmqctl start_app
+```
+
+> 成功的输出：
+>
+> ```bash
+> bunny@bunny:~$ # 将rabbit2加入集群
+> docker exec -it rabbit2 rabbitmqctl stop_app
+> docker exec -it rabbit2 rabbitmqctl reset
+> docker exec -it rabbit2 rabbitmqctl join_cluster rabbit@rabbit1
+> docker exec -it rabbit2 rabbitmqctl start_app
+> 
+> # 将rabbit3加入集群
+> docker exec -it rabbit3 rabbitmqctl stop_app
+> docker exec -it rabbit3 rabbitmqctl reset
+> docker exec -it rabbit3 rabbitmqctl join_cluster rabbit@rabbit1
+> docker exec -it rabbit3 rabbitmqctl start_app
+> Stopping rabbit application on node rabbit@rabbit2 ...
+> Resetting node rabbit@rabbit2 ...
+> Clustering node rabbit@rabbit2 with rabbit@rabbit1
+> Starting node rabbit@rabbit2 ...
+> Stopping rabbit application on node rabbit@rabbit3 ...
+> Resetting node rabbit@rabbit3 ...
+> Clustering node rabbit@rabbit3 with rabbit@rabbit1
+> Starting node rabbit@rabbit3 ...
+> ```
+
+### 普通方式
+
+#### 先决条件
+
+> [!TIP]
+>
+> 所有节点使用相同版本的Erlang（可通过`erl -version`检查）
+
+- 至少两台Ubuntu服务器（建议18.04 LTS或更高版本）
+- 所有服务器之间网络互通
+- 每台服务器上已安装相同版本的RabbitMQ
+- 所有节点使用相同版本的Erlang
+
+#### 1、安装RabbitMQ
+
+在所有节点上执行以下步骤：
+
+```bash
+# 更新软件包列表
+sudo apt update
+
+# 安装必要的依赖
+sudo apt install -y curl gnupg
+
+# 移除之前添加的 packagecloud.io 仓库
+sudo rm /etc/apt/sources.list.d/rabbitmq.list
+
+# 添加 RabbitMQ 官方仓库密钥
+sudo apt-get install curl gnupg apt-transport-https -y
+
+## Team RabbitMQ's main signing key
+curl -1sLf "https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/com.rabbitmq.team.gpg > /dev/null
+
+## Cloudsmith: modern Erlang repository
+curl -1sLf "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/io.cloudsmith.rabbitmq.E495BB49CC4BBE5B.gpg > /dev/null
+
+## Cloudsmith: RabbitMQ repository
+curl -1sLf "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/io.cloudsmith.rabbitmq.9F4587F226208342.gpg > /dev/null
+
+# 添加仓库源
+sudo tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
+## Provides modern Erlang/OTP releases
+deb [signed-by=/usr/share/keyrings/io.cloudsmith.rabbitmq.E495BB49CC4BBE5B.gpg] https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/ubuntu $(lsb_release -cs) main
+deb-src [signed-by=/usr/share/keyrings/io.cloudsmith.rabbitmq.E495BB49CC4BBE5B.gpg] https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/ubuntu $(lsb_release -cs) main
+
+## Provides RabbitMQ
+deb [signed-by=/usr/share/keyrings/io.cloudsmith.rabbitmq.9F4587F226208342.gpg] https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/ubuntu $(lsb_release -cs) main
+deb-src [signed-by=/usr/share/keyrings/io.cloudsmith.rabbitmq.9F4587F226208342.gpg] https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/ubuntu $(lsb_release -cs) main
+EOF
+
+# 更新软件包列表
+sudo apt-get update -y
+
+# 安装 Erlang 和 RabbitMQ
+sudo apt-get install -y erlang-base \
+                        erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+                        erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
+                        erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
+                        erlang-tftp erlang-tools erlang-xmerl
+
+sudo apt-get install rabbitmq-server -y --fix-missing
+
+# 启动RabbitMQ服务
+sudo systemctl start rabbitmq-server
+sudo systemctl enable rabbitmq-server
+
+# 检查状态
+sudo systemctl status rabbitmq-server
+```
+
+#### 2、配置主机名和hosts文件
+
+> [!CAUTION]
+>
+> 所有主机上的`hostname`都必须和配置的一样，否则无法加入集群还会报错。
+>
+> 查看本机的hostname；如果输出的和配置的hosts的不一致，需要修改hostname。
+>
+> ```bash
+> # 查看本机的hostname
+> hostname
+> 
+> # 永久修改hostname（以rabbit1为例）
+> sudo hostnamectl set-hostname rabbit1
+> ```
+>
+> **例如：**
+>
+> - 主节点hostname为rabbit1
+> - 192.168.3.145节点hostname为rabbit2
+> - 192.168.3.146节点hostname为rabbit3
+> - 以此类推
+
+在所有节点上编辑`/etc/hosts`文件，确保包含所有集群节点的IP和主机名：
+
+```bash
+sudo vim /etc/hosts
+```
+
+添加类似以下内容（根据您的实际IP和主机名修改）：
+
+```bash
+192.168.3.144 rabbit1
+192.168.3.145 rabbit2
+192.168.3.146 rabbit3
+192.168.3.147 rabbit4
+```
+
+#### 3、设置Erlang Cookie
+
+RabbitMQ节点使用Erlang cookie进行认证，所有节点必须使用相同的cookie。
+
+如果是克隆的虚拟机，可以不检查（最好还是检查下），因为克隆的基本上是一样的。
+
+选择一个节点作为主节点，将其cookie复制到其他节点：
+
+```bash
+# 在主节点上查看cookie
+sudo cat /var/lib/rabbitmq/.erlang.cookie
+
+# 在其他节点上停止RabbitMQ服务
+sudo systemctl stop rabbitmq-server
+
+# 编辑或创建cookie文件
+sudo nano /var/lib/rabbitmq/.erlang.cookie
+
+# 粘贴主节点的cookie内容
+# 然后设置正确的权限
+sudo chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie
+sudo chmod 400 /var/lib/rabbitmq/.erlang.cookie
+
+# 重新启动RabbitMQ服务
+sudo systemctl start rabbitmq-server
+```
+
+#### 4、加入集群
+
+> [!NOTE]
+>
+> 加入集群时，必须要是这样的格式`sudo rabbitmqctl join_cluster rabbit@主节点名称`
+
+在非主节点上执行以下命令加入集群：
+
+> [!WARNING]
+> `reset`命令会清除该节点的所有数据和配置，生产环境慎用
+
+```bash
+# 停止RabbitMQ应用（不停止服务）
+sudo rabbitmqctl stop_app
+
+# 重置节点（如果是新安装可以跳过，生产环境谨慎使用）
+sudo rabbitmqctl reset
+
+# 加入集群（将rabbit1替换为您的主节点主机名）
+sudo rabbitmqctl join_cluster rabbit@rabbit1
+
+# 启动RabbitMQ应用
+sudo rabbitmqctl start_app
+```
+
+> [!CAUTION]
+>
+> 如果因为别的原因弄乱了，可以删除原来数据
+>
+> 仔细甄别下面是否有你需要的！！！
+>
+> ```bash
+> # 停止 RabbitMQ
+> sudo systemctl stop rabbitmq-server
+> 
+> # 删除旧数据
+> sudo rm -rf /var/lib/rabbitmq/mnesia/
+> 
+> # 确保 cookie 与其他节点一致
+> sudo cat /var/lib/rabbitmq/.erlang.cookie  # 必须与其他节点相同
+> 
+> # 启动服务
+> sudo systemctl start rabbitmq-server
+> 
+> # 加入集群（使用新主机名）
+> sudo rabbitmqctl stop_app
+> sudo rabbitmqctl reset
+> sudo rabbitmqctl join_cluster rabbit@rabbit1  # 假设 rabbit1 是主节点
+> sudo rabbitmqctl start_app
+> ```
+
+#### 5、验证集群状态
+
+在任何节点上执行以下命令检查集群状态：
+
+```bash
+sudo rabbitmqctl cluster_status
+
+# OR 查看集群节点列表
+sudo rabbitmqctl cluster_status | grep -A10 'running_nodes'
+
+# 检查服务状态
+sudo rabbitmqctl status
+```
+
+> 为了提高可用性，可以设置镜像队列策略：
+>
+> ```bash
+> sudo rabbitmqctl set_policy ha-all "^" '{"ha-mode":"all"}'
+> ```
+
+#### 6、启用管理插件（可选）
+
+- 如果需要Web管理界面：
+
+```bash
+sudo rabbitmq-plugins enable rabbitmq_management
+```
+
+然后可以通过`http://<node-ip>:15672`访问，默认用户名/密码为`guest/guest`（建议更改）。
+
+如果需要开启防火墙
+
+```bash
+# 开放15672端口（如果使用防火墙）
+sudo ufw allow 15672/tcp
+```
+
+> [!TIP]
+>
+> 如果到页面中查看，没有用户或者没有权限可以通过下面方式进行更改或添加。
+
+如果需要添加用户，在你安装管理界面的机器上运行。
+
+```bash
+# 如果存在可以先删除
+sudo rabbitmqctl delete_user 用户名
+
+# 添加用户
+sudo rabbitmqctl add_user 用户名 密码
+
+#设置用户操作权限
+sudo rabbitmqctl set_user_tags 用户名 administrator
+```
+
+**示例**
+
+```bash
+# 如果存在可以先删除
+sudo rabbitmqctl delete_user admin
+
+# 添加用户
+sudo rabbitmqctl add_user admin admin
+
+#设置用户操作权限
+sudo rabbitmqctl set_user_tags admin administrator
+```
+
+- **修改配置文件**（如 `/etc/hosts`、防火墙规则等）需在所有节点操作。
+- **重启 RabbitMQ 服务**（如果修改了核心配置）：
+
+```bash
+sudo systemctl restart rabbitmq-server
+```
+
+### 常见问题
+
+Q：打开主界面没有用户可以登录。
+
+A：添加或者创建新用户，参考【普通方式->第六点】
+
+Q：打开之后显示【⚠ All stable feature flags must be enabled after completing an upgrade. 】
+
+```bash
+# 查看当前 Feature Flags 状态
+sudo rabbitmqctl list_feature_flags
+
+# 启用所有稳定的 Feature Flags，这会启用所有 稳定（stable） 的功能标志（不包括实验性功能）。
+sudo rabbitmqctl enable_feature_flag all
+
+# 检查是否成功启用
+sudo rabbitmqctl list_feature_flags
+
+# 重启 RabbitMQ（可选）
+sudo systemctl restart rabbitmq-server
+```
+
+Q：出现下面情况【Node statistics not available】
+
+![image-20250519224201895](./images/image-20250519224201895.png)
+
+A：解决方法
+
+**情况一 管理插件未在所有节点启用**
+
+```bash
+sudo rabbitmq-plugins enable rabbitmq_management
+sudo systemctl restart rabbitmq-server
+```
+
+**情况二 **
+
+如果节点之间无法正常通信（如防火墙、网络策略阻止），管理界面无法获取其他节点的统计信息。
+
+**检查方法**
+
+在任意节点执行：
+
+```bash
+sudo rabbitmqctl cluster_status
+```
+
+**检查防火墙**（确保 `4369`、`25672`、`5672`、`15672` 端口开放）：
+
+```bash
+sudo ufw allow 4369/tcp   # Erlang 分布式通信端口
+sudo ufw allow 25672/tcp  # RabbitMQ 集群通信端口
+sudo ufw allow 5672/tcp   # AMQP 协议端口
+sudo ufw allow 15672/tcp  # 管理界面端口
+sudo ufw reload
+```
+
+**情况三 Cookie 不一致**
+
+在所有节点执行：
+
+```bash
+sudo cat /var/lib/rabbitmq/.erlang.cookie
+```
+
+1. 停止 RabbitMQ：
+
+   ```
+   sudo systemctl stop rabbitmq-server
+   ```
+
+2. 修改 Cookie（复制主节点的 Cookie 到其他节点）：
+
+   ```
+   echo "YOUR_MASTER_NODE_COOKIE" | sudo tee /var/lib/rabbitmq/.erlang.cookie
+   ```
+
+3. 设置权限：
+
+   ```
+   sudo chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie
+   sudo chmod 400 /var/lib/rabbitmq/.erlang.cookie
+   ```
+
+4. 重启 RabbitMQ：
+
+   ```
+   sudo systemctl start rabbitmq-server
+   ```
+
+**情况四 管理界面用户权限问题**
+
+如果用户没有 **跨节点访问权限**，管理界面可能无法获取其他节点的数据。
+
+**解决方案**
+
+确保用户在所有节点都有 **管理员权限**：
+
+```
+sudo rabbitmqctl set_user_tags <username> administrator
+sudo rabbitmqctl set_permissions -p / <username> ".*" ".*" ".*"
+```
+
+例如：
+
+```
+sudo rabbitmqctl set_user_tags admin administrator
+sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
+```
+
+**情况五 管理界面缓存问题**
+
+浏览器可能缓存了旧数据，导致显示异常。
