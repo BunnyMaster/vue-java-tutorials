@@ -320,7 +320,7 @@ public void processQueue(String dataString, Message message, Channel channel) th
 > | **手动ACK** (`AcknowledgeMode.MANUAL`) | ✔️ 推荐！保持 `unacked ≤ 5`，ACK后立即补新消息 |
 > | **自动ACK** (`AcknowledgeMode.AUTO`)   | ⚠️ 无效！消息投递后立即ACK，prefetch无法限流   |
 >
-> >自动ACK模式下**prefetch仍然有效**（限制未处理的消息数），但消息会在投递后立即被ACK，实际可能失去限流意义。
+> >*自动ACK模式下**prefetch仍然有效**（限制未处理的消息数），但消息会在投递后立即被ACK，实际可能失去限流意义。*
 >
 > **消费慢时的表现**：  
 >
@@ -359,4 +359,91 @@ public void processMessagePrefetch(String dataString, Channel channel, Message m
 
 ## 消息超时
 
+- 给消息设定一个过期时间，超过这个时间没有被取走的消息就会被删除，从两个层面来给消息设定过期时间。
+  - **队列层面：**在队列层面设定消息过期时间，并不是队列的过期时间。意思是这个队列中的消息全部使用同一个过期时间。
+  - **消息本身：**给具体的某个消息设定过期时间。
+- 可通过两种方式设置消息TTL（Time-To-Live），那么哪个时间短，哪个生效。
+
+### 测试环境
+
+测试时候不要用消费端消费（监听），监听取走了就不是超时了。
+
+**创建交换机**
+
+![image-20250519141236957](./images/image-20250519141236957.png)
+
+**创建队列**
+
+> [!NOTE]
+> 过期时间单位为毫秒，如`5000`表示5秒。
+
+创建交换机。直接点击下面的加粗字体可以直接设置。
+
+**队列TTL设置步骤**：
+
+创建队列时在`Arguments`中添加：`x-message-ttl`: 设置值（如5000）
+
 ![image-20250519135919549](./images/image-20250519135919549.png)
+
+**绑定交换机**
+
+![image-20250519141220594](./images/image-20250519141220594.png)
+
+### 测试队列层面
+
+当在队列中设置了过期时间，超时后自动删除。
+
+**测试Code**
+
+```java
+/* 测试过期时间 */
+@Test
+void buildExchangeTimeoutTest() {
+    String EXCHANGE = "exchange.test.timeout";
+    String QUEUE = "queue.test.timeout";
+    String ROUTING_KEY = "routing.key.test.timeout";
+
+    for (int i = 0; i < 100; i++) {
+        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, "测试消息超时时间【" + i + "】");
+    }
+}
+```
+
+**测试效果**
+
+![image-20250519141706027](./images/image-20250519141706027.png)
+
+### 测试消息层面
+
+> [!TIP]
+>
+> 和上面代码对比，区别在于，第四个参数是否设置了`MessagePostProcessor`。
+>
+> **队列TTL vs 消息TTL**：
+>
+> - 队列TTL：统一管理，适合批量消息
+> - 消息TTL：灵活控制，适合特殊消息
+
+> [!IMPORTANT]
+>
+> **TTL过期后消息直接删除**（非进入死信队列，除非配置了`x-dead-letter-exchange`）
+
+```java
+/* 测试过期时间---消息层面实现消息超时自动删除 */
+@Test
+void buildExchangeTimeoutTest2() {
+    String EXCHANGE = "exchange.test.timeout";
+    String QUEUE = "queue.test.timeout";
+    String ROUTING_KEY = "routing.key.test.timeout";
+
+    MessagePostProcessor postProcessor = message -> {
+        // 设置过期时间
+        message.getMessageProperties().setExpiration("7000");
+        return message;
+    };
+
+    for (int i = 0; i < 100; i++) {
+        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, "消息层面超时自动删除【" + i + "】", postProcessor);
+    }
+}
+```

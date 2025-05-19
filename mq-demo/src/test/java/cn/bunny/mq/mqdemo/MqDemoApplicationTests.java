@@ -4,6 +4,7 @@ import cn.bunny.mq.mqdemo.domain.RabbitMQMessageListenerConstants;
 import cn.bunny.mq.mqdemo.domain.entity.Bunny;
 import com.alibaba.fastjson2.JSON;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +55,34 @@ class MqDemoApplicationTests {
 
         for (int i = 0; i < 100; i++) {
             rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, "测试消息发送【" + i + "】");
+        }
+    }
+
+    /* 测试过期时间 */
+    @Test
+    void buildExchangeTimeoutTest1() {
+        String EXCHANGE = "exchange.test.timeout";
+        String ROUTING_KEY = "routing.key.test.timeout";
+
+        for (int i = 0; i < 100; i++) {
+            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, "测试消息超时时间【" + i + "】");
+        }
+    }
+
+    /* 测试过期时间---消息层面实现消息超时自动删除 */
+    @Test
+    void buildExchangeTimeoutTest2() {
+        String EXCHANGE = "exchange.test.timeout";
+        String ROUTING_KEY = "routing.key.test.timeout";
+
+        MessagePostProcessor postProcessor = message -> {
+            // 设置过期时间
+            message.getMessageProperties().setExpiration("7000");
+            return message;
+        };
+
+        for (int i = 0; i < 100; i++) {
+            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, "消息层面超时自动删除【" + i + "】", postProcessor);
         }
     }
 }
