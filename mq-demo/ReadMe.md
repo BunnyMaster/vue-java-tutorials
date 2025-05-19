@@ -1,5 +1,18 @@
 # RabbitMQ
 
+**安装RabbitMQ**
+
+```bash
+docker run -d --name rabbitmq_master --restart=always \
+-p 5672:5672 -p 15672:15672   \
+-v ~/docker/docker_data/rabbitmq/rabbitmq_master/data:/var/lib/rabbitmq_master \
+-v ~/docker/docker_data/rabbitmq/rabbitmq_master/conf:/etc/rabbitmq_master \
+-v ~/docker/docker_data/rabbitmq/rabbitmq_master/log:/var/log/rabbitmq_master \
+-e RABBITMQ_DEFAULT_VHOST=rabbitmq_master \
+-e RABBITMQ_DEFAULT_USER=admin \
+-e RABBITMQ_DEFAULT_PASS=admin rabbitmq:3.13.7-management
+```
+
 ## 基本示例
 
 **生产者**
@@ -576,3 +589,132 @@ void buildExchangeOverflowTest() {
 在之前设置中，消息最大接受是10，最多只能接收到10条消息，之后溢出消息进入死信，其中有10条消息是因为延迟，进入了死信。
 
 ![image-20250519154653646](./images/image-20250519154653646.png)
+
+## 延迟队列
+
+### 应用场景
+
+- 订单超时未支付自动取消
+- 预约任务延迟触发
+- 重试机制中的延迟重试
+
+#### 实现方案对比
+
+| 方案         | 优点                 | 缺点                          |
+| :----------- | :------------------- | :---------------------------- |
+| TTL+死信队列 | 无需插件             | 队列级别TTL，灵活性差         |
+| 延迟消息插件 | 消息级延迟，精确控制 | 需安装插件，延迟有上限（2天） |
+
+### 安装插件
+
+如果不想下，这个文档代码仓库中有的，在根目录下`rabbitmq_delayed_message_exchange-3.13.0.ez`
+
+> [!WARNING]
+>
+> 插件限制：
+>
+> - 最大延迟时间：**2天（48小时）**
+> - 必须匹配RabbitMQ版本
+
+#### 1、确认docker数据卷
+
+```bash
+docker inspect rabbitmq_master | grep -A 10 Mounts
+```
+
+找到`Mounts`，如果挂在了`plugins`下载后放到这个目录中，当前版本无法创建`/plugins`目录，只能手动下载之后移入。参考下面的第二点。
+
+若未挂载`/plugins`目录，需手动拷贝插件文件：
+
+```bash
+docker cp rabbitmq_delayed_message_exchange-3.13.0.ez rabbitmq_master:/plugins/
+```
+
+#### 2、安装插件
+
+**安装步骤**
+
+需要注意，版本是否对应上，我当前RabbitMQ版本是`rabbitmq:3.13.7-management`
+
+```bash
+# 下载插件（版本必须匹配）
+wget https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez
+
+# 启用插件
+docker exec rabbitmq_master rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+
+# 重启容器生效
+docker restart rabbitmq_master
+```
+
+**验证安装**
+
+```bash
+docker exec rabbitmq_master rabbitmq-plugins list | grep delay
+```
+
+应输出：`[E*] rabbitmq_delayed_message_exchange`
+
+### 测试环境配置
+
+#### **1. 创建延迟交换机**
+
+- 名称：`exchange.test.delay`
+- 类型：`x-delayed-message`
+- **必须参数**：
+
+```json
+{
+  "x-delayed-type": "direct"  // 指定底层交换机类型（direct/topic/fanout）
+}
+```
+
+> [!IMPORTANT]
+>
+> 在指定交换机时，因为本身的Type类型已经设置成了`x-delayed-message`，但是又没有指定交换机类型，又必须指定交换机类型，所以指定下面参数选项中设置延迟交换机的类型。
+>
+> 需要在下面参数中设置：`x-delayed-type：交换机类型`。
+
+![image-20250519164038005](./images/image-20250519164038005.png)
+
+#### **2. 创建队列与绑定**
+
+- 队列：`queue.test.delay`（无需特殊参数）
+- 路由键：`routing.key.test.delay`
+
+![image-20250519164337295](./images/image-20250519164337295.png)
+
+### 测试Code
+
+**生产者端**
+
+```java
+/* 测试延迟消息 */
+@Test
+void delayedPublishTest() {
+
+    // 在下面测试中，如果没有安装延迟插件，设置了 x-delay 没有作用
+    MessagePostProcessor messagePostProcessor = message -> {
+        // 10秒延迟
+        message.getMessageProperties().setHeader("x-delay", 10000);
+        return message;
+    };
+
+    rabbitTemplate.convertAndSend("exchange.test.delay",
+            "routing.key.test.delay",
+            "延迟消息插件：" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
+            messagePostProcessor
+    );
+}
+```
+
+**消费者端**
+
+```java
+/* 测试延迟消息 */
+@RabbitListener(queues = "queue.test.delay")
+public void processMessageDelay(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+    log.info("<延迟消息>----消息本身{}", dataString);
+    log.info("<延迟消息>----当前时间{}", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+}
+```

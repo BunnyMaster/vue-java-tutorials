@@ -9,6 +9,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @SpringBootTest
 class MqDemoApplicationTests {
 
@@ -95,5 +98,23 @@ class MqDemoApplicationTests {
         for (int i = 0; i < 40; i++) {
             rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, "因超时或移除产生死信【" + i + "】");
         }
+    }
+
+    /* 测试延迟消息 */
+    @Test
+    void delayedPublishTest() {
+
+        // 在下面测试中，如果没有安装延迟插件，设置了 x-delay 没有作用
+        MessagePostProcessor messagePostProcessor = message -> {
+            // 10秒延迟
+            message.getMessageProperties().setHeader("x-delay", 10000);
+            return message;
+        };
+
+        rabbitTemplate.convertAndSend("exchange.test.delay",
+                "routing.key.test.delay",
+                "延迟消息插件：" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
+                messagePostProcessor
+        );
     }
 }

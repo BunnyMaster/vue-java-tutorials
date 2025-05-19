@@ -7,9 +7,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import static cn.bunny.mq.mqdemo.domain.RabbitMQMessageListenerConstants.QUEUE_NAME;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Component
 @Slf4j
@@ -59,26 +58,34 @@ public class MessageListenerOrder {
     //     }
     // }
 
-    @RabbitListener(queues = {QUEUE_NAME})
-    public void processMessagePrefetch(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
-        log.info("消费者 消息内容：{}", dataString);
+    // @RabbitListener(queues = {QUEUE_NAME})
+    // public void processMessagePrefetch(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+    //     log.info("消费者 消息内容：{}", dataString);
+    //
+    //     TimeUnit.SECONDS.sleep(1);
+    //
+    //     channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    // }
+    //
+    // /* 测试死信---监听正常队列 */
+    // @RabbitListener(queues = {"queue.normal.video"})
+    // public void processMessageNormal(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+    //     log.info("监听正常队列----接受到：{}", dataString);
+    //     channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
+    // }
+    //
+    // /* 测试死信---监听死信队列 */
+    // @RabbitListener(queues = {"queue.dead.letter.video"})
+    // public void processMessageDeadLetter(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+    //     log.info("监听死信队列----接收到：{}", dataString);
+    //     channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    // }
 
-        TimeUnit.SECONDS.sleep(1);
-
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    /* 测试延迟消息 */
+    @RabbitListener(queues = "queue.test.delay")
+    public void processMessageDelay(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+        log.info("<延迟消息>----消息本身{}", dataString);
+        log.info("<延迟消息>----当前时间{}", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
     }
 
-    /*      *//* 测试死信---监听正常队列 *//*
-    @RabbitListener(queues = {"queue.normal.video"})
-    public void processMessageNormal(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
-        log.info("监听正常队列----接受到：{}", dataString);
-        channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
-    }
-
-     *//* 测试死信---监听死信队列 *//*
-    @RabbitListener(queues = {"queue.dead.letter.video"})
-    public void processMessageDeadLetter(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
-        log.info("监听死信队列----接收到：{}", dataString);
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-    } */
 }
