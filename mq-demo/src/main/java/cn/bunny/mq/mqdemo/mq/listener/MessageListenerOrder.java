@@ -88,4 +88,10 @@ public class MessageListenerOrder {
         log.info("<延迟消息>----当前时间{}", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
     }
 
+    /* 测试优先级队列 */
+    @RabbitListener(queues = "queue.test.priority")
+    public void processMessagePriority(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+        log.info("<<优先级队列>>----<priority>{}", dataString);
+    }
+
 }

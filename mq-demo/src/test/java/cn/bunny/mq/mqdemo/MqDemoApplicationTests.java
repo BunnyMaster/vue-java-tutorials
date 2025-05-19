@@ -117,4 +117,21 @@ class MqDemoApplicationTests {
                 messagePostProcessor
         );
     }
+
+    /* 测试消息优先级 */
+    @Test
+    void priorityTest() {
+        for (int i = 0; i <= 10; i++) {
+            int finalI = i;
+            rabbitTemplate.convertAndSend("exchange.test.priority",
+                    "routing.key.test.priority",
+                    "优先级消息-" + i,
+                    message -> {
+                        // 设置优先级，不能超过设置的优先级，例如设置最高优先级 x-max-priority:	10
+                        // 最高不能超过10
+                        message.getMessageProperties().setPriority(finalI);
+                        return message;
+                    });
+        }
+    }
 }
