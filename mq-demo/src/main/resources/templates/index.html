@@ -147,7 +147,8 @@
         <p class="lead fs-4 mb-5">通过实践项目学习消息队列的核心概念与应用场景</p>
         <div class="d-flex justify-content-center gap-3">
             <a class="btn btn-light btn-lg px-4 py-2 fw-bold" href="#features">探索项目 <i class="bi bi-arrow-down"></i></a>
-            <a class="btn btn-outline-light btn-lg px-4 py-2 fw-bold" href="https://gitee.com/BunnyBoss/vue-tutorials_drools-tutorials/tree/master/mq-demo"
+            <a class="btn btn-outline-light btn-lg px-4 py-2 fw-bold"
+               href="https://gitee.com/BunnyBoss/vue-tutorials_drools-tutorials/tree/master/mq-demo"
                target="_blank">Gitee代码 <i
                     class="bi bi-git"></i></a>
         </div>
@@ -291,60 +292,46 @@
 
     <div class="row mb-5">
         <div class="col-lg-6">
-            <h4><i class="bi bi-send me-2"></i>生产者配置</h4>
+            <h4><i class="bi bi-send me-2"></i>生产者示例</h4>
             <div class="code-example mt-3">
-                    <pre><code>@Configuration
-public class RabbitMQConfig {
+                    <pre><code>
+@Autowired
+private RabbitTemplate rabbitTemplate;
 
-    @Bean
-    public Queue helloQueue() {
-        return new Queue("hello", true);
-    }
+/* 测试发送消息 */
+@Test
+void publishTest() {
+    String exchangeDirect = RabbitMQMessageListenerConstants.EXCHANGE_DIRECT;
+    String routingKeyDirect = RabbitMQMessageListenerConstants.ROUTING_KEY_DIRECT;
+    rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, "你好小球球~~~");
 
-    @Bean
-    public DirectExchange directExchange() {
-        return new DirectExchange("direct.exchange");
-    }
-
-    @Bean
-    public Binding binding(Queue helloQueue,
-                         DirectExchange directExchange) {
-        return BindingBuilder.bind(helloQueue)
-               .to(directExchange)
-               .with("routing.key");
-    }
+    Bunny bunny = Bunny.builder().rabbitName("Bunny").age(2).build();
+    rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, JSON.toJSONString(bunny));
+}
 }</code></pre>
             </div>
         </div>
         <div class="col-lg-6">
             <h4><i class="bi bi-receipt me-2"></i>消费者示例</h4>
             <div class="code-example mt-3">
-                    <pre><code>@Component
-@RabbitListener(queues = "hello")
-public class MessageConsumer {
-
-    private static final Logger logger =
-        LoggerFactory.getLogger(MessageConsumer.class);
-
-    @RabbitHandler
-    public void receive(String message,
-                      Channel channel,
-                      @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
-        try {
-            logger.info("Received message: {}", message);
-            // 业务处理逻辑
-            channel.basicAck(tag, false);
-        } catch (Exception e) {
-            channel.basicNack(tag, false, true);
-        }
-    }
-}</code></pre>
+                    <pre><code>
+@RabbitListener(bindings = @QueueBinding(
+        exchange = @Exchange(value = EXCHANGE_DIRECT),
+        value = @Queue(value = QUEUE_NAME, durable = "true"),
+        key = ROUTING_KEY_DIRECT
+)
+)
+public void processMessage(String dataString, Message message, Channel channel) {
+    System.out.println("消费端接受消息：" + dataString);
+}
+                    </code></pre>
             </div>
         </div>
     </div>
 
     <div class="text-center mt-4">
-        <a class="btn btn-primary btn-lg" href="https://gitee.com/BunnyBoss/vue-tutorials_drools-tutorials/tree/master/mq-demo"
+        <a class="btn btn-primary btn-lg"
+           href="https://gitee.com/BunnyBoss/vue-tutorials_drools-tutorials/tree/master/mq-demo"
            target="_blank">
             <i class="bi bi-git me-2"></i>查看完整代码
         </a>
