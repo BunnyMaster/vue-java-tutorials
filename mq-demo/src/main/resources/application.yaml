@@ -18,6 +18,7 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual # 手动处理消息
+        prefetch: 5 # 设置每次取回数量，消息条数（非字节或KB）
     # connection-timeout: 1s # 设置MQ连接超时时间
     # template:
     #   retry:

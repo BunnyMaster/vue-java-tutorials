@@ -23,9 +23,6 @@ class MqDemoApplicationTests {
         String exchangeDirect = RabbitMQMessageListenerConstants.EXCHANGE_DIRECT;
         String routingKeyDirect = RabbitMQMessageListenerConstants.ROUTING_KEY_DIRECT;
         rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, "你好小球球~~~");
-
-        Bunny bunny = Bunny.builder().rabbitName("Bunny").age(2).build();
-        rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, JSON.toJSONString(bunny));
     }
 
     /* 测试失败交换机的情况 */
@@ -33,7 +30,6 @@ class MqDemoApplicationTests {
     void publishExchangeErrorTest() {
         String exchangeDirect = RabbitMQMessageListenerConstants.EXCHANGE_DIRECT;
         String routingKeyDirect = RabbitMQMessageListenerConstants.ROUTING_KEY_DIRECT;
-        rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, "----失败的消息发送----");
 
         Bunny bunny = Bunny.builder().rabbitName("Bunny").age(2).build();
         rabbitTemplate.convertAndSend(exchangeDirect + "~", routingKeyDirect, JSON.toJSONString(bunny));
@@ -45,9 +41,19 @@ class MqDemoApplicationTests {
     void publishQueueErrorTest() {
         String exchangeDirect = RabbitMQMessageListenerConstants.EXCHANGE_DIRECT;
         String routingKeyDirect = RabbitMQMessageListenerConstants.ROUTING_KEY_DIRECT;
-        rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, "----失败的队列发送----");
 
         Bunny bunny = Bunny.builder().rabbitName("Bunny").age(2).build();
         rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect + "~", JSON.toJSONString(bunny));
+    }
+
+    /* 发送消息，发送多条消息，测试使用 */
+    @Test
+    void buildMessageTest() {
+        String exchangeDirect = RabbitMQMessageListenerConstants.EXCHANGE_DIRECT;
+        String routingKeyDirect = RabbitMQMessageListenerConstants.ROUTING_KEY_DIRECT;
+
+        for (int i = 0; i < 100; i++) {
+            rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, "测试消息发送【" + i + "】");
+        }
     }
 }

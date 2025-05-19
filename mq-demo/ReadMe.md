@@ -216,6 +216,7 @@ rabbitmq:
   username: ${bunny.rabbitmq.username}
   password: ${bunny.rabbitmq.password}
   virtual-host: ${bunny.rabbitmq.virtual-host}
+  # 需要注释下面这两个，不需要这两个，因为要手动确认
   # publisher-confirm-type: correlated # 交换机确认
   # publisher-returns: true # 队列确认
   listener:
@@ -267,3 +268,95 @@ public void processQueue(String dataString, Message message, Channel channel) th
     }
 }
 ```
+
+## 消费端限流
+
+### 设置方式
+
+在配置文件中设置`prefetch`值。如果不设置，当生产者将消息放置到RabbitMQ中时，是一次性取回的，无论有多少。
+
+设置了`prefetch`之后，每次取回数量就是`prefetch`的数量。
+
+> [!NOTE]
+>
+> 并且在UI界面中`Unacked`值和我们设置的值一致。
+>
+> ![image-20250519135056806](./images/image-20250519135056806.png)
+>
+> *图中表示表示当前有5条消息已被消费者获取但未确认（正在处理中）*
+>
+> 当`prefetch=5`且消费速度为1条/秒时：
+>
+> - 初始会立即获取5条消息（Unacked=5）
+> - 每ACK 1条后，Broker会立即推送1条新消息（动态保持Unacked≈5）
+
+```yaml
+  rabbitmq:
+    host: ${bunny.rabbitmq.host}
+    port: ${bunny.rabbitmq.port}
+    username: ${bunny.rabbitmq.username}
+    password: ${bunny.rabbitmq.password}
+    virtual-host: ${bunny.rabbitmq.virtual-host}
+    # publisher-confirm-type: correlated # 交换机确认
+    # publisher-returns: true # 队列确认
+    listener:
+      simple:
+        acknowledge-mode: manual # 手动处理消息
+        prefetch: 5 # 设置每次取回数量，消息条数（非字节或KB）
+```
+
+> [!IMPORTANT]  
+> **RabbitMQ Prefetch 机制（prefetch=5）**  
+>
+> 在 RabbitMQ 的 **prefetch（QoS，服务质量设置）** 机制下，当 `prefetch=5` 时，**消费端的行为** 取决于 **消息确认模式（Ack/Nack）** 和 **消费速度**
+>
+> **核心规则**：  
+> - 保持 `unacked` 消息数 **≤ prefetch (5)**  
+> - **不会** 等5条全部ACK完才发下一批，而是 **动态补充**（每ACK 1条，补发1条）  
+>
+> **不同模式对比**：  
+> | 模式                                   | 行为                                          |
+> | -------------------------------------- | --------------------------------------------- |
+> | **手动ACK** (`AcknowledgeMode.MANUAL`) | ✔️ 推荐！保持 `unacked ≤ 5`，ACK后立即补新消息 |
+> | **自动ACK** (`AcknowledgeMode.AUTO`)   | ⚠️ 无效！消息投递后立即ACK，prefetch无法限流   |
+>
+> >自动ACK模式下**prefetch仍然有效**（限制未处理的消息数），但消息会在投递后立即被ACK，实际可能失去限流意义。
+>
+> **消费慢时的表现**：  
+>
+> - 若消费速度=1条/秒，RabbitMQ会 **持续补消息**，始终维持 `unacked ≈ 5`  
+>
+
+### 测试方式
+
+生产者生产一定数量的消息。
+
+```java
+/* 发送消息，发送多条消息，测试使用 */
+@Test
+void buildMessageTest() {
+    String exchangeDirect = RabbitMQMessageListenerConstants.EXCHANGE_DIRECT;
+    String routingKeyDirect = RabbitMQMessageListenerConstants.ROUTING_KEY_DIRECT;
+
+    for (int i = 0; i < 100; i++) {
+        rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, "测试消息发送【" + i + "】");
+    }
+}
+```
+
+消费者进行消费消息，在消费的时候为了方便观察，每秒去读一个。
+
+```java
+@RabbitListener(queues = {QUEUE_NAME})
+public void processMessagePrefetch(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+    log.info("消费者 消息内容：{}", dataString);
+
+    TimeUnit.SECONDS.sleep(1);
+
+    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+}
+```
+
+## 消息超时
+
+![image-20250519135919549](./images/image-20250519135919549.png)
