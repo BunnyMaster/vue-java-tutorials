@@ -68,4 +68,17 @@ public class MessageListenerOrder {
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 
+    /*      *//* 测试死信---监听正常队列 *//*
+    @RabbitListener(queues = {"queue.normal.video"})
+    public void processMessageNormal(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+        log.info("监听正常队列----接受到：{}", dataString);
+        channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
+    }
+
+     *//* 测试死信---监听死信队列 *//*
+    @RabbitListener(queues = {"queue.dead.letter.video"})
+    public void processMessageDeadLetter(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+        log.info("监听死信队列----接收到：{}", dataString);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    } */
 }

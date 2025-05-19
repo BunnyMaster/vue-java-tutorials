@@ -85,4 +85,15 @@ class MqDemoApplicationTests {
             rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, "消息层面超时自动删除【" + i + "】", postProcessor);
         }
     }
+
+    /* 因超时或移除产生死信 */
+    @Test
+    void buildExchangeOverflowTest() {
+        String EXCHANGE = "exchange.normal.video";
+        String ROUTING_KEY = "routing.key.normal.video";
+
+        for (int i = 0; i < 40; i++) {
+            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, "因超时或移除产生死信【" + i + "】");
+        }
+    }
 }
