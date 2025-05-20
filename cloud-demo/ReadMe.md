@@ -237,3 +237,31 @@ networks: # 定义网络
     driver: bridge  # 使用 bridge 驱动（默认）
 ```
 
+## 注册中心
+
+### 服务发现
+
+发现服务信息。
+
+```java
+for (String service : discoveryClient.getServices()) {
+    System.out.println(service);
+
+    for (ServiceInstance instance : discoveryClient.getInstances(service)) {
+        System.out.println("IP地址：" + instance.getHost());
+        System.out.println("端口号" + instance.getPort());
+    }
+}
+
+System.out.println("----------------------------------------------");
+
+// 两个方式一样，DiscoveryClient 是 Spring自带的 NacosDiscoveryClient是 Nacos
+for (String service : nacosDiscoveryClient.getServices()) {
+    System.out.println(service);
+
+    for (ServiceInstance instance : nacosDiscoveryClient.getInstances(service)) {
+        System.out.println("IP地址：" + instance.getHost());
+        System.out.println("端口号" + instance.getPort());
+    }
+}
+```
