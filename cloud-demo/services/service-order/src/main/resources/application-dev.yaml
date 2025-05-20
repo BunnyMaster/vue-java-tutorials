@@ -1,0 +1,6 @@
+server:
+  port: 8000
+
+
+nacos:
+  server-addr: 192.168.95.135:8848

@@ -1,0 +1,10 @@
+server:
+  port: 8001
+spring:
+  application:
+    name: service-product
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: ${nacos.server-addr}
