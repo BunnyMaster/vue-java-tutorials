@@ -1,14 +1,7 @@
 package cn.bunny.mq.mqdemo.mq.listener;
 
-import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Component
 @Slf4j
@@ -81,17 +74,17 @@ public class MessageListenerOrder {
     //     channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     // }
 
-    /* 测试延迟消息 */
-    @RabbitListener(queues = "queue.test.delay")
-    public void processMessageDelay(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
-        log.info("<延迟消息>----消息本身{}", dataString);
-        log.info("<延迟消息>----当前时间{}", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-    }
-
-    /* 测试优先级队列 */
-    @RabbitListener(queues = "queue.test.priority")
-    public void processMessagePriority(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
-        log.info("<<优先级队列>>----<priority>{}", dataString);
-    }
+    // /* 测试延迟消息 */
+    // @RabbitListener(queues = "queue.test.delay")
+    // public void processMessageDelay(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+    //     log.info("<延迟消息>----消息本身{}", dataString);
+    //     log.info("<延迟消息>----当前时间{}", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+    // }
+    //
+    // /* 测试优先级队列 */
+    // @RabbitListener(queues = "queue.test.priority")
+    // public void processMessagePriority(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+    //     log.info("<<优先级队列>>----<priority>{}", dataString);
+    // }
 
 }

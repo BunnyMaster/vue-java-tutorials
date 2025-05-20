@@ -4,7 +4,9 @@ server:
 bunny:
   rabbitmq:
     host: 192.168.3.144
-    port: 5672
+    # port: 5672
+    # 集群环境的端口号
+    port: 22222
     virtual-host: /
     username: admin
     password: admin

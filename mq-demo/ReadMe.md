@@ -615,6 +615,8 @@ void buildExchangeOverflowTest() {
 >
 > - 最大延迟时间：**2天（48小时）**
 > - 必须匹配RabbitMQ版本
+>
+> **插件版本必须与RabbitMQ严格匹配（如3.13.x需使用v3.13.x插件）。**
 
 #### 1、确认docker数据卷
 
@@ -746,8 +748,8 @@ try {
 
 ---
 
-### **2. 生产环境推荐方案**
-#### **（1）Confirm 模式（轻量级确认）**
+### 生产环境推荐方案
+#### （1）Confirm 模式（轻量级确认）
 - **原理**：异步确认消息是否成功到达 Broker。
 - **配置方式**：
   ```java
@@ -763,14 +765,14 @@ try {
   ```
 - **优点**：性能接近非事务模式，可靠性高。
 
-#### **（2）消息补偿 + 幂等设计**
+#### （2）消息补偿 + 幂等设计
 - **步骤**：
   1. 消息表记录发送状态（如 `status: sending/success/fail`）。
   2. 定时任务补偿失败消息。
   3. 消费者端做幂等处理（如唯一 ID + 去重表）。
 - **适用场景**：订单支付、库存扣减等关键业务。
 
-#### **（3）本地消息表（最终一致性）**
+#### （3）本地消息表（最终一致性）
 ```mermaid
 sequenceDiagram
     participant App
@@ -851,6 +853,8 @@ channel.queueDeclare("myLazyQueue", true, false, false, args);
 ```
 
 ## 优先级队列
+
+**优先级仅在消息堆积时生效（空队列时无意义）**
 
 **优先级范围**
 
@@ -949,6 +953,8 @@ public void processMessagePriority(String dataString, Channel channel, Message m
 > [!IMPORTANT]
 >
 > 如果需要修改，记得修改网关和IP地址。
+>
+> 节点间端口要求（如4369/25672需互通），避免防火墙问题.。
 
 看自己是否有这个需求。
 
@@ -1014,7 +1020,6 @@ sudo systemctl daemon-reload && sudo systemctl restart docker
 > # 3. 重建目录并设置权限
 > mkdir -p ~/docker/docker_data/rabbitmq/{rabbit1,rabbit2,rabbit3}/{data,conf,log}
 > sudo chown -R 999:999 ~/docker/docker_data/rabbitmq
-> sudo chmod -R 775 ~/docker/docker_data/rabbitmq
 > 
 > # 4. 重新启动
 > docker compose up -d
@@ -1253,6 +1258,14 @@ sudo vim /etc/hosts
 
 #### 3、设置Erlang Cookie
 
+> [!IMPORTANT]
+>
+> 普通方式搭建集群时，`.erlang.cookie`的权限必须为`400`
+>
+> ```bash
+> sudo chmod 400 /var/lib/rabbitmq/.erlang.cookie
+> ```
+
 RabbitMQ节点使用Erlang cookie进行认证，所有节点必须使用相同的cookie。
 
 如果是克隆的虚拟机，可以不检查（最好还是检查下），因为克隆的基本上是一样的。
@@ -1270,8 +1283,8 @@ sudo systemctl stop rabbitmq-server
 sudo nano /var/lib/rabbitmq/.erlang.cookie
 
 # 粘贴主节点的cookie内容
-# 然后设置正确的权限
 sudo chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie
+# 然后设置正确的权限
 sudo chmod 400 /var/lib/rabbitmq/.erlang.cookie
 
 # 重新启动RabbitMQ服务
@@ -1352,6 +1365,14 @@ sudo rabbitmqctl status
 #### 6、启用管理插件（可选）
 
 - 如果需要Web管理界面：
+
+> [!IMPORTANT]
+>
+> 如果使用Web界面，需要在每个集群上都执行一下，否则情况会出现下面情况，举个例子。
+>
+> 如果在主节点上执行，那么主节点可以访问，之后输入账户密码登录之后可以看到主节点的情况，但是其余节点会出现【Node statistics not available】。
+>
+> 为了避免这种情况，要在每个节点上都执行一下下面的命令。
 
 ```bash
 sudo rabbitmq-plugins enable rabbitmq_management
@@ -1470,26 +1491,26 @@ sudo cat /var/lib/rabbitmq/.erlang.cookie
 
 1. 停止 RabbitMQ：
 
-   ```
+   ```bash
    sudo systemctl stop rabbitmq-server
    ```
 
 2. 修改 Cookie（复制主节点的 Cookie 到其他节点）：
 
-   ```
+   ```bash
    echo "YOUR_MASTER_NODE_COOKIE" | sudo tee /var/lib/rabbitmq/.erlang.cookie
    ```
 
 3. 设置权限：
 
-   ```
+   ```bash
    sudo chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie
    sudo chmod 400 /var/lib/rabbitmq/.erlang.cookie
    ```
 
 4. 重启 RabbitMQ：
 
-   ```
+   ```bash
    sudo systemctl start rabbitmq-server
    ```
 
@@ -1501,14 +1522,14 @@ sudo cat /var/lib/rabbitmq/.erlang.cookie
 
 确保用户在所有节点都有 **管理员权限**：
 
-```
+```bash
 sudo rabbitmqctl set_user_tags <username> administrator
 sudo rabbitmqctl set_permissions -p / <username> ".*" ".*" ".*"
 ```
 
 例如：
 
-```
+```bash
 sudo rabbitmqctl set_user_tags admin administrator
 sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 ```
@@ -1516,3 +1537,111 @@ sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 **情况五 管理界面缓存问题**
 
 浏览器可能缓存了旧数据，导致显示异常。
+
+### 集群环境-负载均衡
+
+#### 1. 安装 HAProxy
+```bash
+sudo apt update
+sudo apt install haproxy -y
+```
+
+#### 2. 配置 HAProxy
+编辑 HAProxy 的配置文件 `/etc/haproxy/haproxy.cfg`：
+```bash
+sudo vim /etc/haproxy/haproxy.cfg
+```
+添加以下内容（假设 RabbitMQ 节点为 `rabbit1:5672` 和 `rabbit2:5672`）：
+
+> [!IMPORTANT]
+>
+> 绑定的端口号（`bind *:`）不能重复！！！
+
+```ini
+frontend rabbitmq_front
+    bind *:22222
+    mode tcp
+    default_backend rabbitmq_back
+
+backend rabbitmq_back
+    mode tcp
+    balance roundrobin
+    # 在之前设置了hosts文件，所以这里没有写端口号 == server rabbit1 192.168.3.144:5672 check
+    server rabbit1 rabbit1:5672 check
+    server rabbit2 rabbit2:5672 check
+    server rabbit3 rabbit3:5672 check
+    server rabbit4 rabbit4:5672 check
+
+# 可选：启用 RabbitMQ 管理界面的负载均衡（默认端口 15672）
+frontend rabbitmq_admin
+    bind *:12222
+    mode http
+    default_backend rabbitmq_admin_back
+
+backend rabbitmq_admin_back
+    mode http
+    balance roundrobin
+    # 在之前设置了hosts文件，所以这里没有写端口号 == server rabbit1 192.168.3.144:15672 check
+    server rabbit1 rabbit1:15672 check
+    server rabbit2 rabbit2:15672 check
+    server rabbit3 rabbit3:15672 check
+    server rabbit4 rabbit4:15672 check
+```
+
+#### 3. 重启 HAProxy
+
+> [!TIP]
+>
+> 重启报错可以看下报错内容: journalctl -xeu haproxy.service
+>
+> 如果使用一些远程软件，修改时可能会出现，多行配置变一行问题，需要手动通过vim查看。
+
+```bash
+sudo systemctl restart haproxy
+```
+### 集群环境的连接
+
+> [!NOTE]
+>
+> 如果是新建环境，需要将之前写的监听内容注释，否则启动容易报错。
+
+使用Java程序进行连接。如果搭建了集群环境还配置了负载均衡，就是用负载均衡的方式进行连接。
+
+负载均衡配置的是端口是：`5672`对应上面的文件是`22222`。所以在连接时候是`22222`这个 端口（参考【2. 配置 HAProxy】）
+
+#### Java配置
+
+```yaml
+# application.yaml
+rabbitmq:
+  host: ${bunny.rabbitmq.host}
+  port: ${bunny.rabbitmq.port}
+  username: ${bunny.rabbitmq.username}
+  password: ${bunny.rabbitmq.password}
+  virtual-host: ${bunny.rabbitmq.virtual-host}
+
+# application-dev.yaml
+bunny:
+  rabbitmq:
+    host: 192.168.3.144
+    # port: 5672
+    # 集群环境的端口号
+    port: 22222
+    virtual-host: /
+    username: admin
+    password: admin
+```
+
+#### 创建环境
+
+**交换机：**exchange.cluster.test
+
+![image-20250520105125396](./images/image-20250520105125396.png)
+
+**队列：**queue.cluster.test
+
+![image-20250520105109623](./images/image-20250520105109623.png)
+
+**路由键：**routing.key.cluster.test
+
+![image-20250520105149567](./images/image-20250520105149567.png)
