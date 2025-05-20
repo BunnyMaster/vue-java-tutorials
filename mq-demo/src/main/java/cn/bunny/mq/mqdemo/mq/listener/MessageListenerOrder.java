@@ -1,7 +1,12 @@
 package cn.bunny.mq.mqdemo.mq.listener;
 
+import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 @Slf4j
@@ -86,5 +91,12 @@ public class MessageListenerOrder {
     // public void processMessagePriority(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
     //     log.info("<<优先级队列>>----<priority>{}", dataString);
     // }
+
+
+    /* 测试联邦队列消息 */
+    @RabbitListener(queues = "queue.normal.rabbitmq2")
+    public void processMessagePriority(String dataString, Channel channel, Message message) throws IOException, InterruptedException {
+        log.info("<<测试联邦队列消息>>----<priority>{}", dataString);
+    }
 
 }
