@@ -20,4 +20,15 @@ public class ClusterEnvironmentTest {
                     "集群环境下消息-" + i);
         }
     }
+
+    /* 仲裁队列发送消息 */
+    @Test
+    void clusterQuorumTest2() {
+        final String EXCHANGE = "exchange.quorum.test";
+        final String ROUTING_KEY = "routing.key.quorum.test";
+
+        for (int i = 0; i <= 10; i++) {
+            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, "仲裁队列发送消息-" + i);
+        }
+    }
 }
