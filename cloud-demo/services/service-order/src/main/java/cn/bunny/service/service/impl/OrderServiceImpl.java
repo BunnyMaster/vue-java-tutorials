@@ -2,6 +2,7 @@ package cn.bunny.service.service.impl;
 
 import cn.bunny.model.order.bean.Order;
 import cn.bunny.model.product.bean.Product;
+import cn.bunny.service.feign.ProductFeignClient;
 import cn.bunny.service.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class OrderServiceImpl implements OrderService {
     private final DiscoveryClient discoveryClient;
     private final RestTemplate restTemplate;
     private final LoadBalancerClient loadBalancerClient;
+    private final ProductFeignClient productFeignClient;
 
     /**
      * 创建订单信息
@@ -32,7 +34,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Order createOrder(Long productId, Long userId) {
-        Product product = getProductFromRemoteWithLoadBalancerAnnotation(productId);
+        // Product product = getProductFromRemoteWithLoadBalancerAnnotation(productId);
+        Product product = productFeignClient.getProduct(productId);
 
         Order order = new Order();
         order.setId(1L);

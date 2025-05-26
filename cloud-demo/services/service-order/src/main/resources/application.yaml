@@ -5,7 +5,7 @@ spring:
   application:
     name: service-order
   profiles:
-    active: prod
+    active: dev
   cloud:
     nacos:
       server-addr: 192.168.95.135:8848
