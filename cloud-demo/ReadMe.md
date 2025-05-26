@@ -336,7 +336,7 @@ spring:
       on-profile: test
 ```
 
-## OpenFeign
+## OpenFeign 使用
 
 ### 基础配置
 
@@ -354,7 +354,6 @@ spring:
 
 ```java
 @SpringBootApplication
-@EnableDiscoveryClient
 @EnableFeignClients(basePackages = "com.yourpackage.feign")
 public class OrderServiceApplication {
     public static void main(String[] args) {
@@ -362,6 +361,9 @@ public class OrderServiceApplication {
     }
 }
 ```
+
+> [!NOTE]
+> `@EnableDiscoveryClient`注解，Spring Cloud最新版本已自动启用服务发现功能。
 
 ### Feign客户端使用
 
@@ -371,7 +373,7 @@ public class OrderServiceApplication {
 
 ```java
 @FeignClient(
-    value = "service-product", 
+    name = "service-product",  
     path = "/api/product",
     configuration = ProductFeignConfig.class
 )
@@ -381,86 +383,61 @@ public interface ProductFeignClient {
     ResponseEntity<Product> getProductById(@PathVariable("id") Long productId);
 
     @PostMapping
-    ResponseEntity<Void> createProduct(@RequestBody Product product);
+    ResponseEntity<Void> createProduct(@Valid @RequestBody Product product);  // 添加@Valid注解支持参数校验
 }
 ```
 
-**服务调用示例**：
+**服务调用示例优化**：
 
 ```java
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-
     private final ProductFeignClient productFeignClient;
 
     public Order createOrder(Long productId, Long userId) {
-        // 使用Feign客户端调用远程服务
-        ResponseEntity<Product> response = productFeignClient.getProductById(productId);
+        Product product = productFeignClient.getProductById(productId)
+            .orElseThrow(() -> new ProductNotFoundException(productId));  // 使用Optional简化判断
         
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("商品服务调用失败");
-        }
-
-        Product product = response.getBody();
-        Order order = new Order();
-        // 订单业务逻辑处理...
-        return order;
+        return Order.builder()
+            .productId(product.getId())
+            .userId(userId)
+            // 其他订单属性
+            .build();
     }
 }
 ```
 
-#### 第三方服务调用
+#### 第三方服务调用优化
 
 ```java
 @FeignClient(
-    name = "bunny-client", 
-    url = "${external.bunny.api.url}", 
+    name = "bunny-client",
+    url = "${external.bunny.api.url}",
     configuration = ExternalFeignConfig.class
 )
 public interface BunnyFeignClient {
 
     @PostMapping("/login")
-    ResponseEntity<String> login(@RequestBody LoginDto loginDto);
-}
-```
-
-**测试用例**：
-
-```java
-@SpringBootTest
-public class BunnyFeignClientTest {
-
-    @Autowired
-    private BunnyFeignClient bunnyFeignClient;
-
-    @Test
-    void testLogin() {
-        LoginDto loginDto = new LoginDto("bunny", "admin123", "default");
-        ResponseEntity<String> response = bunnyFeignClient.login(loginDto);
-        
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        System.out.println("登录响应: " + response.getBody());
-    }
+    ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginDto loginDto);  // 使用具体返回类型替代String
 }
 ```
 
 ### 负载均衡对比
 
-#### 客户端负载均衡 vs 服务端负载均衡
-
-| 特性         | 客户端负载均衡 (OpenFeign) | 服务端负载均衡 (Nginx等) |
-| ------------ | -------------------------- | ------------------------ |
-| **实现位置** | 客户端实现                 | 服务端实现               |
-| **依赖关系** | 需要服务注册中心           | 不依赖注册中心           |
-| **性能**     | 直接调用，减少网络跳转     | 需要经过代理服务器       |
-| **灵活性**   | 可定制负载均衡策略         | 配置相对固定             |
-| **服务发现** | 集成服务发现机制           | 需要手动维护服务列表     |
-| **适用场景** | 微服务内部调用             | 对外暴露API或跨系统调用  |
+| 特性         | 客户端负载均衡 (OpenFeign)          | 服务端负载均衡 (Nginx等) |
+| ------------ | ----------------------------------- | ------------------------ |
+| **实现位置** | 客户端实现                          | 服务端实现               |
+| **依赖关系** | 需要服务注册中心                    | 不依赖注册中心           |
+| **性能**     | 直接调用，减少网络跳转              | 需要经过代理服务器       |
+| **灵活性**   | 可定制负载均衡策略                  | 配置相对固定             |
+| **服务发现** | 集成服务发现机制                    | 需要手动维护服务列表     |
+| **适用场景** | 微服务内部调用                      | 对外暴露API或跨系统调用  |
+| **容错能力** | 集成熔断机制（如Sentinel、Hystrix） | 依赖代理服务器容错配置   |
 
 ### 高级配置
 
-#### 日志配置
+#### 日志配置优化
 
 **application.yml**:
 
@@ -474,18 +451,20 @@ logging:
 **Java配置**：
 
 ```java
+@Configuration
 public class FeignConfig {
     
     @Bean
     Logger.Level feignLoggerLevel() {
-        return Logger.Level.FULL;  // NONE, BASIC, HEADERS, FULL
+        // 生产环境建议使用BASIC级别
+        return Logger.Level.FULL; 
     }
 }
 ```
 
-#### 超时与重试配置
+#### 超时与重试配置优化
 
-**application-feign.yml**:
+**application.yml**:
 
 ```yaml
 spring:
@@ -497,10 +476,12 @@ spring:
             connect-timeout: 2000
             read-timeout: 5000
             logger-level: basic
+            retryable: false  # 默认关闭重试，避免幂等问题
             
           service-product:  # 特定服务配置
             connect-timeout: 3000
             read-timeout: 10000
+            retryable: true
 ```
 
 **重试机制配置**：
@@ -510,5 +491,90 @@ spring:
 public Retryer feignRetryer() {
     // 重试间隔100ms，最大间隔1s，最大尝试次数3次
     return new Retryer.Default(100, 1000, 3);
+}
+```
+
+### Feign拦截器优化
+
+#### 最佳实践
+
+```java
+@Component
+@RequiredArgsConstructor
+public class AuthRequestInterceptor implements RequestInterceptor {
+    private final AuthService authService;
+
+    @Override
+    public void apply(RequestTemplate template) {
+        template.header("Authorization", "Bearer " + authService.getCurrentToken());
+    }
+}
+```
+
+**配置方式**：
+
+```yaml
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            request-interceptors:
+              - com.yourpackage.feign.interceptor.AuthRequestInterceptor
+              - com.yourpackage.feign.interceptor.LoggingInterceptor
+```
+
+### 熔断降级配置优化
+
+#### 整合Sentinel
+
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+    <version>${sentinel.version}</version>
+</dependency>
+```
+
+**配置**：
+
+```yaml
+feign:
+  sentinel:
+    enabled: true
+    # 降级策略配置
+    fallback:
+      enabled: true
+      # 默认降级类路径
+      default: com.yourpackage.feign.fallback.DefaultFallback
+```
+
+**降级实现优化**：
+
+```java
+@Slf4j
+@Component
+public class ProductFeignClientFallback implements ProductFeignClient {
+    
+    @Override
+    public ResponseEntity<Product> getProductById(Long productId) {
+        log.warn("Product服务降级，productId: {}", productId);
+        return ResponseEntity.ok(Product.getDefaultProduct(productId));
+    }
+}
+```
+
+**FeignClient使用**：
+
+```java
+@FeignClient(
+    name = "service-product",
+    path = "/api/product",
+    fallback = ProductFeignClientFallback.class,
+    fallbackFactory = ProductFeignClientFallbackFactory.class  // 可选，用于获取异常信息
+)
+public interface ProductFeignClient {
+    // 方法定义
 }
 ```

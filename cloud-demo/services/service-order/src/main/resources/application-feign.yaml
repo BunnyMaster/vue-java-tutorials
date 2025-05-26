@@ -16,3 +16,6 @@ spring:
             read-timeout: 5000 # 最多等待对方 5s
             request-interceptors:
               - cn.bunny.service.interceptor.XTokenRequestInterceptor
+feign:
+  sentinel:
+    enabled: true
