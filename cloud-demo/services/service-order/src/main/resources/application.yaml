@@ -5,6 +5,12 @@ spring:
     name: service-order
   profiles:
     active: dev
+  config:
+    import:
+      - nacos:service-order.yml
   cloud:
     nacos:
-      server-addr: ${nacos.server-addr}
+      server-addr: 192.168.95.135:8848
+      config:
+        import-check:
+          enabled: false

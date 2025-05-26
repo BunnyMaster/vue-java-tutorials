@@ -5,6 +5,10 @@ spring:
     name: service-product
   profiles:
     active: dev
+
   cloud:
     nacos:
       server-addr: ${nacos.server-addr}
+      config:
+        import-check:
+          enabled: false

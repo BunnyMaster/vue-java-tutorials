@@ -405,3 +405,112 @@ private Product getProductFromRemoteWithLoadBalancerAnnotation(Long productId) {
     return restTemplate.getForObject(url, Product.class);
 }
 ```
+
+### 远程配置读取
+
+#### 1、引入依赖
+
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+</dependency>
+```
+
+#### 2、在nacos中配置
+
+![image-20250526152842107](./images/image-20250526152842107.png)
+
+![image-20250526152904745](./images/image-20250526152904745.png)
+
+```yml
+order:
+  timeout: 30min
+  auto-confirm: true
+```
+
+#### 3、创建接口访问
+
+```java
+@RestController
+@RequestMapping("/api/order")
+@RequiredArgsConstructor
+public class OrderController {
+
+    private final OrderService orderService;
+
+    @Value("${order.timeout}")
+    private String timeout;
+
+    @Value("${order.auto-confirm}")
+    private String autoConfirm;
+
+    @Operation(summary = "读取配置")
+    @GetMapping("config")
+    public String config() {
+        return "timeout：" + timeout + "\nautoConfirm：" + autoConfirm;
+    }
+}
+```
+
+#### 4、SpringBoot中配置
+
+> [!CAUTION]
+>
+> 需要注意的是，不要在`server-addr`地址中写`${nacos.server-addr}`，否则无法访问正确的地址。
+
+> [!NOTE]
+>
+> 如果某个项目模块暂时不需要动态配置，但是引入了，可以在配置中加上，导入检查。
+>
+> ```yaml
+> cloud:
+>   nacos:
+>     server-addr: 192.168.95.135:8848
+>     config:
+>       import-check:
+>         enabled: false
+> ```
+>
+> 如果某个配置是可选也可以在前面加上`ptional:`。
+>
+> ```yaml
+> spring:
+>   config:
+>     import:
+>       - optional:nacos:service-order.yml
+> ```
+
+```yaml
+server:
+  port: 8000
+spring:
+  application:
+    name: service-order
+  profiles:
+    active: dev
+  config:
+    import:
+      - nacos:service-order.yml
+  cloud:
+    nacos:
+      server-addr: 192.168.95.135:8848
+      config:
+        import-check:
+          enabled: false
+```
+
+#### 5、动态刷新读取
+
+如果需要动态刷新需要在控制器或者是启动类上加上`@RefreshScope`
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+@RefreshScope
+public class ProductServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ProductServiceApplication.class, args);
+    }
+}
+```
