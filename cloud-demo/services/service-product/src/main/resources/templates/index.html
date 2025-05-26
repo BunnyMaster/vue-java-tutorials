@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>SpringCloud微服务复习教程</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+          rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff5e62;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-body ul {
+            list-style-type: none;
+        }
+
+        .card-body li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-body li:last-child {
+            border-bottom: none;
+        }
+
+        .card-body li::before {
+            content: "→";
+            color: var(--secondary-color);
+            margin-right: 0.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(106, 17, 203, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            background: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .feature h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>SpringCloud微服务复习教程</h1>
+        <p>掌握微服务架构的核心概念与实践，从服务注册发现到分布式配置，全面复习SpringCloud生态系统的关键组件</p>
+    </div>
+</header>
+
+<div class="main-content">
+    <div class="container">
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">📚</div>
+                <h3>系统化学习</h3>
+                <p>从基础到高级，循序渐进掌握SpringCloud所有核心组件</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💡</div>
+                <h3>实战案例</h3>
+                <p>通过实际项目案例，理解微服务架构的设计与实现</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔧</div>
+                <h3>最佳实践</h3>
+                <p>学习行业内的微服务最佳实践和常见问题解决方案</p>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">
+                <h2>核心组件教程</h2>
+            </div>
+
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-header">Eureka - 服务注册与发现</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>服务注册中心原理</li>
+                            <li>服务提供者注册</li>
+                            <li>服务消费者发现</li>
+                            <li>高可用Eureka集群</li>
+                            <li>自我保护机制</li>
+                        </ul>
+                        <a class="btn" href="#">开始学习</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Ribbon - 客户端负载均衡</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>负载均衡策略</li>
+                            <li>自定义负载规则</li>
+                            <li>与Eureka集成</li>
+                            <li>重试机制</li>
+                            <li>性能调优</li>
+                        </ul>
+                        <a class="btn" href="#">开始学习</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Feign - 声明式服务调用</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>接口式编程</li>
+                            <li>请求参数处理</li>
+                            <li>错误处理</li>
+                            <li>日志配置</li>
+                            <li>性能优化</li>
+                        </ul>
+                        <a class="btn" href="#">开始学习</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Hystrix - 服务熔断</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>服务降级</li>
+                            <li>熔断机制</li>
+                            <li>请求缓存</li>
+                            <li>请求合并</li>
+                            <li>Dashboard监控</li>
+                        </ul>
+                        <a class="btn" href="#">开始学习</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Zuul/Gateway - API网关</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>路由配置</li>
+                            <li>过滤器机制</li>
+                            <li>权限控制</li>
+                            <li>限流策略</li>
+                            <li>性能对比</li>
+                        </ul>
+                        <a class="btn" href="#">开始学习</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Config - 分布式配置</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Git仓库配置</li>
+                            <li>配置加密</li>
+                            <li>动态刷新</li>
+                            <li>高可用配置</li>
+                            <li>与Bus集成</li>
+                        </ul>
+                        <a class="btn" href="#">开始学习</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Sleuth/Zipkin - 链路追踪</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>TraceID传播</li>
+                            <li>Span记录</li>
+                            <li>Zipkin集成</li>
+                            <li>性能分析</li>
+                            <li>日志关联</li>
+                        </ul>
+                        <a class="btn" href="#">开始学习</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Security - 安全控制</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>OAuth2集成</li>
+                            <li>JWT支持</li>
+                            <li>权限控制</li>
+                            <li>单点登录</li>
+                            <li>微服务安全</li>
+                        </ul>
+                        <a class="btn" href="#">开始学习</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-top: 4rem;">
+            <div class="section-title">
+                <h2>实践项目</h2>
+            </div>
+
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <p style="margin-bottom: 2rem;">通过实际项目整合所有SpringCloud组件，构建完整的微服务架构解决方案</p>
+                <a class="btn btn-outline" href="#">查看项目案例</a>
+            </div>
+        </section>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2023 SpringCloud微服务复习教程 | 设计用于学习目的</p>
+        <p style="margin-top: 1rem; opacity: 0.8;">使用HTML5, CSS3和响应式设计构建</p>
+    </div>
+</footer>
+</body>
+</html>
