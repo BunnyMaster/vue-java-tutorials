@@ -16,6 +16,7 @@
     <description>cloud-demo</description>
     <modules>
         <module>services</module>
+        <module>model</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -24,21 +25,17 @@
         <junit.version>3.8.1</junit.version>
         <knife4j.version>4.5.0</knife4j.version>
         <fastjson2.version>2.0.47</fastjson2.version>
+        <lombok.version>1.18.32</lombok.version>
+        <knife4j.version>4.5.0</knife4j.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- thymeleaf -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            </dependency>
-
             <!-- lombok -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <optional>true</optional>
+                <version>${lombok.version}</version>
             </dependency>
 
             <!-- test -->
@@ -48,7 +45,7 @@
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
-    
+
             <!-- spring-cloud-alibaba -->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
