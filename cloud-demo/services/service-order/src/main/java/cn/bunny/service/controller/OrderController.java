@@ -35,6 +35,8 @@ public class OrderController {
     public String config() {
         String timeout = orderProperties.getTimeout();
         String autoConfirm = orderProperties.getAutoConfirm();
-        return "timeout：" + timeout + "\nautoConfirm：" + autoConfirm;
+        String dbUrl = orderProperties.getDbUrl();
+        
+        return "timeout：" + timeout + "\nautoConfirm：" + autoConfirm + "\norder.db-url" + dbUrl;
     }
 }

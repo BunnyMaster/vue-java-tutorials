@@ -15,4 +15,6 @@ public class OrderProperties {
     // 中划线写法会自动映射为小驼峰
     private String autoConfirm;
 
+    private String dbUrl;
+
 }
