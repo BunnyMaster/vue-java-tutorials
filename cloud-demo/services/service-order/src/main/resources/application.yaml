@@ -15,6 +15,10 @@ spring:
         # namespace: prod # 所在的命名空间
         namespace: ${spring.profiles.active:dev} # 所在的命名空间，如果没有写 dev 为默认值
 
+logging:
+  level:
+    cn.bunny.service.feign: debug
+
 ---
 spring:
   config:
