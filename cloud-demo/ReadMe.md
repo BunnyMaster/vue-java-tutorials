@@ -28,12 +28,12 @@ sudo systemctl daemon-reload && sudo systemctl restart docker
 
 #### MySQL配置问题
 
-| **特性**     | `**my.cnf**`                 | `**conf.d**` **目录**      |
-| ------------ | ---------------------------- | -------------------------- |
-| **文件类型** | 单个文件                     | 目录，包含多个 `.cnf` 文件 |
-| **配置方式** | 集中式配置                   | 分布式配置                 |
-| **优先级**   | 高（覆盖 `conf.d` 中的配置） | 低（被 `my.cnf` 覆盖）     |
-| **适用场景** | 全局配置，核心配置           | 模块化配置，便于扩展和维护 |
+| **特性**   | `**my.cnf**`        | `**conf.d**` **目录** |
+|----------|:--------------------|:-------------------:|
+| **文件类型** | 单个文件                |  目录，包含多个 `.cnf` 文件  |
+| **配置方式** | 集中式配置               |        分布式配置        |
+| **优先级**  | 高（覆盖 `conf.d` 中的配置） |  低（被 `my.cnf` 覆盖）   |
+| **适用场景** | 全局配置，核心配置           |    模块化配置，便于扩展和维护    |
 
 #### MongoDB配置
 
@@ -95,16 +95,16 @@ db.createUser({ user: 'admin', pwd: '02120212', roles: [ { role: "root", db: "ad
 
 如果休要所有的微服务环境，可以直接复制下面的内容，看清楚目录是否和自己需要的一样。
 
-| 功能                 | 旧版 (docker-compose)   | 新版 (docker  compose)  |
-| -------------------- | ----------------------- | ----------------------- |
-| **启动服务**         | docker-compose  up -d   | docker  compose up -d   |
-| **停止服务**         | docker-compose  down    | docker  compose down    |
-| **查看日志**         | docker-compose  logs -f | docker  compose logs -f |
-| **列出容器**         | docker-compose  ps      | docker  compose ps      |
-| **停止不删除容器**   | docker-compose  stop    | docker  compose stop    |
+| 功能           | 旧版 (docker-compose)     | 新版 (docker  compose)    |
+|--------------|-------------------------|-------------------------|
+| **启动服务**     | docker-compose  up -d   | docker  compose up -d   |
+| **停止服务**     | docker-compose  down    | docker  compose down    |
+| **查看日志**     | docker-compose  logs -f | docker  compose logs -f |
+| **列出容器**     | docker-compose  ps      | docker  compose ps      |
+| **停止不删除容器**  | docker-compose  stop    | docker  compose stop    |
 | **启动已停止的容器** | docker-compose  start   | docker  compose start   |
-| **重启服务**         | docker-compose  restart | docker  compose restart |
-| **构建镜像**         | docker-compose  build   | docker  compose build   |
+| **重启服务**     | docker-compose  restart | docker  compose restart |
+| **构建镜像**     | docker-compose  build   | docker  compose build   |
 
 ```yaml
 name: cloud-services
@@ -131,8 +131,8 @@ services:
     restart: always
     privileged: true
     networks:
-      - cloud  
- 
+      - cloud
+
   redis:
     container_name: redis_master
     image: redis:7.0.10
@@ -149,8 +149,8 @@ services:
       - "--tcp-keepalive 300"
     restart: always
     networks:
-      - cloud  
- 
+      - cloud
+
   minio:
     image: minio/minio
     container_name: minio_master
@@ -165,7 +165,7 @@ services:
     command: "server /data --console-address :9090"
     restart: always
     networks:
-      - cloud  
+      - cloud
 
   mongodb:
     image: mongo:latest
@@ -180,8 +180,8 @@ services:
       - ~/docker/docker_data/mongo/logs:/data/log
     command: "mongod --config /data/configdb/mongod.conf"
     networks:
-      - cloud  
-  
+      - cloud
+
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
@@ -199,7 +199,7 @@ services:
       - RABBITMQ_DEFAULT_VHOST=/
     networks:
       - cloud
-      
+
   nacos:
     image: nacos/nacos-server:v2.4.3
     container_name: nacos
@@ -210,8 +210,8 @@ services:
       - MODE=standalone
     restart: always
     networks:
-      - cloud  
- 
+      - cloud
+
   sentinel:
     image: bladex/sentinel-dashboard:1.8.8
     container_name: sentinel
@@ -220,7 +220,7 @@ services:
     privileged: true
     restart: always
     networks:
-      - cloud  
+      - cloud
 
   seata-server:
     image: apache/seata-server:2.3.0.jdk21
@@ -229,7 +229,7 @@ services:
       - "8091:8091"
     restart: always
     networks:
-      - cloud  
+      - cloud
 
 networks: # 定义网络
   cloud: # 定义名为 auth 的网络
@@ -244,24 +244,81 @@ networks: # 定义网络
 发现服务信息。
 
 ```java
-for (String service : discoveryClient.getServices()) {
-    System.out.println(service);
+@SpringBootTest()
+public class DiscoveryTest {
 
-    for (ServiceInstance instance : discoveryClient.getInstances(service)) {
-        System.out.println("IP地址：" + instance.getHost());
-        System.out.println("端口号" + instance.getPort());
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private NacosDiscoveryClient nacosDiscoveryClient;
+
+    @Test
+    void discoveryClientTest() {
+        for (String service : discoveryClient.getServices()) {
+            System.out.println(service);
+
+            for (ServiceInstance instance : discoveryClient.getInstances(service)) {
+                System.out.println("IP地址：" + instance.getHost());
+                System.out.println("端口号" + instance.getPort());
+            }
+        }
+
+        System.out.println("----------------------------------------------");
+
+        // 两个方式一样，DiscoveryClient 是 Spring自带的 NacosDiscoveryClient是 Nacos
+        for (String service : nacosDiscoveryClient.getServices()) {
+            System.out.println(service);
+
+            for (ServiceInstance instance : nacosDiscoveryClient.getInstances(service)) {
+                System.out.println("IP地址：" + instance.getHost());
+                System.out.println("端口号" + instance.getPort());
+            }
+        }
     }
 }
+```
 
-System.out.println("----------------------------------------------");
+### 远程调用
 
-// 两个方式一样，DiscoveryClient 是 Spring自带的 NacosDiscoveryClient是 Nacos
-for (String service : nacosDiscoveryClient.getServices()) {
-    System.out.println(service);
+订单模块调用远程商品模块，使用了nacos，可以使用`RestTemplate`，其中`RestTemplate`是线程安全的，只要注册一次全局都是可以使用。
 
-    for (ServiceInstance instance : nacosDiscoveryClient.getInstances(service)) {
-        System.out.println("IP地址：" + instance.getHost());
-        System.out.println("端口号" + instance.getPort());
+**RestTemplate源码**
+
+继承了`InterceptingHttpAccessor`，在`InterceptingHttpAccessor`中，使用了单例模式。
+
+```java
+public ClientHttpRequestFactory getRequestFactory() {
+    List<ClientHttpRequestInterceptor> interceptors = this.getInterceptors();
+    if (!CollectionUtils.isEmpty(interceptors)) {
+        ClientHttpRequestFactory factory = this.interceptingRequestFactory;
+        if (factory == null) {
+            factory = new InterceptingClientHttpRequestFactory(super.getRequestFactory(), interceptors);
+            this.interceptingRequestFactory = factory;
+        }
+
+        return factory;
+    } else {
+        return super.getRequestFactory();
     }
+}
+```
+
+**实现远程调用**
+
+如果我们的服务启动了多个，在下面代码中即使一个服务宕机也可以做到远程调用。
+
+```java
+private Product getProductFromRemote(Long productId) {
+    // 获取商品服务所有及其的 IP+port
+    List<ServiceInstance> instances = discoveryClient.getInstances("service-product");
+    ServiceInstance instance = instances.get(0);
+
+    // 远程URL
+    String url = "http://" + instance.getHost() + ":" + instance.getPort() + "/api/product/" + productId;
+
+    // 2. 远程发送请求
+    log.info("远程调用：{}", url);
+    return restTemplate.getForObject(url, Product.class);
 }
 ```

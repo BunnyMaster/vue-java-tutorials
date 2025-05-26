@@ -103,6 +103,7 @@ rabbitmq:
 
 > [!NOTE]  
 > **@PostConstruct 注解**  
+>
 > **作用**：在Bean依赖注入完成后执行初始化方法（构造器之后，`afterPropertiesSet()`之前）。  
 >
 > **特点**：  
@@ -116,6 +117,7 @@ rabbitmq:
 > - 避免耗时操作，推荐轻量级初始化  
 >
 > **替代方案**：  
+>
 > `InitializingBean`接口 或 `@Bean(initMethod="xxx")`  
 
 RabbitMQ配置
