@@ -32,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Order createOrder(Long productId, Long userId) {
-        Product product = getProductFromRemoteWithLoadBalancer(productId);
+        Product product = getProductFromRemoteWithLoadBalancerAnnotation(productId);
 
         Order order = new Order();
         order.setId(1L);
@@ -81,6 +81,21 @@ public class OrderServiceImpl implements OrderService {
 
         // 2. 远程发送请求
         log.info("负载均衡远程调用：{}", url);
+        return restTemplate.getForObject(url, Product.class);
+    }
+
+    /**
+     * 远程调用商品模块 --- 负载均衡注解调用
+     *
+     * @param productId 商品id
+     * @return 商品对象
+     */
+    private Product getProductFromRemoteWithLoadBalancerAnnotation(Long productId) {
+        // 远程URL，实现动态替换
+        String url = "http://service-product/api/product/" + productId;
+
+        // 远程发送请求
+        log.info("负载均衡注解调用：{}", url);
         return restTemplate.getForObject(url, Product.class);
     }
 }

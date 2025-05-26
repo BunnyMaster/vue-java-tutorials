@@ -304,7 +304,18 @@ public ClientHttpRequestFactory getRequestFactory() {
 }
 ```
 
-**实现远程调用**
+#### 实现远程调用
+
+##### 普通方式调用
+
+注册`RestTemplate`
+
+```java
+@Bean
+public RestTemplate restTemplate() {
+    return new RestTemplate();
+}
+```
 
 如果我们的服务启动了多个，在下面代码中即使一个服务宕机也可以做到远程调用。
 
@@ -319,6 +330,78 @@ private Product getProductFromRemote(Long productId) {
 
     // 2. 远程发送请求
     log.info("远程调用：{}", url);
+    return restTemplate.getForObject(url, Product.class);
+}
+```
+
+##### 负载均衡调用
+
+注册`RestTemplate`
+
+```java
+@Bean
+public RestTemplate restTemplate() {
+    return new RestTemplate();
+}
+```
+
+使用负载均衡`LoadBalancerClient`，通过负载均衡算法动态调用远程服务。
+
+```java
+/**
+ * 远程调用商品模块 --- 负载均衡
+ *
+ * @param productId 商品id
+ * @return 商品对象
+ */
+private Product getProductFromRemoteWithLoadBalancer(Long productId) {
+    // 1. 获取商品服务所有及其的 IP+port
+    ServiceInstance instance = loadBalancerClient.choose("service-product");
+
+    // 远程URL
+    String url = "http://" + instance.getHost() + ":" + instance.getPort() + "/api/product/" + productId;
+
+    // 2. 远程发送请求
+    log.info("负载均衡远程调用：{}", url);
+    return restTemplate.getForObject(url, Product.class);
+}
+```
+
+##### 负载均衡注解调用
+
+> [!TIP]
+>
+> 如果远程注册中心宕机是否可以调用？
+>
+> 调用过：远程调用不在依赖注册中心，可以通过。
+>
+> 没调用过：第一次发起远程调用；不能通过。
+
+在`RestTemplate`上加上`@LoadBalanced`注解使用负载均衡。
+
+```java
+@Bean
+@LoadBalanced
+public RestTemplate restTemplate() {
+    return new RestTemplate();
+}
+```
+
+在实际的调用中并不需要再显式调用，将URL替换成服务名称即可。
+
+```java
+/**
+ * 远程调用商品模块 --- 负载均衡注解调用
+ *
+ * @param productId 商品id
+ * @return 商品对象
+ */
+private Product getProductFromRemoteWithLoadBalancerAnnotation(Long productId) {
+    // 远程URL，实现动态替换
+    String url = "http://service-product/api/product/" + productId;
+
+    // 远程发送请求
+    log.info("负载均衡注解调用：{}", url);
     return restTemplate.getForObject(url, Product.class);
 }
 ```
