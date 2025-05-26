@@ -335,3 +335,180 @@ spring:
     activate:
       on-profile: test
 ```
+
+## OpenFeign
+
+### 基础配置
+
+#### 依赖引入
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+    <version>${spring-cloud.version}</version>
+</dependency>
+```
+
+#### 启用Feign客户端
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients(basePackages = "com.yourpackage.feign")
+public class OrderServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderServiceApplication.class, args);
+    }
+}
+```
+
+### Feign客户端使用
+
+#### 服务间调用
+
+**Feign客户端定义**：
+
+```java
+@FeignClient(
+    value = "service-product", 
+    path = "/api/product",
+    configuration = ProductFeignConfig.class
+)
+public interface ProductFeignClient {
+
+    @GetMapping("/{id}")
+    ResponseEntity<Product> getProductById(@PathVariable("id") Long productId);
+
+    @PostMapping
+    ResponseEntity<Void> createProduct(@RequestBody Product product);
+}
+```
+
+**服务调用示例**：
+
+```java
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+    private final ProductFeignClient productFeignClient;
+
+    public Order createOrder(Long productId, Long userId) {
+        // 使用Feign客户端调用远程服务
+        ResponseEntity<Product> response = productFeignClient.getProductById(productId);
+        
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("商品服务调用失败");
+        }
+
+        Product product = response.getBody();
+        Order order = new Order();
+        // 订单业务逻辑处理...
+        return order;
+    }
+}
+```
+
+#### 第三方服务调用
+
+```java
+@FeignClient(
+    name = "bunny-client", 
+    url = "${external.bunny.api.url}", 
+    configuration = ExternalFeignConfig.class
+)
+public interface BunnyFeignClient {
+
+    @PostMapping("/login")
+    ResponseEntity<String> login(@RequestBody LoginDto loginDto);
+}
+```
+
+**测试用例**：
+
+```java
+@SpringBootTest
+public class BunnyFeignClientTest {
+
+    @Autowired
+    private BunnyFeignClient bunnyFeignClient;
+
+    @Test
+    void testLogin() {
+        LoginDto loginDto = new LoginDto("bunny", "admin123", "default");
+        ResponseEntity<String> response = bunnyFeignClient.login(loginDto);
+        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        System.out.println("登录响应: " + response.getBody());
+    }
+}
+```
+
+### 负载均衡对比
+
+#### 客户端负载均衡 vs 服务端负载均衡
+
+| 特性         | 客户端负载均衡 (OpenFeign) | 服务端负载均衡 (Nginx等) |
+| ------------ | -------------------------- | ------------------------ |
+| **实现位置** | 客户端实现                 | 服务端实现               |
+| **依赖关系** | 需要服务注册中心           | 不依赖注册中心           |
+| **性能**     | 直接调用，减少网络跳转     | 需要经过代理服务器       |
+| **灵活性**   | 可定制负载均衡策略         | 配置相对固定             |
+| **服务发现** | 集成服务发现机制           | 需要手动维护服务列表     |
+| **适用场景** | 微服务内部调用             | 对外暴露API或跨系统调用  |
+
+### 高级配置
+
+#### 日志配置
+
+**application.yml**:
+
+```yaml
+logging:
+  level:
+    org.springframework.cloud.openfeign: DEBUG
+    com.yourpackage.feign: DEBUG
+```
+
+**Java配置**：
+
+```java
+public class FeignConfig {
+    
+    @Bean
+    Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;  // NONE, BASIC, HEADERS, FULL
+    }
+}
+```
+
+#### 超时与重试配置
+
+**application-feign.yml**:
+
+```yaml
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:  # 全局默认配置
+            connect-timeout: 2000
+            read-timeout: 5000
+            logger-level: basic
+            
+          service-product:  # 特定服务配置
+            connect-timeout: 3000
+            read-timeout: 10000
+```
+
+**重试机制配置**：
+
+```java
+@Bean
+public Retryer feignRetryer() {
+    // 重试间隔100ms，最大间隔1s，最大尝试次数3次
+    return new Retryer.Default(100, 1000, 3);
+}
+```
