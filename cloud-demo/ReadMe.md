@@ -514,3 +514,46 @@ public class ProductServiceApplication {
     }
 }
 ```
+
+#### 6、批量配置刷新读取
+
+> [!TIP]
+>
+> 配置批量绑定无需 @RefreshScope 实现动态刷新。
+>
+> 中划线写法会自动映射为小驼峰。
+
+```java
+@Configuration
+// 配置批量绑定无需 @RefreshScope 实现动态刷新
+@ConfigurationProperties(prefix = "order")
+public class OrderProperties {
+
+    private String timeout;
+
+    // 中划线写法会自动映射为小驼峰
+    private String autoConfirm;
+
+}
+```
+
+测试读取内容
+
+```java
+@RestController
+@RequestMapping("/api/order")
+@RequiredArgsConstructor
+public class OrderController {
+
+    private final OrderService orderService;
+    private final OrderProperties orderProperties;
+
+    @Operation(summary = "读取配置")
+    @GetMapping("config")
+    public String config() {
+        String timeout = orderProperties.getTimeout();
+        String autoConfirm = orderProperties.getAutoConfirm();
+        return "timeout：" + timeout + "\nautoConfirm：" + autoConfirm;
+    }
+}
+```
