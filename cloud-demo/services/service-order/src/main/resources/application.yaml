@@ -6,6 +6,8 @@ spring:
     name: service-order
   profiles:
     active: dev
+    include:
+      - feign
   cloud:
     nacos:
       server-addr: 192.168.95.135:8848

@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          # 对所有配置
+          default:
+            logger-level: full
+            connect-timeout: 1000
+            read-timeout: 1000 # 最多等待对方 5s
+
+          # 对 service-product 单独设置
+          service-product:
+            logger-level: full
+            connect-timeout: 3000
+            read-timeout: 5000 # 最多等待对方 5s

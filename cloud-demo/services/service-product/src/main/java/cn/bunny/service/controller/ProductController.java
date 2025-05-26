@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.TimeUnit;
+
 @RestController
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
@@ -19,6 +21,11 @@ public class ProductController {
     @Operation(summary = "根据id查询商品")
     @GetMapping("{id}")
     public Product getProduct(@PathVariable("id") Long productId) {
+        try {
+            TimeUnit.SECONDS.sleep(6);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return productService.getProductById(productId);
     }
 }
