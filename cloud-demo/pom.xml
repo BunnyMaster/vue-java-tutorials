@@ -17,10 +17,12 @@
     <modules>
         <module>services</module>
         <module>model</module>
+        <module>gateway</module>
     </modules>
     <packaging>pom</packaging>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
         <junit.version>3.8.1</junit.version>
         <knife4j.version>4.5.0</knife4j.version>
