@@ -854,3 +854,561 @@ graph TD
 - **统计时长**：60000ms
 
 适用场景：适用于低流量但要求高可用的服务，可以快速响应偶发异常。
+
+## Gateway
+
+Spring Cloud Gateway 是基于 Spring 5、Spring Boot 2 和 Project Reactor 构建的 API 网关，提供了一种简单有效的方式来路由到 API，并为它们提供跨领域的关注点，如：安全性、监控/指标和弹性。
+
+> [!WARNING]
+>
+> **不要同时引入 `spring-boot-starter-web` 和 `spring-cloud-starter-gateway`**
+>
+> 报错原因是项目中同时存在了两个不兼容的 Web 框架：
+>
+> 1. Spring MVC (基于 Servlet API 的阻塞式编程模型)
+> 2. Spring Cloud Gateway (基于 Reactor 的非阻塞式编程模型)
+
+### 冲突分析与解决方案
+
+#### 原因分析
+
+1. **编程模型冲突**：
+   - Spring MVC 使用传统的同步阻塞式 I/O 模型
+   - Spring Cloud Gateway 基于 Project Reactor 和 Netty，使用异步非阻塞式响应式编程模型
+   - 这两种模型在底层处理 HTTP 请求的方式完全不同，无法共存
+
+2. **自动配置机制**：
+   - Spring Boot 的自动配置会根据类路径上的依赖自动配置应用
+   - 当检测到 `spring-boot-starter-web` 时，会配置为 Servlet 容器（如 Tomcat）
+   - 当检测到 `spring-cloud-starter-gateway` 时，会期望配置为 Netty 服务器
+
+3. **Web 应用类型冲突**：
+   - Spring Boot 2.x 引入了 `WebApplicationType` 概念，可以是 SERVLET、REACTIVE 或 NONE
+   - 系统无法自动决定应该使用哪种类型，因为发现了两种冲突的实现
+
+#### 解决方案
+
+##### 推荐方案
+
+在 `application.properties` 或 `application.yml` 中明确指定应用类型：
+
+```properties
+spring.main.web-application-type=reactive
+```
+
+##### 替代方案
+
+1. 完全移除 `spring-boot-starter-web` 依赖
+2. 如果需要某些 Spring MVC 的功能，考虑使用 `spring-boot-starter-webflux` 替代
+
+### 项目创建与基本配置
+
+#### 依赖配置
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+</dependency>
+```
+
+#### 基础配置示例
+
+```yaml
+server:
+  port: 8888
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      server-addr: 192.168.3.150:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # 开启服务发现自动路由
+```
+
+### 路由配置详解
+
+Spring Cloud Gateway 提供了强大而灵活的路由功能，通过合理配置断言和过滤器，可以实现复杂的API网关需求。遵循响应式编程模型，确保不要与传统的Spring MVC混合使用，是成功使用Gateway的关键。
+
+#### 基本路由配置
+
+路由规则按从上到下的顺序加载，第一个匹配的规则将被执行（除非自定义规则顺序）。
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: order-route
+          uri: lb://service-order  # lb://表示使用负载均衡
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - StripPrefix=1  # 去掉前缀/api
+        - id: product-route
+          uri: lb://service-product
+          predicates:
+            - Path=/api/product/**
+          order: 1  # 优先级，数字越小优先级越高
+```
+
+#### URI 类型说明
+
+- `lb://service-name`: 通过服务发现进行负载均衡
+- `http://host:port`: 直接HTTP请求
+- `https://host:port`: 直接HTTPS请求
+
+### 断言(Predicates)详解
+
+断言用于定义路由的匹配条件，支持多种匹配方式。
+
+更多配置参考下面图片，全局搜索`RoutePredicateFactory`，之后`Ctrl+H`找到所有方法。
+
+![image-20250527141438554](./images/image-20250527141438554.png)
+
+#### 常用断言类型
+
+##### Path 断言
+
+```yaml
+predicates:
+  - Path=/api/product/**
+```
+
+或长格式：
+
+```yaml
+predicates:
+  - name: Path
+    args:
+      patterns: /api/product/**
+      matchTrailingSlash: true  # 是否匹配结尾斜杠
+```
+
+##### Query 断言
+
+匹配请求参数：
+
+```yaml
+predicates:
+  - Query=q, 被世界温柔以待  # 参数名和正则表达式
+```
+
+长格式：
+
+```yaml
+predicates:
+  - name: Query
+    args:
+      param: q
+      regexp: 被世界温柔以待
+```
+
+##### Method 断言
+
+匹配HTTP方法：
+
+```yaml
+predicates:
+  - Method=GET,POST
+```
+
+##### Header 断言
+
+匹配请求头：
+
+```yaml
+predicates:
+  - Header=X-Request-Id, \d+  # 匹配数字
+```
+
+##### Cookie 断言
+
+匹配Cookie：
+
+```yaml
+predicates:
+  - Cookie=sessionid, abc.*
+```
+
+##### Host 断言
+
+匹配Host头：
+
+```yaml
+predicates:
+  - Host=**.example.com
+```
+
+##### 时间相关断言
+
+- After: 指定时间之后
+- Before: 指定时间之前
+- Between: 两个时间之间
+
+```yaml
+predicates:
+  - After=2023-01-20T17:42:47.789-07:00[America/Denver]
+```
+
+#### 自定义断言
+
+```java
+@Component
+public class VipRoutePredicateFactory extends AbstractRoutePredicateFactory<VipRoutePredicateFactory.Config> {
+
+    public VipRoutePredicateFactory() {
+        super(Config.class);
+    }
+
+    @Override
+    public List<String> shortcutFieldOrder() {
+        return List.of("param", "value");
+    }
+
+    @Override
+    public Predicate<ServerWebExchange> apply(Config config) {
+        return (GatewayPredicate) serverWebExchange -> {
+            ServerHttpRequest request = serverWebExchange.getRequest();
+
+            String first = request.getQueryParams().getFirst(config.param);
+
+            return StringUtils.hasText(first) && first.equals(config.value);
+        };
+    }
+
+    @Getter
+    @Setter
+    @Validated
+    public static class Config {
+        @NotEmpty
+        private String param;
+
+        @NotEmpty
+        private String value;
+    }
+}
+```
+
+##### 配置使用方式
+
+**短写法配置**
+
+```
+predicates:
+  - Vip=user,bunny
+```
+
+**长写法配置**
+
+```
+predicates:
+  - name: Vip
+    args:
+      param: user
+      value: bunny
+```
+
+### 过滤器(Filters)详解
+
+过滤器用于修改请求和响应，可以在路由前后执行。
+
+> [!TIP]
+>
+> [更多参考文档](https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway/gatewayfilter-factories/addrequestheader-factory.html)
+
+#### 常用内置过滤器
+
+##### 路径相关
+
+- `StripPrefix`: 去掉前缀
+
+  ```yaml
+  filters:
+    - StripPrefix=2  # 去掉前两级路径
+  ```
+
+- `PrefixPath`: 添加前缀
+
+  ```yaml
+  filters:
+    - PrefixPath=/api
+  ```
+
+##### 请求头相关
+
+> [!NOTE]
+>
+> 在有的浏览器中看不到`X-Request-red`，因为`x-`开头可能是自定义请求头，有的浏览器防止泄露隐私就隐藏了，需要在指定的下游接口中打印可以看到。
+
+- `AddRequestHeader`: 添加请求头
+
+  ```yaml
+  filters:
+    - AddRequestHeader=X-Request-red, blue
+  ```
+
+- `RemoveRequestHeader`: 移除请求头
+
+- `SetRequestHeader`: 设置请求头
+
+如果访问这个接口，可以输出`Received headers: blue`
+
+```java
+@Operation(summary = "读取配置")
+@GetMapping("config")
+public String config(HttpServletRequest request) {
+    String timeout = orderProperties.getTimeout();
+    String autoConfirm = orderProperties.getAutoConfirm();
+    String dbUrl = orderProperties.getDbUrl();
+
+    // 携带的请求头内容
+    String header = request.getHeader("X-Request-red");
+    log.info("Received headers: {}", header);
+
+    return "timeout：" + timeout + "\nautoConfirm：" + autoConfirm + "\norder.db-url" + dbUrl;
+}
+```
+
+##### 响应头相关
+
+- `AddResponseHeader`: 添加响应头
+- `RemoveResponseHeader`: 移除响应头
+- `SetResponseHeader`: 设置响应头
+
+##### 重定向相关
+
+- `RedirectTo`: 重定向
+
+  ```yaml
+  filters:
+    - RedirectTo=302, https://example.org
+  ```
+
+##### 断路器相关
+
+- `CircuitBreaker`: 断路器
+
+  ```yaml
+  filters:
+    - name: CircuitBreaker
+      args:
+        name: myCircuitBreaker
+        fallbackUri: forward:/fallback
+  ```
+
+##### 重试相关
+
+- `Retry`: 重试机制
+
+  ```yaml
+  filters:
+    - name: Retry
+      args:
+        retries: 3
+        statuses: BAD_GATEWAY
+  ```
+
+### 全局过滤器
+
+可以应用于所有路由的过滤器，常用于认证、日志等全局功能。
+
+```java
+@Bean
+public GlobalFilter customGlobalFilter() {
+    return (exchange, chain) -> {
+        // 前置处理
+        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+            // 后置处理
+        }));
+    };
+}
+```
+
+### 高级特性
+
+#### 自定义过滤器
+
+实现`GlobalFilter`
+
+```java
+@Slf4j
+@Component
+public class RTFilter implements GlobalFilter, Ordered {
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        ServerHttpRequest request = exchange.getRequest();
+        URI uri = request.getURI();
+        long start = System.currentTimeMillis();
+        log.error("请求【{}】开始时间：{}", uri, start);
+
+        // 处理逻辑
+        // return chain.filter(exchange)
+        //         // 因为是异步的，不能写在下main，需要处理后续逻辑写在 doFinally
+        //         .doFinally(result -> {
+        //             long end = System.currentTimeMillis();
+        //             log.error("请求【{}】结束 ，时间：{}，耗时:{}", uri, end, end - start);
+        //         });
+        return chain.filter(exchange)
+                .doOnError(e -> log.error("请求失败", e))
+                .doFinally(result -> {
+                    long end = System.currentTimeMillis();
+                    log.info("请求【{}】结束，状态：{}，耗时：{}ms",
+                            uri, result, end - start);
+                });
+    }
+
+    @Override
+    public int getOrder() {
+        return 0; // 执行顺序
+    }
+}
+```
+
+#### 自定义过滤器工厂
+
+添加完成后再请求头中添加`X-Response-Token`
+
+![image-20250527163116327](./images/image-20250527163116327.png)
+
+```java
+@Component
+public class OnceTokenGatewayFilterFactory extends AbstractNameValueGatewayFilterFactory {
+
+    @Override
+    public GatewayFilter apply(NameValueConfig config) {
+        // 每次相应之前添加一次性令牌
+
+        return (exchange, chain) -> chain.filter(exchange)
+                .then(Mono.fromRunnable(() -> {
+                    ServerHttpResponse response = exchange.getResponse();
+                    HttpHeaders headers = response.getHeaders();
+
+                    String name = config.getName();
+                    String value = config.getValue();
+
+                    if ("uuid".equalsIgnoreCase(value)) {
+                        value = UUID.randomUUID().toString();
+                    }
+
+                    if ("jwt".equalsIgnoreCase(value)) {
+                        value = "JWT的token";
+                    }
+
+                    headers.add(name, value);
+                }));
+    }
+}
+```
+
+**配置中设置**
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: order-route
+          uri: lb://service-order
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - AddRequestHeader=X-Request-red, blue
+            - OnceToken=X-Response-Token, uuid
+```
+
+#### 动态路由
+
+可通过数据库或配置中心实现动态路由更新。
+
+```java
+@Autowired
+private RouteDefinitionLocator routeDefinitionLocator;
+
+@Autowired
+private RouteDefinitionWriter routeDefinitionWriter;
+
+public void updateRoutes() {
+    // 获取新路由定义
+    List<RouteDefinition> definitions = ...;
+    
+    // 清空现有路由
+    routeDefinitionLocator.getRouteDefinitions()
+        .collectList()
+        .subscribe(existing -> existing.forEach(route -> 
+            routeDefinitionWriter.delete(Mono.just(route.getId()))));
+    
+    // 添加新路由
+    definitions.forEach(definition -> 
+        routeDefinitionWriter.save(Mono.just(definition)).subscribe());
+}
+```
+
+#### 跨域设置
+
+请求后会出有下面的内容：
+
+![image-20250527163525191](./images/image-20250527163525191.png)
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      # 全局跨域
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-headers:
+              - "*"
+            allowed-origin-patterns:
+              - "*"
+            allowed-methods:
+              - "*"
+```
+
+**CORS问题**：在Gateway层统一配置CORS
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+```
+
+### 最佳实践
+
+1. **路由组织**：按业务功能组织路由，使用清晰的ID命名
+2. **优先级管理**：合理使用order属性控制路由匹配顺序
+3. **异常处理**：配置全局异常处理和fallback路由
+4. **监控**：集成Actuator监控端点
+5. **性能**：合理使用缓存和断路器
+
+### 常见问题
+
+1. **超时配置**：
+
+   ```yaml
+   spring:
+     cloud:
+       gateway:
+         httpclient:
+           connect-timeout: 1000
+           response-timeout: 5s
+   ```
+
+2. **负载均衡**：确保正确配置服务发现和负载均衡器

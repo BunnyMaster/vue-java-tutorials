@@ -1,6 +1,18 @@
 spring:
   cloud:
     gateway:
+      # 全局跨域
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-headers:
+              - "*"
+            allowed-origin-patterns:
+              - "*"
+            allowed-methods:
+              - "*"
+
+      # 路由
       routes:
         - id: order-route
           uri: lb://service-order
