@@ -8,6 +8,7 @@ spring:
             - Path=/api/order/**
           filters:
             - AddRequestHeader=X-Request-red, blue
+            - OnceToken=X-Response-Token, uuid
 
         - id: product-route
           uri: lb://service-product
