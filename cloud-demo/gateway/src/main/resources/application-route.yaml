@@ -9,4 +9,9 @@ spring:
         - id: product-route
           uri: lb://service-product
           predicates:
-            - Path=/api/product/**
+            - name: Path
+              args:
+                patterns: /api/product/**
+                matchTrailingSlash: true
+
+
