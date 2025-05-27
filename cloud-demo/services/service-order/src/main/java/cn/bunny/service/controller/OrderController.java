@@ -3,11 +3,15 @@ package cn.bunny.service.controller;
 import cn.bunny.model.order.bean.Order;
 import cn.bunny.service.config.OrderProperties;
 import cn.bunny.service.service.OrderService;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order")
@@ -25,9 +29,19 @@ public class OrderController {
     private final OrderProperties orderProperties;
 
     @Operation(summary = "创建订单")
+    @SentinelResource(value = "order", blockHandler = "createBlockHandler")
     @GetMapping("create")
     public Order createOrder(Long userId, Long productId) {
         return orderService.createOrder(productId, userId);
+    }
+
+    public Order createBlockHandler(Long userId, Long productId, BlockException exception) {
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setAddress("xxx");
+        order.setNickName(exception.getMessage());
+        order.setProductList(List.of());
+        return order;
     }
 
     @Operation(summary = "读取配置")
@@ -36,7 +50,7 @@ public class OrderController {
         String timeout = orderProperties.getTimeout();
         String autoConfirm = orderProperties.getAutoConfirm();
         String dbUrl = orderProperties.getDbUrl();
-        
+
         return "timeout：" + timeout + "\nautoConfirm：" + autoConfirm + "\norder.db-url" + dbUrl;
     }
 }

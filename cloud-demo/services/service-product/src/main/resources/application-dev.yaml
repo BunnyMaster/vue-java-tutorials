@@ -2,4 +2,4 @@ server:
   port: 8001
 
 nacos:
-  server-addr: 192.168.95.135:8848
+  server-addr: 192.168.3.150:8848

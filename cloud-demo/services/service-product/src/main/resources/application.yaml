@@ -12,3 +12,11 @@ spring:
       config:
         import-check:
           enabled: false
+
+    sentinel:
+      enabled: true
+      eager: true # 提前加载
+      transport:
+        dashboard: 192.168.3.150:8858
+      filter:
+        enabled: true

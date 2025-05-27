@@ -240,7 +240,7 @@ spring:
     active: dev
   cloud:
     nacos:
-      server-addr: ${NACOS_HOST:192.168.95.135}:8848
+      server-addr: ${NACOS_HOST:192.168.3.150}:8848
       config:
         namespace: ${spring.profiles.active:dev} # 动态匹配当前profile
         group: DEFAULT_GROUP
@@ -425,15 +425,15 @@ public interface BunnyFeignClient {
 
 ### 负载均衡对比
 
-| 特性         | 客户端负载均衡 (OpenFeign)          | 服务端负载均衡 (Nginx等) |
-| ------------ | ----------------------------------- | ------------------------ |
-| **实现位置** | 客户端实现                          | 服务端实现               |
-| **依赖关系** | 需要服务注册中心                    | 不依赖注册中心           |
-| **性能**     | 直接调用，减少网络跳转              | 需要经过代理服务器       |
-| **灵活性**   | 可定制负载均衡策略                  | 配置相对固定             |
-| **服务发现** | 集成服务发现机制                    | 需要手动维护服务列表     |
-| **适用场景** | 微服务内部调用                      | 对外暴露API或跨系统调用  |
-| **容错能力** | 集成熔断机制（如Sentinel、Hystrix） | 依赖代理服务器容错配置   |
+| 特性       | 客户端负载均衡 (OpenFeign)       | 服务端负载均衡 (Nginx等) |
+|----------|---------------------------|------------------|
+| **实现位置** | 客户端实现                     | 服务端实现            |
+| **依赖关系** | 需要服务注册中心                  | 不依赖注册中心          |
+| **性能**   | 直接调用，减少网络跳转               | 需要经过代理服务器        |
+| **灵活性**  | 可定制负载均衡策略                 | 配置相对固定           |
+| **服务发现** | 集成服务发现机制                  | 需要手动维护服务列表       |
+| **适用场景** | 微服务内部调用                   | 对外暴露API或跨系统调用    |
+| **容错能力** | 集成熔断机制（如Sentinel、Hystrix） | 依赖代理服务器容错配置      |
 
 ### 高级配置
 
@@ -578,3 +578,209 @@ public interface ProductFeignClient {
     // 方法定义
 }
 ```
+
+## Sentinel 使用指南
+
+> [!NOTE]
+> 如果安装完Sentinel打开控制面板可以看到服务，但簇点链路为空，可能原因：
+>
+> 1. 微服务与Sentinel不在同一IP段
+> 2. 服务未发送心跳到Sentinel Dashboard
+> 3. 未正确配置`spring.cloud.sentinel.transport.dashboard`
+
+### 依赖引入
+
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+    <version>2022.0.0.0</version> <!-- 建议指定版本 -->
+</dependency>
+```
+
+### 基础配置
+
+```yaml
+spring:
+  cloud:
+    sentinel:
+      enabled: true
+      eager: true # 提前初始化
+      transport:
+        dashboard: 192.168.3.150:8858 # Sentinel控制台地址
+        port: 8719 # 本地启动的HTTP Server端口
+        client-ip: ${spring.cloud.client.ip-address} # 客户端IP
+      filter:
+        enabled: true
+      web-context-unify: false # 关闭统一上下文(链路模式需要)
+```
+
+### 自定义异常处理
+
+#### MVC接口自定义返回
+
+```java
+@Component
+public class MyBlockExceptionHandler implements BlockExceptionHandler {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, 
+                      String s, BlockException e) throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        response.setStatus(429); // 建议使用429 Too Many Requests
+        
+        Map<String, Object> result = Map.of(
+            "code", 429,
+            "message", "请求被限流",
+            "timestamp", System.currentTimeMillis(),
+            "rule", e.getRule()
+        );
+        
+        objectMapper.writeValue(response.getWriter(), result);
+    }
+}
+```
+
+#### REST接口全局异常处理
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    
+    @ExceptionHandler(BlockException.class)
+    public ResponseEntity<Object> handleBlockException(BlockException e) {
+        return ResponseEntity.status(429)
+               .body(Map.of(
+                   "error", "Too Many Requests",
+                   "rule", e.getRule().toString()
+               ));
+    }
+}
+```
+
+### @SentinelResource详解
+
+#### 作用
+
+- 定义资源名称(用于流量控制)
+- 指定限流/降级处理逻辑
+- 配置异常降级策略
+
+#### blockHandler vs fallback区别
+
+| 特性     | blockHandler             | fallback            |
+| -------- | ------------------------ | ------------------- |
+| 触发条件 | 流量控制/熔断时触发      | 业务异常时触发      |
+| 参数要求 | 需包含BlockException参数 | 需包含Throwable参数 |
+| 优先级   | 更高                     | 更低                |
+| 典型场景 | 限流/熔断处理            | 业务降级处理        |
+
+#### blockHandler使用示例
+
+```java
+@Operation(summary = "创建订单")
+@SentinelResource(
+    value = "orderService", 
+    blockHandler = "createBlockHandler",
+    fallback = "createFallback"
+)
+@GetMapping("create")
+public Order createOrder(Long userId, Long productId) {
+    return orderService.createOrder(productId, userId);
+}
+
+// 限流处理(参数需匹配原方法且最后加BlockException)
+public Order createBlockHandler(Long userId, Long productId, BlockException ex) {
+    log.warn("触发限流，rule={}", ex.getRule());
+    return Order.fallbackOrder(userId, "限流:" + ex.getClass().getSimpleName());
+}
+
+// 降级处理(参数需匹配原方法且最后加Throwable)
+public Order createFallback(Long userId, Long productId, Throwable t) {
+    log.error("业务异常", t);
+    return Order.fallbackOrder(userId, "降级:" + t.getMessage());
+}
+```
+
+### 流控规则详解
+
+#### 阈值类型
+
+| 类型   | 说明                             | 适用场景             |
+| ------ | -------------------------------- | -------------------- |
+| QPS    | 每秒请求数                       | 绝大多数场景推荐使用 |
+| 线程数 | 并发线程数(统计服务内部线程数量) | 同步服务/耗时操作    |
+
+> [!WARNING]
+> 线程数模式需要统计服务内部线程数量，性能开销较大，非必要不推荐使用
+
+#### 集群模式
+
+| 模式     | 说明                               | 示意图                                            |
+| -------- | ---------------------------------- | ------------------------------------------------- |
+| 单机均摊 | 总阈值=单机阈值×节点数(均匀分配)   | ![单机均摊](./images/image-20250527112921793.png) |
+| 总体阈值 | 所有节点共享总阈值(按实际请求分配) | -                                                 |
+
+### 流控模式
+
+#### 1. 直接模式
+
+```mermaid
+graph LR
+   流量 --直接--> 资源A
+```
+
+- 最简单的模式，直接对资源生效
+
+#### 2. 关联模式
+
+```mermaid
+graph LR
+   流量 --入口A--> 资源A[[不限流]]
+   流量 --入口B--> 资源B[[限流]]
+```
+
+配置要求：
+
+```yaml
+spring.cloud.sentinel.web-context-unify: false
+```
+
+典型场景：写操作触发时限制读操作
+
+#### 3. 链路模式
+
+```mermaid
+graph TD
+   入口A --> 服务1 --> 资源X
+   入口B --> 服务2 --> 资源X
+```
+
+- 只针对特定入口的调用链路限流
+- 需要配合`@SentinelResource`标注资源点
+
+### 流控效果
+
+#### 1. 快速失败
+
+- 直接抛出FlowException
+- 支持所有流控模式
+- 配置简单，性能最好
+
+#### 2. Warm Up(预热)
+
+![预热模式](./images/image-20250527112649302.png)
+
+- 冷启动阶段逐步提高阈值
+- 防止冷系统被突发流量击垮
+- 需配置预热时长(秒)
+
+#### 3. 匀速排队
+
+![排队模式](./images/image-20250527120421676.png)
+
+- 以恒定间隔处理请求
+- 需配置超时时间(毫秒)
+- 不支持QPS>1000的场景
+
