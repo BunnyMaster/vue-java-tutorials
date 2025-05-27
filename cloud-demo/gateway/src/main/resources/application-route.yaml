@@ -6,6 +6,9 @@ spring:
           uri: lb://service-order
           predicates:
             - Path=/api/order/**
+          filters:
+            - AddRequestHeader=X-Request-red, blue
+
         - id: product-route
           uri: lb://service-product
           predicates:
@@ -13,6 +16,7 @@ spring:
               args:
                 patterns: /api/product/**
                 matchTrailingSlash: true
+
         - id: bing-route
           uri: https://cn.bing.com/
           predicates:
@@ -31,5 +35,5 @@ spring:
               args:
                 param: user
                 value: bunny
-
-
+          # filters:
+          # - RedirectTo=/api/order/?(?<segment>.*), /$\{segment}

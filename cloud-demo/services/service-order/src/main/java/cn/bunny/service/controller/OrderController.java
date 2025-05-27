@@ -6,13 +6,16 @@ import cn.bunny.service.service.OrderService;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/order")
 @RequiredArgsConstructor
@@ -46,10 +49,14 @@ public class OrderController {
 
     @Operation(summary = "读取配置")
     @GetMapping("config")
-    public String config() {
+    public String config(HttpServletRequest request) {
         String timeout = orderProperties.getTimeout();
         String autoConfirm = orderProperties.getAutoConfirm();
         String dbUrl = orderProperties.getDbUrl();
+
+        // 携带的请求头内容
+        String header = request.getHeader("X-Request-red");
+        log.info("Received headers: {}", header);
 
         return "timeout：" + timeout + "\nautoConfirm：" + autoConfirm + "\norder.db-url" + dbUrl;
     }
