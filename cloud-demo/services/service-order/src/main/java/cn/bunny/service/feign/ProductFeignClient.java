@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 // Feign 客户端
-@FeignClient(value = "service-product", path = "/api/product", fallback = ProductFeignClientFallback.class)
+// @FeignClient(value = "service-product", path = "/api/product", fallback = ProductFeignClientFallback.class)
+@FeignClient(value = "gateway", path = "/api/product", fallback = ProductFeignClientFallback.class)
 public interface ProductFeignClient {
 
     // 标注在 Controller 上是接受请求

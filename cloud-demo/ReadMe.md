@@ -1412,3 +1412,23 @@ spring:
    ```
 
 2. **负载均衡**：确保正确配置服务发现和负载均衡器
+
+3. **远程调用是否过网关**
+
+正常的远程调用是不过网关的，毕竟直接调用nacos中服务就行，多走一遍路没什么意思，如果非要过网关可以按照下面格式：
+
+将`value`值修改为`gateway`，通常不建议过网关。
+
+```java
+// Feign 客户端
+// @FeignClient(value = "service-product", path = "/api/product", fallback = ProductFeignClientFallback.class)
+@FeignClient(value = "gateway", path = "/api/product", fallback = ProductFeignClientFallback.class)
+public interface ProductFeignClient {
+
+    // 标注在 Controller 上是接受请求
+    // 标注在 FeignClient 时发送请求
+    @GetMapping("{id}")
+    Product getProduct(@PathVariable("id") Long productId);
+
+}
+```

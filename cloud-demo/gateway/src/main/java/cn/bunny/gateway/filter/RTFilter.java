@@ -20,7 +20,7 @@ public class RTFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         URI uri = request.getURI();
         long start = System.currentTimeMillis();
-        log.error("请求【{}】开始时间：{}", uri, start);
+        log.info("请求【{}】开始时间：{}", uri, start);
 
         // 处理逻辑
         // return chain.filter(exchange)
