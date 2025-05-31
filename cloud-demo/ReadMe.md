@@ -972,8 +972,6 @@ spring:
 
 更多配置参考下面图片，全局搜索`RoutePredicateFactory`，之后`Ctrl+H`找到所有方法。
 
-![image-20250527141438554](./images/image-20250527141438554.png)
-
 #### 常用断言类型
 
 ##### Path 断言
