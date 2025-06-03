@@ -1,0 +1,53 @@
+server:
+  port: 8080
+# TODO：参考文档 https://juejin.cn/post/7395133032409923603
+spring:
+  profiles:
+    active: @profiles.active@
+  application:
+    name: bunny-service
+  datasource:
+    dynamic:
+      primary: quartz #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      grace-destroy: false #是否优雅关闭数据源，默认为false，设置为true时，关闭数据源时如果数据源中还存在活跃连接，至多等待10s后强制关闭
+      datasource:
+        quartz:
+          url: jdbc:mysql://${bunny.datasource.host}:${bunny.datasource.port}/${bunny.datasource.sqlData}?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+          username: ${bunny.datasource.username}
+          password: ${bunny.datasource.password}
+          driver-class-name: com.zaxxer.hikari.HikariDataSource
+      aop:
+        enabled: true
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  quartz:
+    # 使用数据库连接
+    job-store-type: jdbc
+    auto-startup: true
+    wait-for-jobs-to-complete-on-shutdown: true
+    overwrite-existing-jobs: false
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      logic-delete-field: isDelete
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 查看日志
+
+logging:
+  level:
+    cn.bunny.service.mapper: error
+    cn.bunny.service.controller: error
+    cn.bunny.service.service: error
+    org.quartz: error
+    root: error
+  pattern:
+    dateformat: HH:mm:ss:SSS
+  file:
+    path: "logs/${spring.application.name}"
+
