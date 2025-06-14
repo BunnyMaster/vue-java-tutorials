@@ -3,26 +3,28 @@ package cn.bunny.mq.mqdemo.mq.listener;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
+import static cn.bunny.mq.mqdemo.domain.RabbitMQMessageListenerConstants.*;
 
 @Component
 @Slf4j
 public class MessageListenerOrder {
 
-    // /* 测试这个，需要注释下main那个 */
-    // @RabbitListener(bindings = @QueueBinding(
-    //         exchange = @Exchange(value = EXCHANGE_DIRECT),
-    //         value = @Queue(value = QUEUE_NAME, durable = "true"),
-    //         key = ROUTING_KEY_DIRECT,
-    //         arguments = @Argument(name = "alternate-exchange", value = ALTERNATE_EXCHANGE_BACKUP)
-    // )
-    // )
-    // public void processMessage(String dataString, Message message, Channel channel) {
-    //     System.out.println("消费端接受消息：" + dataString);
-    // }
+    /* 测试这个，需要注释下main那个 */
+    @RabbitListener(bindings = @QueueBinding(
+            exchange = @Exchange(value = EXCHANGE_DIRECT),
+            value = @Queue(value = QUEUE_NAME, durable = "true"),
+            key = ROUTING_KEY_DIRECT,
+            arguments = @Argument(name = "alternate-exchange", value = ALTERNATE_EXCHANGE_BACKUP)
+    )
+    )
+    public void processMessage(String dataString, Message message, Channel channel) {
+        System.out.println("消费端接受消息：" + dataString);
+    }
 
     // /* 如果测试这个需要注释上面那个 */
     // @RabbitListener(queues = {QUEUE_NAME})
