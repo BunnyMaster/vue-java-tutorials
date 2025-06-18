@@ -10,7 +10,7 @@
 import SchoolInfo from "@/views/demo1/components/SchoolInfo.vue";
 
 export default {
-  name: "App",
+  name: "Demo-1",
   components: { SchoolInfo },
   data() {
     return {
