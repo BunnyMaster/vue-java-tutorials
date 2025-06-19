@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>当前求和为:{{ $store.state.count.sum }}</h1>
+    <h1>当前求和为:{{ $store.getters["count/bigSum"] }}</h1>
     <select v-model.number="$store.state.count.num">
       <option :value="1">1</option>
       <option :value="2">2</option>

@@ -5,6 +5,11 @@ Vue.use(Vuex);
 const count = {
   namespaced: true,
   state: { num: 1, sum: 0 },
+  getters: {
+    bigSum(state) {
+      return state.sum * 10;
+    },
+  },
   actions: {
     // 奇数相加
     incrementOdd(context) {
