@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>当前求和为:{{ sum }}</h1>
-    <select v-model.number="num">
+    <h1>当前求和为:{{ $store.state.count.sum }}</h1>
+    <select v-model.number="$store.state.count.num">
       <option :value="1">1</option>
       <option :value="2">2</option>
       <option :value="3">3</option>
@@ -18,27 +18,20 @@
 export default {
   name: "CountInfo",
   data() {
-    return {
-      num: 1,
-      sum: 0,
-    };
+    return {};
   },
   methods: {
     increment() {
-      this.sum += this.num;
+      this.$store.commit("count/INCREMENT");
     },
     decrement() {
-      this.sum -= this.num;
+      this.$store.commit("count/DECREMENT");
     },
     incrementOdd() {
-      if (this.sum % 2) {
-        this.sum += this.num;
-      }
+      this.$store.dispatch("count/incrementOdd");
     },
     incrementWait() {
-      setTimeout(() => {
-        this.sum += this.num;
-      }, 500);
+      this.$store.dispatch("count/incrementWait");
     },
   },
 };
