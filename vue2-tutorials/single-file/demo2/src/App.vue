@@ -6,7 +6,8 @@
     <hr />
     <Demo3 /> -->
     <!-- <Demo4 /> -->
-    <Demo6 />
+    <!-- <Demo6 /> -->
+    <Todo />
   </div>
 </template>
 
@@ -16,11 +17,11 @@
 // import Demo3 from "@/views/demo3/index.vue";
 // import Demo4 from "@/views/demo4/index.vue";
 // import Demo5 from "@/views/demo5/index.vue";
-import Demo6 from "@/views/demo6/index.vue";
+import Todo from "@/views/todo/index.vue";
 
 export default {
   name: "App",
   // components: { Demo1, Demo2, Demo3 },
-  components: { Demo6 },
+  components: { Todo },
 };
 </script>

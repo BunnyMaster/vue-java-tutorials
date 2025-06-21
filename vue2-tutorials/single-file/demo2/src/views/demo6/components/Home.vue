@@ -7,5 +7,11 @@
 <script>
 export default {
   name: "HomePage",
+  beforeDestroy() {
+    console.log("HomePage销毁");
+  },
+  mounted() {
+    console.log("HomePage挂载");
+  },
 };
 </script>

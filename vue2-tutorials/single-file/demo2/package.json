@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "dev": "pnpm serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "nanoid": "^5.1.5",
     "vue": "^2.6.14",
-    "vue-router": "3",
+    "vue-router": "^3.6.5",
     "vuex": "3"
   },
   "devDependencies": {
