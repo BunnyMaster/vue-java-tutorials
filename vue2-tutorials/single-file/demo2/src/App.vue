@@ -8,7 +8,8 @@
     <!-- <Demo4 /> -->
     <!-- <Demo6 /> -->
     <!-- <Todo /> -->
-    <Demo8 />
+    <!-- <Demo8 /> -->
+    <Demo9 />
   </div>
 </template>
 
@@ -19,11 +20,12 @@
 // import Demo4 from "@/views/demo4/index.vue";
 // import Demo5 from "@/views/demo5/index.vue";
 // import Todo from "@/views/todo/index.vue";
-import Demo8 from "@/views/demo8/index.vue";
+// import Demo8 from "@/views/demo8/index.vue";
+import Demo9 from "@/views/demo9/index.vue";
 
 export default {
   name: "App",
   // components: { Demo1, Demo2, Demo3 },
-  components: { Demo8 },
+  components: { Demo9 },
 };
 </script>
