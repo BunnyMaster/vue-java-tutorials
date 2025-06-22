@@ -15,7 +15,11 @@
     </div>
 
     <div class="card-body">
-      <router-view />
+      <!-- include 包含的是组件名：让不展示的路由保持挂载，不被销毁 -->
+      <!-- <keep-alive include="Home"> -->
+      <keep-alive :include="['Home', 'About']">
+        <router-view />
+      </keep-alive>
     </div>
   </div>
 </template>
