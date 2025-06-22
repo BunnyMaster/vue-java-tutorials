@@ -10,7 +10,8 @@
     <!-- <Todo /> -->
     <!-- <Demo8 /> -->
     <!-- <Demo9 /> -->
-    <Demo10 />
+    <!-- <Demo10 /> -->
+    <Demo11 />
   </div>
 </template>
 
@@ -23,11 +24,12 @@
 // import Todo from "@/views/todo/index.vue";
 // import Demo8 from "@/views/demo8/index.vue";
 // import Demo9 from "@/views/demo9/index.vue";
-import Demo10 from "@/views/demo10/index.vue";
+// import Demo10 from "@/views/demo10/index.vue";
+import Demo11 from "@/views/demo11/index.vue";
 
 export default {
   name: "App",
   // components: { Demo1, Demo2, Demo3 },
-  components: { Demo10 },
+  components: { Demo11 },
 };
 </script>
