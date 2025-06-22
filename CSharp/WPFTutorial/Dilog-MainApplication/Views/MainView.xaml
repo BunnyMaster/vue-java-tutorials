@@ -1,0 +1,33 @@
+﻿<Window x:Class="Dilog_MainApplication.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Margin="5 0" FontSize="40" FontWeight="DemiBold" Command="{Binding OpenCommand}"
+                    CommandParameter="ViewA">
+                模块A
+            </Button>
+            <Button Margin="5 0" FontSize="40" FontWeight="DemiBold" Command="{Binding OpenCommand}"
+                    CommandParameter="ViewB">
+                模块B
+            </Button>
+            <Button Margin="5 0" FontSize="40" FontWeight="DemiBold" Command="{Binding OpenDialogCommand}"
+                    CommandParameter="ViewC">
+                模块C
+            </Button>
+        </StackPanel>
+
+        <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion" />
+    </Grid>
+</Window>

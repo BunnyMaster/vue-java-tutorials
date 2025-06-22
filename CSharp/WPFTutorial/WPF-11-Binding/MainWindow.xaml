@@ -1,0 +1,16 @@
+﻿<Window x:Class="WPF_11_Binding.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel>
+            <Slider Name="Slider" Margin="5" />
+            <TextBox Name="TextBox1" Margin="5" Height="30" Text="{Binding Title}" />
+            <TextBox Name="TextBox2" Margin="5" Height="30" Text="{Binding ElementName=Slider,Path=Value}" />
+            <TextBox Name="TextBox3" Margin="5" Height="30" Text="{Binding ElementName=Slider,Path=Value}" />
+        </StackPanel>
+    </Grid>
+</Window>

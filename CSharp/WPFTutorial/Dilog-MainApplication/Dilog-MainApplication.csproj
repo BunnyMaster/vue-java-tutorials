@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <RootNamespace>Dilog_MainApplication</RootNamespace>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Prism.DryIoc" Version="9.0.537" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Dialog-ModuleA\Dialog-ModuleA.csproj" />
+      <ProjectReference Include="..\Dialog-ModuleB\Dialog-ModuleB.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Page Update="Views\MainView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+    </ItemGroup>
+
+</Project>

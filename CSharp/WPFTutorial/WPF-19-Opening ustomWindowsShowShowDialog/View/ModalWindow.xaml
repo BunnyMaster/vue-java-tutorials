@@ -1,0 +1,24 @@
+﻿<Window x:Class="WPF_19_Opening_ustomWindowsShowShowDialog.View.ModalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" WindowStyle="None" MouseLeftButtonDown="ModalWindow_OnMouseLeftButtonDown"
+        WindowStartupLocation="CenterOwner"
+        Title="ModalWindow" Height="100" Width="300">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0" />
+    </WindowChrome.WindowChrome>
+    <Grid>
+
+        <StackPanel VerticalAlignment="Center">
+            <TextBox Name="InputTextBox" Width="200" Height="40" Margin="5" TextChanged="InputTextBox_OnTextChanged" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Name="OkButton" Width="50" Height="40" Margin="2" IsEnabled="False" Click="OkButton_OnClick">OK</Button>
+                <Button Name="CancelButton" Width="50" Height="40" Margin="2" Click="CancelButton_OnClick">Cancel</Button>
+            </StackPanel>
+
+        </StackPanel>
+
+    </Grid>
+</Window>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="Prism">
+            <HintPath>..\..\..\..\..\software\Plugins\nuget\prism.core\9.0.537\lib\net6.0\Prism.dll</HintPath>
+        </Reference>
+        <Reference Include="Prism.Container.Abstractions">
+            <HintPath>..\..\..\..\..\software\Plugins\nuget\prism.container.abstractions\9.0.106\lib\net8.0\Prism.Container.Abstractions.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Prism.DryIoc" Version="9.0.537"/>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,36 @@
+﻿<Window x:Class="WPF_18_CustomApplicationWindow.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" WindowStyle="None" MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
+        Background="#333333"
+        Title="MainWindow"
+        Height="450" Width="800">
+    <!-- 让整个窗口上部为0 -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0" />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Name="MinimizeButton" Width="40" Height="40" Foreground="White" BorderBrush="Transparent"
+                    Background="Transparent" Click="MinimizeButton_OnClick">
+                🙂
+            </Button>
+            <Button Name="MaximizeButton" Width="40" Height="40" Foreground="White" BorderBrush="Transparent"
+                    Background="Transparent" Click="MaximizeButton_OnClick">
+                🤮
+            </Button>
+            <Button Name="CloseButton" Width="40" Height="40" Foreground="White" BorderBrush="Transparent"
+                    Background="Transparent" Click="CloseButton_OnClick">
+                🆒
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>
