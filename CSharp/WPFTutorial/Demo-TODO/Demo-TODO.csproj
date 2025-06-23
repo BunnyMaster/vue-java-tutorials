@@ -6,6 +6,7 @@
         <RootNamespace>Demo_TODO</RootNamespace>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,6 +24,14 @@
         <Resource Include="Images\Avatar.jpg">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Resource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Page Update="Views\MainView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
 </Project>
