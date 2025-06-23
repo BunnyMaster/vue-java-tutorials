@@ -9,4 +9,14 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Reference Include="System.IO.Ports">
+            <HintPath>..\..\..\..\..\..\..\software\Plugins\nuget\system.io.ports\5.0.1\ref\netstandard2.0\System.IO.Ports.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.IO.Ports" Version="6.0.0"/>
+    </ItemGroup>
+
 </Project>
