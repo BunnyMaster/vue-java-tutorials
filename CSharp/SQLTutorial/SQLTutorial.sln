@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cors-1-Start", "Cors-1-Star
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore-3-AccessToken", "EFCore-3-AccessToken\EFCore-3-AccessToken.csproj", "{B7A5F125-10FD-401B-8EC9-DAD2A07CD3EF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Desginer", "Desginer", "{748C8C45-E179-4401-99FD-E8A0C24F00C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SingletonPattern", "SingletonPattern\SingletonPattern.csproj", "{F9835AE0-AC78-4CDE-A6EB-2914F4B954D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,10 @@ Global
 		{B7A5F125-10FD-401B-8EC9-DAD2A07CD3EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7A5F125-10FD-401B-8EC9-DAD2A07CD3EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7A5F125-10FD-401B-8EC9-DAD2A07CD3EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9835AE0-AC78-4CDE-A6EB-2914F4B954D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9835AE0-AC78-4CDE-A6EB-2914F4B954D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9835AE0-AC78-4CDE-A6EB-2914F4B954D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9835AE0-AC78-4CDE-A6EB-2914F4B954D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,5 +84,6 @@ Global
 		{FFC9C69A-3A61-4028-82BE-E02956A287C2} = {12D8E17C-7030-4C9A-BB48-D473ECFCB9D0}
 		{347DC482-5CBA-4C10-AD6E-6CE5B2B5C363} = {95B72C47-8BC3-477A-8666-4F0BCBA96550}
 		{B7A5F125-10FD-401B-8EC9-DAD2A07CD3EF} = {12D8E17C-7030-4C9A-BB48-D473ECFCB9D0}
+		{F9835AE0-AC78-4CDE-A6EB-2914F4B954D6} = {748C8C45-E179-4401-99FD-E8A0C24F00C2}
 	EndGlobalSection
 EndGlobal
