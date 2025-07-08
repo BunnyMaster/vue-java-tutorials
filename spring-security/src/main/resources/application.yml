@@ -1,0 +1,12 @@
+server:
+  port: 8800
+
+spring:
+  application:
+    name: spring-security
+
+
+logging:
+  level:
+    com.spring: debug
+    root: info

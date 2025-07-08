@@ -1,5 +1,6 @@
 ﻿using System.IO.Ports;
 using System.Windows;
+using Base_2_Window.Model;
 using Base_2_Window.ViewModel;
 
 namespace Base_2_Window;
@@ -13,14 +14,14 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        DataContext = new MainWindowViewModel
-        {
-            SerialPortNames = SerialPort.GetPortNames().Select(s => s).ToList(),
-            BaudRates = new List<int> { 9600 },
-            DataBits = new List<int> { 6, 7, 8 },
-            StopBitsList = new List<StopBits> { StopBits.None, StopBits.One, StopBits.Two, StopBits.OnePointFive },
-            ParityList = new List<Parity>
-                { Parity.None, Parity.Even, Parity.Mark, Parity.None, Parity.Odd, Parity.Space }
-        };
+        DataContext = new MainWindowViewModel();
+        Command = new OpenSerialPortCommand(OpenPort);
+    }
+
+    public OpenSerialPortCommand Command { get; set; }
+
+    public void OpenPort()
+    {
+        
     }
 }

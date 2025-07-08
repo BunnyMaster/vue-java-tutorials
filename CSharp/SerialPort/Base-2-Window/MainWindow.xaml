@@ -14,27 +14,27 @@
         <StackPanel Grid.Column="0" Width="200" Margin="5">
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                 <Label Width="60" VerticalAlignment="Center">串口:</Label>
-                <ComboBox Width="100" Height="28" ItemsSource="{Binding SerialPortNames}" SelectedIndex="0" />
+                <ComboBox Width="100" Height="28" ItemsSource="{Binding SerialPortModel.SerialPortNames}" SelectedIndex="0" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                 <Label Width="60" VerticalAlignment="Center">波特率:</Label>
-                <ComboBox Width="100" Height="28" ItemsSource="{Binding BaudRates}" SelectedIndex="0" />
+                <ComboBox Width="100" Height="28" ItemsSource="{Binding SerialPortModel.BaudRates}" SelectedIndex="0" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                 <Label Width="60" VerticalAlignment="Center">数据位:</Label>
-                <ComboBox Width="100" Height="28" ItemsSource="{Binding DataBits}" SelectedIndex="0" />
+                <ComboBox Width="100" Height="28" ItemsSource="{Binding SerialPortModel.DataBits}" SelectedIndex="0" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                 <Label Width="60" VerticalAlignment="Center">校验位:</Label>
-                <ComboBox Width="100" Height="28" ItemsSource="{Binding ParityList}" SelectedIndex="0" />
+                <ComboBox Width="100" Height="28" ItemsSource="{Binding SerialPortModel.ParityList}" SelectedIndex="0" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <Label Width="60" VerticalAlignment="Center">停止位:</Label>
-                <ComboBox Width="100" Height="28" ItemsSource="{Binding StopBitsList}" SelectedIndex="0" />
+                <ComboBox Width="100" Height="28" ItemsSource="{Binding SerialPortModel.StopBitsList}" SelectedIndex="0" />
             </StackPanel>
 
             <Button Height="32" Margin="0,5,0,0" FontWeight="Bold" Command="{Binding }">打开串口</Button>

@@ -6,9 +6,11 @@ public class SerialPortModel
 {
     public List<string>? SerialPortNames { get; set; }
 
-    public int? BaudRate { get; set; }
+    public List<int>? BaudRates { get; set; }
 
-    public int? DataBits { get; set; }
+    public List<StopBits>? StopBitsList { get; set; }
 
-    public StopBits? StopBits { get; set; }
+    public List<Parity>? ParityList { get; set; }
+
+    public List<int>? DataBits { get; set; }
 }
