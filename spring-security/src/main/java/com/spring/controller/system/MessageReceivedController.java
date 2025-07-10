@@ -33,7 +33,7 @@ public class MessageReceivedController {
 
     private final MessageReceivedService messageReceivedService;
 
-    @Operation(summary = "分页查询", description = "分页")
+    @Operation(summary = "消息接受分页查询", description = "消息接受分页")
     @GetMapping("{page}/{limit}")
     public Result<PageResult<MessageReceivedVo>> getMessageReceivedPage(
             @Parameter(name = "page", description = "当前页", required = true)
@@ -46,21 +46,21 @@ public class MessageReceivedController {
         return Result.success(pageResult);
     }
 
-    @Operation(summary = "添加", description = "添加")
+    @Operation(summary = "添加", description = "添加消息接受")
     @PostMapping()
     public Result<String> addMessageReceived(@Valid @RequestBody MessageReceivedDto dto) {
         messageReceivedService.addMessageReceived(dto);
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
     }
 
-    @Operation(summary = "更新", description = "更新")
+    @Operation(summary = "更新", description = "更新消息接受")
     @PutMapping()
     public Result<String> updateMessageReceived(@Valid @RequestBody MessageReceivedDto dto) {
         messageReceivedService.updateMessageReceived(dto);
         return Result.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
-    @Operation(summary = "删除", description = "删除")
+    @Operation(summary = "删除", description = "删除消息接受")
     @DeleteMapping()
     public Result<String> deleteMessageReceived(@RequestBody List<Long> ids) {
         messageReceivedService.deleteMessageReceived(ids);

@@ -12,7 +12,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
@@ -26,10 +25,10 @@ public class DefaultSecurityConfig {
      */
     @Bean
     @ConditionalOnMissingBean(UserDetailsService.class)
-    InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        String generatedPassword = PasswordEncoderFactories.createDelegatingPasswordEncoder()
-                .encode("123456");
-        return new InMemoryUserDetailsManager(User.withUsername("user")
+    InMemoryUserDetailsManager inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
+
+        String generatedPassword = passwordEncoder.encode("123456");
+        return new InMemoryUserDetailsManager(User.withUsername("bunny")
                 .password(generatedPassword).roles("USER").build());
     }
 
@@ -46,7 +45,8 @@ public class DefaultSecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
 
         return new ProviderManager(authenticationProvider);
