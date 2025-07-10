@@ -26,14 +26,13 @@ public class SecurityConfiguration {
         String generatedPassword = passwordEncoder.encode("123456");
 
         // 创建用户 权限为只读
-        UserDetails userDetails1 = User.withUsername("bunny").password(generatedPassword).roles("USER").authorities("read").build();
+        UserDetails bunny = User.withUsername("bunny").password(generatedPassword).roles("USER").authorities("read").build();
 
-        //
-        UserDetails userDetails2 = User.withUsername("rabbit").password(generatedPassword).roles("USER").authorities("all").build();
-        UserDetails userDetails3 = User.withUsername("admin").password(generatedPassword).roles("ADMIN").authorities("all").build();
+        // 管理员可以查看全部
+        UserDetails admin = User.withUsername("admin").password(generatedPassword).roles("ADMIN").authorities("all", "read").build();
 
         // 返回内存中的用户
-        return new InMemoryUserDetailsManager(userDetails1, userDetails2, userDetails3);
+        return new InMemoryUserDetailsManager(bunny, admin);
     }
 
     /**
