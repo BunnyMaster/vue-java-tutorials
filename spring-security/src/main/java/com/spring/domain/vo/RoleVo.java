@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Schema(name = "RoleVO对象", title = "系统角色表", description = "系统角色表的VO对象")
 public class RoleVo {
 
-    @Schema(name = "id", title = "")
+    @Schema(name = "id", title = "主键")
     private Long id;
 
     @Schema(name = "roleCode", title = "角色代码")

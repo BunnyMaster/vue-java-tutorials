@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(name = "MessageReceivedVO对象", title = "", description = "的VO对象")
+@Schema(name = "MessageReceivedVO对象", title = "消息接受返回对象", description = "的VO对象")
 public class MessageReceivedVo {
 
     @Schema(name = "id", title = "主键")

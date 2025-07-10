@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Schema(name = "MenuIcon对象", title = "图标code不能重复", description = "图标code不能重复的实体类对象")
 public class MenuIconEntity {
 
-    @Schema(name = "id", title = "")
+    @Schema(name = "id", title = "主键")
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 

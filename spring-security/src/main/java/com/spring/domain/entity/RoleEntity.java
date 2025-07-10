@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Schema(name = "Role对象", title = "系统角色表", description = "系统角色表的实体类对象")
 public class RoleEntity {
 
-    @Schema(name = "id", title = "")
+    @Schema(name = "id", title = "主键")
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 

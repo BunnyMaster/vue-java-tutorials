@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Schema(name = "MenuIconVO对象", title = "图标code不能重复", description = "图标code不能重复的VO对象")
 public class MenuIconVo {
 
-    @Schema(name = "id", title = "")
+    @Schema(name = "id", title = "主键")
     private Long id;
 
     @Schema(name = "iconCode", title = "icon类名")

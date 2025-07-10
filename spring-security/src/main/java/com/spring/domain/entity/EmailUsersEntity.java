@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Schema(name = "EmailUsers对象", title = "邮箱发送表", description = "邮箱发送表的实体类对象")
 public class EmailUsersEntity {
 
-    @Schema(name = "id", title = "")
+    @Schema(name = "id", title = "主键")
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 

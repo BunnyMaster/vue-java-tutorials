@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @Accessors(chain = true)
 @TableName("sys_message_received")
-@Schema(name = "MessageReceived对象", title = "", description = "的实体类对象")
+@Schema(name = "MessageReceived对象", title = "接受消息Vo", description = "的实体类对象")
 public class MessageReceivedEntity {
 
     @Schema(name = "id", title = "主键")

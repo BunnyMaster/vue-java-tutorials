@@ -31,7 +31,7 @@ public class UserVo {
     @Schema(name = "password", title = "密码")
     private String password;
 
-    @Schema(name = "avatar", title = "")
+    @Schema(name = "avatar", title = "头像")
     private String avatar;
 
     @Schema(name = "sex", title = "0:女 1:男")

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Schema(name = "EmailUsersVO对象", title = "邮箱发送表", description = "邮箱发送表的VO对象")
 public class EmailUsersVo {
 
-    @Schema(name = "id", title = "")
+    @Schema(name = "id", title = "主键")
     private Long id;
 
     @Schema(name = "email", title = "邮箱")
