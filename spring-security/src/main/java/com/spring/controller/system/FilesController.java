@@ -23,11 +23,11 @@ import java.util.List;
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:29
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "文件记录", description = "文件记录相关接口")
 @RestController
-@RequestMapping("/api/product/files")
+@RequestMapping("/api/system/files")
 @RequiredArgsConstructor
 public class FilesController {
 

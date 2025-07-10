@@ -23,11 +23,11 @@ import java.util.List;
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:29
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "邮件模板表", description = "邮件模板表相关接口")
 @RestController
-@RequestMapping("/api/product/email-template")
+@RequestMapping("/api/system/email-template")
 @RequiredArgsConstructor
 public class EmailTemplateController {
 

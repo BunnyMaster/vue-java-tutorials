@@ -23,11 +23,11 @@ import java.util.List;
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:29
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "用户登录日志", description = "用户登录日志相关接口")
 @RestController
-@RequestMapping("/api/product/user-login")
+@RequestMapping("/api/system/user-login")
 @RequiredArgsConstructor
 public class UserLoginController {
 

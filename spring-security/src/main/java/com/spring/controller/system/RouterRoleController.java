@@ -23,11 +23,11 @@ import java.util.List;
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:29
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "系统路由角色关系表", description = "系统路由角色关系表相关接口")
 @RestController
-@RequestMapping("/api/product/router-role")
+@RequestMapping("/api/system/router-role")
 @RequiredArgsConstructor
 public class RouterRoleController {
 

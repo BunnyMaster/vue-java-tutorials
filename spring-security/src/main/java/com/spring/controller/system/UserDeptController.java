@@ -23,11 +23,11 @@ import java.util.List;
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:29
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "部门用户关系表", description = "部门用户关系表相关接口")
 @RestController
-@RequestMapping("/api/product/user-dept")
+@RequestMapping("/api/system/user-dept")
 @RequiredArgsConstructor
 public class UserDeptController {
 

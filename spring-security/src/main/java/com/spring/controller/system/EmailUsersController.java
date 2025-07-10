@@ -17,17 +17,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 /**
  * <p>
  * 邮箱发送表 前端控制器
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:29
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "邮箱发送表", description = "邮箱发送表相关接口")
 @RestController
-@RequestMapping("/api/product/email-users")
+@RequestMapping("/api/system/email-users")
 @RequiredArgsConstructor
 public class EmailUsersController {
 

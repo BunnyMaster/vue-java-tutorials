@@ -23,11 +23,11 @@ import java.util.List;
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:29
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "系统消息类型", description = "系统消息类型相关接口")
 @RestController
-@RequestMapping("/api/product/message-type")
+@RequestMapping("/api/system/message-type")
 @RequiredArgsConstructor
 public class MessageTypeController {
 

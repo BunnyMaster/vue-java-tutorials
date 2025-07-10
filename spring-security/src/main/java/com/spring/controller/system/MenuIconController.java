@@ -23,11 +23,11 @@ import java.util.List;
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:28
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "图标code不能重复", description = "图标code不能重复相关接口")
 @RestController
-@RequestMapping("/api/product/menu-icon")
+@RequestMapping("/api/system/menu-icon")
 @RequiredArgsConstructor
 public class MenuIconController {
 

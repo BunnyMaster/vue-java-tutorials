@@ -23,11 +23,11 @@ import java.util.List;
  * </p>
  *
  * @author Bunny
- * @since 2025-07-10 12:02:29
+ * @since 2025-07-10 14:16:49
  */
 @Tag(name = "多语言表", description = "多语言表相关接口")
 @RestController
-@RequestMapping("/api/product/i18n")
+@RequestMapping("/api/system/i18n")
 @RequiredArgsConstructor
 public class I18nController {
 
