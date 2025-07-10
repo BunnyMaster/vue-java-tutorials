@@ -35,21 +35,31 @@ public class SecurityConfiguration {
     }
 
     /**
-     * 自定义密码加密器，可以自己实现，比如自己实现MD5的加密方式，但是Spring官方不推荐
-     * 一般来说用Spring自带的加密器就完全可以了，Spring提供了如下的编码器。
-     * 如果使用Spring的密码加密器，匹配密码时需要使用 matches 方法
-     * {@link BCryptPasswordEncoder}:
-     * <pre>
+     * 配置密码编码器Bean
      *
-     * </pre>
+     * <p>Spring Security提供了多种密码编码器实现，推荐使用BCryptPasswordEncoder作为默认选择。</p>
      *
-     * @return
+     * <p>特点：</p>
+     * <ul>
+     *   <li>BCryptPasswordEncoder - 使用bcrypt强哈希算法，自动加盐，是当前最推荐的密码编码器</li>
+     *   <li>Argon2PasswordEncoder - 使用Argon2算法，抗GPU/ASIC攻击，但需要更多内存</li>
+     *   <li>SCryptPasswordEncoder - 使用scrypt算法，内存密集型，抗硬件攻击</li>
+     *   <li>Pbkdf2PasswordEncoder - 使用PBKDF2算法，较老但广泛支持</li>
+     * </ul>
+     *
+     * <p>注意：不推荐使用MD5等弱哈希算法，Spring官方也不推荐自定义弱密码编码器。</p>
+     *
+     * @return PasswordEncoder 密码编码器实例
+     * @see BCryptPasswordEncoder
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // 实际项目中只需返回一个密码编码器
         return new BCryptPasswordEncoder();
 
-        // 自定义实现密码加密器，如果使用自定义不用使用 Bean注入
-        // return new MD5PasswordEncoder();
+        // 其他编码器示例（根据需求选择一种）:
+        // return new Argon2PasswordEncoder(16, 32, 1, 1 << 14, 2);
+        // return new SCryptPasswordEncoder();
+        // return new Pbkdf2PasswordEncoder("secret", 185000, 256);
     }
 }
