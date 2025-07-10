@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.MessageTypeMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.MessageTypeEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.MessageTypeEntity">
             <id column="id" property="id"/>
             <id column="message_name" property="messageName"/>
             <id column="message_type" property="messageType"/>
@@ -22,7 +22,7 @@
     </sql>
 
     <!-- 分页查询系统消息类型内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.MessageTypeVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.MessageTypeVo">
         select
         base.*,
         create_user.username as create_username,

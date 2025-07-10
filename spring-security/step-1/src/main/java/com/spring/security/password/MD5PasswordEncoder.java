@@ -17,9 +17,8 @@ import java.util.HexFormat;
  * <p>Spring Security推荐使用BCrypt、PBKDF2、Argon2或Scrypt等自适应单向函数替代MD5。</p>
  *
  * @see PasswordEncoder
- * @deprecated 此类仅用于遗留系统兼容，新系统应使用更安全的密码编码器
+ * 一般仅用于遗留系统兼容，新系统应使用更安全的密码编码器
  */
-@Deprecated
 public class MD5PasswordEncoder implements PasswordEncoder {
 
     @Override

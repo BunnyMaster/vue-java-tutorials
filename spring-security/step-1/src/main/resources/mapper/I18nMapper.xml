@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.I18nMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.I18nEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.I18nEntity">
             <id column="id" property="id"/>
             <id column="key_name" property="keyName"/>
             <id column="translation" property="translation"/>
@@ -21,7 +21,7 @@
     </sql>
 
     <!-- 分页查询多语言表内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.I18nVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.I18nVo">
         select
         base.*,
         create_user.username as create_username,

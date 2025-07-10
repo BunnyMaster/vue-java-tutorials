@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.DeptMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.DeptEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.DeptEntity">
             <id column="id" property="id"/>
             <id column="parent_id" property="parentId"/>
             <id column="manager" property="manager"/>
@@ -22,7 +22,7 @@
     </sql>
 
     <!-- 分页查询部门表内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.DeptVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.DeptVo">
         select
         base.*,
         create_user.username as create_username,

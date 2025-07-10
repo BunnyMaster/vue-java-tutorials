@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.RouterRoleMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.RouterRoleEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.RouterRoleEntity">
             <id column="id" property="id"/>
             <id column="router_id" property="routerId"/>
             <id column="role_id" property="roleId"/>
@@ -20,7 +20,7 @@
     </sql>
 
     <!-- 分页查询系统路由角色关系表内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.RouterRoleVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.RouterRoleVo">
         select
         base.*,
         create_user.username as create_username,

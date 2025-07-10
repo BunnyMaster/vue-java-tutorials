@@ -43,8 +43,18 @@ public class Knife4jConfig {
     }
 
     @Bean
-    public GroupedOpenApi system() {
-        return GroupedOpenApi.builder().group("系统请求接口").pathsToMatch("/api/system/**").build();
+    public GroupedOpenApi dept() {
+        return GroupedOpenApi.builder().group("部门请求接口").pathsToMatch("/api/dept/**").build();
+    }
+
+    @Bean
+    public GroupedOpenApi normal() {
+        return GroupedOpenApi.builder().group("访客请求接口").pathsToMatch("/api/normal/**").build();
+    }
+
+    @Bean
+    public GroupedOpenApi user() {
+        return GroupedOpenApi.builder().group("用户请求接口").pathsToMatch("/api/user/**").build();
     }
 
     @Bean

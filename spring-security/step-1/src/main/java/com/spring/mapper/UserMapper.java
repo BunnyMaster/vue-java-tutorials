@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import com.spring.domain.dto.system.UserDto;
-import com.spring.domain.entity.UserEntity;
-import com.spring.domain.vo.UserVo;
+import com.spring.bean.dto.system.UserDto;
+import com.spring.bean.entity.UserEntity;
+import com.spring.bean.vo.UserVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**

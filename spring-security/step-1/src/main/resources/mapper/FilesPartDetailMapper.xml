@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.FilesPartDetailMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.FilesPartDetailEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.FilesPartDetailEntity">
             <id column="id" property="id"/>
             <id column="platform" property="platform"/>
             <id column="upload_id" property="uploadId"/>
@@ -24,7 +24,7 @@
     </sql>
 
     <!-- 分页查询文件分片信息表，仅在手动分片上传时使用内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.FilesPartDetailVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.FilesPartDetailVo">
         select
         base.*,
         create_user.username as create_username,

@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.RoleMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.RoleEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.RoleEntity">
             <id column="id" property="id"/>
             <id column="role_code" property="roleCode"/>
             <id column="description" property="description"/>
@@ -20,7 +20,7 @@
     </sql>
 
     <!-- 分页查询系统角色表内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.RoleVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.RoleVo">
         select
         base.*,
         create_user.username as create_username,

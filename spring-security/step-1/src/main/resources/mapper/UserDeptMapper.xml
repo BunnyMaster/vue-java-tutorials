@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.UserDeptMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.UserDeptEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.UserDeptEntity">
             <id column="id" property="id"/>
             <id column="user_id" property="userId"/>
             <id column="dept_id" property="deptId"/>
@@ -20,7 +20,7 @@
     </sql>
 
     <!-- 分页查询部门用户关系表内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.UserDeptVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.UserDeptVo">
         select
         base.*,
         create_user.username as create_username,

@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.UserMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.UserEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.UserEntity">
             <id column="id" property="id"/>
             <id column="username" property="username"/>
             <id column="nickname" property="nickname"/>
@@ -29,7 +29,7 @@
     </sql>
 
     <!-- 分页查询用户信息内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.UserVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.UserVo">
         select
         base.*,
         create_user.username as create_username,

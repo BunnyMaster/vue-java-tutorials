@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.mapper.EmailTemplateMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.EmailTemplateEntity">
+    <resultMap id="BaseResultMap" type="com.spring.bean.entity.EmailTemplateEntity">
             <id column="id" property="id"/>
             <id column="template_name" property="templateName"/>
             <id column="email_user" property="emailUser"/>
@@ -24,7 +24,7 @@
     </sql>
 
     <!-- 分页查询邮件模板表内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.EmailTemplateVo">
+    <select id="selectListByPage" resultType="com.spring.bean.vo.EmailTemplateVo">
         select
         base.*,
         create_user.username as create_username,
