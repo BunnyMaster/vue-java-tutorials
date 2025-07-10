@@ -1,27 +1,17 @@
-package com.spring.config.security;
+package com.spring.security;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfiguration {
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.anyRequest().authenticated()
-                )
-        ;
-        return http.build();
-    }
 
     /**
      * 添加内存用户
@@ -31,10 +21,15 @@ public class SecurityConfiguration {
     @Bean
     @ConditionalOnMissingBean(UserDetailsService.class)
     InMemoryUserDetailsManager inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
-
+        // 使用注入的密码加密器进行密码加密
         String generatedPassword = passwordEncoder.encode("123456");
-        return new InMemoryUserDetailsManager(User.withUsername("bunny")
-                .password(generatedPassword).roles("USER").build());
+
+        // 创建用户
+        UserDetails userDetails1 = User.withUsername("bunny").password(generatedPassword).roles("USER").build();
+        UserDetails userDetails2 = User.withUsername("rabbit").password(generatedPassword).roles("USER").build();
+
+        // 返回内存中的用户
+        return new InMemoryUserDetailsManager(userDetails1, userDetails2);
     }
 
     /**
@@ -51,5 +46,8 @@ public class SecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+
+        // 自定义实现密码加密器
+        // return new MD5PasswordEncoder();
     }
 }
