@@ -15,7 +15,6 @@ public class SecurityConfiguration {
 
     /**
      * 添加内存用户
-     * 我们想要实现普通用户只能查看 /api/user
      *
      * @return {@link ConditionalOnMissingBean}
      */

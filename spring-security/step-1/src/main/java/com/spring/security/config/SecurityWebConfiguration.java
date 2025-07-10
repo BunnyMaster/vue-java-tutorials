@@ -22,12 +22,14 @@ public class SecurityWebConfiguration {
         };
 
         http.authorizeHttpRequests(authorizeRequests ->
-                        // 访问路径为 /api/** 时需要进行认证
+                        // 访问路径为 /api 时需要进行认证
                         authorizeRequests
                                 .requestMatchers(permitAllUrls).permitAll()
                                 .requestMatchers("/api/security/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/anonymous/**").anonymous()
-                                .requestMatchers("/api/**").hasAnyAuthority("all", "read")  // 会自动变成 ROLE_ADMIN
+                                // 会自动变成 ROLE_ADMIN
+                                // .requestMatchers("/api/**").hasRole("ADMIN")
+                                .requestMatchers("/api/**").hasAnyAuthority("all", "read")
                 )
                 .formLogin(loginPage -> loginPage
                         // 自定义登录页路径
@@ -50,5 +52,4 @@ public class SecurityWebConfiguration {
                 );
         return http.build();
     }
-
 }

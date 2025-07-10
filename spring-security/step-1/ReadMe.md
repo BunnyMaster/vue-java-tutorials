@@ -1,9 +1,9 @@
-# 入门案例
+# Spring Security 6 入门指南优化版
 
-## SpringSecurity6基本使用
+## 基本配置
 
-添加项目依赖
-
+### 添加依赖
+在Maven项目中添加Spring Security依赖：
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -11,8 +11,8 @@
 </dependency>
 ```
 
-创建一个类，加上下面两个注解即可`@EnableWebSecurity`,`@Configuration`
-
+### 基础安全配置
+创建一个配置类启用Web安全：
 ```java
 @EnableWebSecurity
 @Configuration
@@ -20,42 +20,76 @@ public class SecurityWebConfiguration {
 }
 ```
 
-## 自定义登录页
+## 自定义登录配置
 
-> [!IMPORTANT]
->
-> 使用自定义页面时候，需要在控制器中指定当前跳转的地址，否则Security无法知道你要去往那个页面，即使写上了URL也无法跳转。
+### 重要提示
+使用自定义页面时，必须在控制器中明确指定跳转地址，否则Security无法正确路由，即使URL正确也无法跳转。
 
-在下面示例中定义了自定义登录页，当然也可以定义错误页、退出页等等。
+### 启用与禁用选项
+- 使用默认登录页：`.formLogin(Customizer.withDefaults())`
+- 禁用表单登录：`.formLogin(AbstractHttpConfigurer::disable)`
 
-### 开启和禁用
+## 认证与授权配置
 
-如果需要使用默认的选项可以使用`.formLogin(Customizer.withDefaults())`即可。
+### URL访问控制
 
-如果需要禁用登录页`.formLogin(AbstractHttpConfigurer::disable)`。
-
-### 需要认证指定URL地址
-
-#### 普通认证拦截方式
-
-需要认证URL地址，可以像下面这样写。
-
+#### 基本认证拦截
 ```java
 String[] permitAllUrls = {
-        "/", "/doc.html/**",
-        "/webjars/**", "/images/**", ".well-known/**", "favicon.ico", "/error/**",
-        "/v3/api-docs/**"
+    "/", "/doc.html/**",
+    "/webjars/**", "/images/**", ".well-known/**", "favicon.ico", "/error/**",
+    "/v3/api-docs/**"
 };
 
 http.authorizeHttpRequests(authorizeRequests ->
-                // 访问路径为 /api/** 时需要进行认证
-                authorizeRequests
-                        .requestMatchers("/api/**").authenticated()
-                        .requestMatchers(permitAllUrls).permitAll()
-        )
+    authorizeRequests
+        .requestMatchers("/api/**").authenticated()
+        .requestMatchers(permitAllUrls).permitAll()
+)
 ```
 
-### 完整示例
+#### 基于权限的拦截
+> [!WARNING]
+>
+> 内存模式下无法获取角色信息。
+
+1. 配置内存用户：
+```java
+@Bean
+@ConditionalOnMissingBean(UserDetailsService.class)
+InMemoryUserDetailsManager inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
+    String encodedPassword = passwordEncoder.encode("123456");
+    
+    UserDetails user = User.builder()
+        .username("user")
+        .password(encodedPassword)
+        .roles("USER")
+        .authorities("read")
+        .build();
+        
+    UserDetails admin = User.builder()
+        .username("admin")
+        .password(encodedPassword)
+        .roles("ADMIN")
+        .authorities("all", "read")
+        .build();
+        
+    return new InMemoryUserDetailsManager(user, admin);
+}
+```
+
+2. 配置资源权限：
+```java
+authorizeRequests
+    .requestMatchers(permitAllUrls).permitAll()
+    .requestMatchers("/api/security/**").permitAll()
+    .requestMatchers(HttpMethod.GET, "/api/anonymous/**").anonymous()
+    // 使用hasRole会自动添加ROLE_前缀
+    // .requestMatchers("/api/**").hasRole("ADMIN")
+    .requestMatchers("/api/**").hasAnyAuthority("all", "read")
+```
+
+## 完整配置示例
 
 ```java
 @EnableMethodSecurity
@@ -66,38 +100,30 @@ public class SecurityWebConfiguration {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         String[] permitAllUrls = {
-                "/", "/doc.html/**",
-                "/webjars/**", "/images/**", ".well-known/**", "favicon.ico", "/error/**",
-                "/v3/api-docs/**"
+            "/", "/doc.html/**",
+            "/webjars/**", "/images/**", ".well-known/**", "favicon.ico", "/error/**",
+            "/v3/api-docs/**"
         };
 
         http.authorizeHttpRequests(authorizeRequests ->
-                        // 访问路径为 /api/** 时需要进行认证
-                        authorizeRequests
-                                .requestMatchers("/api/**").authenticated()
-                                .requestMatchers(permitAllUrls).permitAll()
-                )
-                .formLogin(loginPage -> loginPage
-                        // 自定义登录页路径
-                        .loginPage("/login-page")
-                        // 处理登录的URL（默认就是/login）
-                        .loginProcessingUrl("/login")
-                        // 登录成功跳转
-                        .defaultSuccessUrl("/")
-                        // 登录失败跳转
-                        .failureUrl("/login-page?error=true")
-                        .permitAll()
-                )
-                // 使用默认的登录
-                // .formLogin(Customizer.withDefaults())
-                // 禁用表单登录
-                // .formLogin(AbstractHttpConfigurer::disable)
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login-page?logout=true")
-                        .permitAll()
-                );
+                authorizeRequests
+                    .requestMatchers(permitAllUrls).permitAll()
+                    .requestMatchers("/api/security/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/anonymous/**").anonymous()
+                    .requestMatchers("/api/**").hasAnyAuthority("all", "read")
+            )
+            .formLogin(loginPage -> loginPage
+                .loginPage("/login-page")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/")
+                .failureUrl("/login-page?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login-page?logout=true")
+                .permitAll()
+            );
         return http.build();
     }
-
 }
 ```
