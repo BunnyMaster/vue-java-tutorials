@@ -16,6 +16,7 @@ public class PasswordTest {
 
     @Test
     void passwordEncoderTest() {
+        // 只是便捷机制，不适用于生产环境
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
         String encode = passwordEncoder.encode("123456");
@@ -49,6 +50,17 @@ public class PasswordTest {
         String decrypted = password.decrypt(encrypt);
         System.out.println(encrypt);
         System.out.println(decrypted);
+    }
+
+    @Test
+    void UserDetailsTest() {
+        // withDefaultPasswordEncoder 是不安全的不适用于生产环境
+        UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("password")
+                .roles("user")
+                .build();
+        System.out.println(user.getPassword());
     }
 
 }
