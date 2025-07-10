@@ -1,11 +1,7 @@
 package com.spring.domain.vo;
 
-import java.util.Date;
-import java.math.BigDecimal;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

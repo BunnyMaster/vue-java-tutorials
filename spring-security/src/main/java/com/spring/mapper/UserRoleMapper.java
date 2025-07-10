@@ -4,15 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import com.spring.domain.dto.UserRoleDto;
+import com.spring.domain.dto.system.UserRoleDto;
 import com.spring.domain.entity.UserRoleEntity;
 import com.spring.domain.vo.UserRoleVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
-import com.spring.domain.vo.result.PageResult;
-import com.spring.domain.vo.result.Result;
-import com.spring.domain.vo.result.ResultCodeEnum;
-import java.util.List;
 
 /**
  * <p>
