@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "文件分片信息表，仅在手动分片上传时使用", description = "文件分片信息表，仅在手动分片上传时使用相关接口")
 @RestController
-@RequestMapping("/api/normal/files-part-detail")
+@RequestMapping("/api/anonymous/files-part-detail")
 @RequiredArgsConstructor
 public class FilesPartDetailController {
 

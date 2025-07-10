@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "图标code不能重复", description = "图标code不能重复相关接口")
 @RestController
-@RequestMapping("/api/normal/menu-icon")
+@RequestMapping("/api/anonymous/menu-icon")
 @RequiredArgsConstructor
 public class MenuIconController {
 

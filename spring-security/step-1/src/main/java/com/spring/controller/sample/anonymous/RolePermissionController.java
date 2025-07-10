@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "系统角色权限表", description = "系统角色权限表相关接口")
 @RestController
-@RequestMapping("/api/normal/role-permission")
+@RequestMapping("/api/anonymous/role-permission")
 @RequiredArgsConstructor
 public class RolePermissionController {
 

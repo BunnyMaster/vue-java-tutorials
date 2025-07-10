@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "邮件模板表", description = "邮件模板表相关接口")
 @RestController
-@RequestMapping("/api/normal/email-template")
+@RequestMapping("/api/anonymous/email-template")
 @RequiredArgsConstructor
 public class EmailTemplateController {
 

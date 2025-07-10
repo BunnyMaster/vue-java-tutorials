@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "文件记录", description = "文件记录相关接口")
 @RestController
-@RequestMapping("/api/normal/files")
+@RequestMapping("/api/anonymous/files")
 @RequiredArgsConstructor
 public class FilesController {
 

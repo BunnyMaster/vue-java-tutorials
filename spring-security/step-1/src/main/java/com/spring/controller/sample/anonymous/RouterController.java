@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "系统菜单表", description = "系统菜单表相关接口")
 @RestController
-@RequestMapping("/api/normal/router")
+@RequestMapping("/api/anonymous/router")
 @RequiredArgsConstructor
 public class RouterController {
 

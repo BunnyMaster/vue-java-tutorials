@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "系统角色表", description = "系统角色表相关接口")
 @RestController
-@RequestMapping("/api/normal/role")
+@RequestMapping("/api/anonymous/role")
 @RequiredArgsConstructor
 public class RoleController {
 

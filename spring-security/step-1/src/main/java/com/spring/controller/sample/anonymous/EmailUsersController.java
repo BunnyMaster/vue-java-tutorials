@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Tag(name = "邮箱发送表", description = "邮箱发送表相关接口")
 @RestController
-@RequestMapping("/api/normal/email-users")
+@RequestMapping("/api/anonymous/email-users")
 @RequiredArgsConstructor
 public class EmailUsersController {
 

@@ -49,7 +49,7 @@ public class Knife4jConfig {
 
     @Bean
     public GroupedOpenApi normal() {
-        return GroupedOpenApi.builder().group("访客请求接口").pathsToMatch("/api/normal/**").build();
+        return GroupedOpenApi.builder().group("访客请求接口").pathsToMatch("/api/anonymous/**").build();
     }
 
     @Bean

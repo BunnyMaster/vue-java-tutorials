@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "多语言表", description = "多语言表相关接口")
 @RestController
-@RequestMapping("/api/normal/i18n")
+@RequestMapping("/api/anonymous/i18n")
 @RequiredArgsConstructor
 public class I18nController {
 

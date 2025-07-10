@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "系统路由角色关系表", description = "系统路由角色关系表相关接口")
 @RestController
-@RequestMapping("/api/normal/router-role")
+@RequestMapping("/api/anonymous/router-role")
 @RequiredArgsConstructor
 public class RouterRoleController {
 
