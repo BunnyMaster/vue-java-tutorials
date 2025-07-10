@@ -25,11 +25,12 @@ public class SecurityConfiguration {
         String generatedPassword = passwordEncoder.encode("123456");
 
         // 创建用户
-        UserDetails userDetails1 = User.withUsername("bunny").password(generatedPassword).roles("USER").build();
+        UserDetails userDetails1 = User.withUsername("bunny").password(generatedPassword).roles("USER").authorities("read").build();
         UserDetails userDetails2 = User.withUsername("rabbit").password(generatedPassword).roles("USER").build();
+        UserDetails userDetails3 = User.withUsername("admin").password(generatedPassword).roles("ADMIN").authorities("all").build();
 
         // 返回内存中的用户
-        return new InMemoryUserDetailsManager(userDetails1, userDetails2);
+        return new InMemoryUserDetailsManager(userDetails1, userDetails2, userDetails3);
     }
 
     /**
@@ -47,7 +48,7 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
 
-        // 自定义实现密码加密器
+        // 自定义实现密码加密器，如果使用自定义不用使用 Bean注入
         // return new MD5PasswordEncoder();
     }
 }
