@@ -12,6 +12,7 @@ import com.spring.step2.mapper.UsersMapper;
 import com.spring.step2.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,8 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, UsersEntity> implements UsersService {
+
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * *  服务实现类
@@ -57,9 +60,15 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, UsersEntity> impl
      */
     @Override
     public void addUsers(UsersDto dto) {
-        UsersEntity users = new UsersEntity();
-        BeanUtils.copyProperties(dto, users);
-        save(users);
+        UsersEntity user = new UsersEntity();
+        BeanUtils.copyProperties(dto, user);
+
+        // 设置用户密码
+        String password = user.getPassword();
+        String encodePassword = passwordEncoder.encode(password);
+        user.setPassword(encodePassword);
+
+        save(user);
     }
 
     /**

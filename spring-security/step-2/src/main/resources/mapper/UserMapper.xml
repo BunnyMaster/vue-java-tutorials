@@ -27,9 +27,6 @@
         from t_user
         <where>
             is_deleted = 0
-            <if test="dto.id != null and dto.id != ''">
-                and id like CONCAT('%',#{dto.id},'%')
-            </if>
             <if test="dto.username != null and dto.username != ''">
                 and username like CONCAT('%',#{dto.username},'%')
             </if>

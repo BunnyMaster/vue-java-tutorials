@@ -1,4 +1,4 @@
-package com.spring.step2.config;
+package com.spring.step2.config.web;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
