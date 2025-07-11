@@ -192,7 +192,7 @@ public PasswordEncoder passwordEncoder() {
    - 较老的算法，但广泛支持
    - 需要高迭代次数才安全
 
-### Spring Security中的最佳实践
+#### 最佳实践
 
 **最佳实践是使用BCryptPasswordEncoder**，原因包括：
 
@@ -203,3 +203,56 @@ public PasswordEncoder passwordEncoder() {
 5. 广泛支持，易于配置
 
 在Spring Security 5+版本中，BCryptPasswordEncoder是官方文档中首推的密码编码器实现。除非有特殊安全需求，否则应优先选择它。
+
+### 实现自定义校验器
+
+在Spring Security中，自定义密码编码器需要实现`PasswordEncoder`接口。
+
+以下是实现MD5示例及注意事项：
+
+```java
+/**
+ * <h1>MD5密码编码器实现</h1>
+ *
+ * <strong>安全警告：</strong>此类使用MD5算法进行密码哈希，已不再安全，不推荐用于生产环境。
+ *
+ * <p>MD5算法因其计算速度快且易受彩虹表攻击而被认为不安全。即使密码哈希本身是单向的，
+ * 但现代计算能力使得暴力破解和预先计算的彩虹表攻击变得可行。</p>
+ *
+ * <p>Spring Security推荐使用BCrypt、PBKDF2、Argon2或Scrypt等自适应单向函数替代MD5。</p>
+ *
+ * @see PasswordEncoder
+ * 一般仅用于遗留系统兼容，新系统应使用更安全的密码编码器
+ */
+public class MD5PasswordEncoder implements PasswordEncoder {
+
+    @Override
+    public String encode(CharSequence rawPassword) {
+        if (rawPassword == null) {
+            throw new IllegalArgumentException("原始密码不能为null");
+        }
+
+        byte[] md5Digest = DigestUtils.md5Digest(rawPassword.toString().getBytes());
+        return HexFormat.of().formatHex(md5Digest);
+    }
+
+    @Override
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+        if (rawPassword == null) {
+            throw new IllegalArgumentException("原始密码不能为null");
+        }
+
+        if (!StringUtils.hasText(encodedPassword)) {
+            return false;
+        }
+
+        return encodedPassword.equalsIgnoreCase(encode(rawPassword));
+    }
+
+    @Override
+    public boolean upgradeEncoding(String encodedPassword) {
+        // MD5已不安全，始终返回true建议升级到更安全的算法
+        return true;
+    }
+}
+```

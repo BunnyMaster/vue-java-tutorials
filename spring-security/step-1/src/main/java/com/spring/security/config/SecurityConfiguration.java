@@ -54,12 +54,12 @@ public class SecurityConfiguration {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // 实际项目中只需返回一个密码编码器
-        return new BCryptPasswordEncoder();
-
         // 其他编码器示例（根据需求选择一种）:
         // return new Argon2PasswordEncoder(16, 32, 1, 1 << 14, 2);
         // return new SCryptPasswordEncoder();
         // return new Pbkdf2PasswordEncoder("secret", 185000, 256);
+
+        // 实际项目中只需返回一个密码编码器
+        return new BCryptPasswordEncoder();
     }
 }
