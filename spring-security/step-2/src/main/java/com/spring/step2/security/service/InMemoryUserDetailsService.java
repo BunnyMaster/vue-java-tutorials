@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class InMemoryUserDetailsService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
