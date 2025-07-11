@@ -6,13 +6,20 @@ spring:
     name: spring-security
   profiles:
     active: dev
+  devtools:
+    livereload:
+      port: 0
 
   datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${bunny.master.host}:${bunny.master.port}/${bunny.master.database}?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true
-    username: ${bunny.master.username}
-    password: ${bunny.master.password}
+    dynamic:
+      primary: master
+      datasource:
+        master:
+          type: com.zaxxer.hikari.HikariDataSource
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${bunny.master.host}:${bunny.master.port}/${bunny.master.database}?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+          username: ${bunny.master.username}
+          password: ${bunny.master.password}
     hikari:
       maximum-pool-size: 20
       connection-timeout: 30000

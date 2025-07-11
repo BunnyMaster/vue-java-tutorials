@@ -5,3 +5,9 @@ bunny:
     database: bunny_test
     username: bunny_test
     password: "Test1234"
+  testJwt:
+    host: rm-bp12z6hlv46vi6g8mro.mysql.rds.aliyuncs.com
+    port: 3306
+    database: test_jwt
+    username: bunny_test
+    password: "Test1234"

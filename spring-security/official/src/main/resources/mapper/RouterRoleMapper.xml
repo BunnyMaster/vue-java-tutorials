@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.spring.mapper.RouterRoleMapper">
+<mapper namespace="com.spring.official.mapper.RouterRoleMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.RouterRoleEntity">
+    <resultMap id="BaseResultMap" type="com.spring.official.domain.entity.RouterRoleEntity">
             <id column="id" property="id"/>
             <id column="router_id" property="routerId"/>
             <id column="role_id" property="roleId"/>
@@ -20,7 +20,7 @@
     </sql>
 
     <!-- 分页查询系统路由角色关系表内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.RouterRoleVo">
+    <select id="selectListByPage" resultType="com.spring.official.domain.vo.RouterRoleVo">
         select
         base.*,
         create_user.username as create_username,

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.spring.mapper.EmailUsersMapper">
+<mapper namespace="com.spring.official.mapper.EmailUsersMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.EmailUsersEntity">
+    <resultMap id="BaseResultMap" type="com.spring.official.domain.entity.EmailUsersEntity">
             <id column="id" property="id"/>
             <id column="email" property="email"/>
             <id column="password" property="password"/>
@@ -25,7 +25,7 @@
     </sql>
 
     <!-- 分页查询邮箱发送表内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.EmailUsersVo">
+    <select id="selectListByPage" resultType="com.spring.official.domain.vo.EmailUsersVo">
         select
         base.*,
         create_user.username as create_username,

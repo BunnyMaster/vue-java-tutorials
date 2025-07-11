@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.spring.mapper.FilesMapper">
+<mapper namespace="com.spring.official.mapper.FilesMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.spring.domain.entity.FilesEntity">
+    <resultMap id="BaseResultMap" type="com.spring.official.domain.entity.FilesEntity">
             <id column="id" property="id"/>
             <id column="url" property="url"/>
             <id column="size" property="size"/>
@@ -45,7 +45,7 @@
     </sql>
 
     <!-- 分页查询文件记录内容 -->
-    <select id="selectListByPage" resultType="com.spring.domain.vo.FilesVo">
+    <select id="selectListByPage" resultType="com.spring.official.domain.vo.FilesVo">
         select
         base.*,
         create_user.username as create_username,
