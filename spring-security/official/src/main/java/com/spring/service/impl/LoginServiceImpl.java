@@ -1,4 +1,4 @@
-package com.spring.service.security.impl;
+package com.spring.service.impl;
 
 import com.spring.service.security.LoginService;
 import lombok.RequiredArgsConstructor;
