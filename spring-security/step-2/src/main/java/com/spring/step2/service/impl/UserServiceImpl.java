@@ -20,11 +20,11 @@ import java.util.List;
 
 /**
  * <p>
- * 用户 服务实现类
+ * 用户基本信息表 服务实现类
  * </p>
  *
  * @author Bunny
- * @since 2025-07-11 14:49:46
+ * @since 2025-07-11 22:36:53
  */
 @DS("testJwt")
 @Service
@@ -35,11 +35,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * * 用户 服务实现类
+     * * 用户基本信息表 服务实现类
      *
-     * @param pageParams 用户分页查询page对象
-     * @param dto        用户分页查询对象
-     * @return 查询分页用户返回对象
+     * @param pageParams 用户基本信息表分页查询page对象
+     * @param dto        用户基本信息表分页查询对象
+     * @return 查询分页用户基本信息表返回对象
      */
     @Override
     public PageResult<UserVo> getUserPage(Page<UserEntity> pageParams, UserDto dto) {
@@ -54,9 +54,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     }
 
     /**
-     * 添加用户
+     * 添加用户基本信息表
      *
-     * @param dto 用户添加
+     * @param dto 用户基本信息表添加
      */
     @Override
     public void addUser(UserDto dto) {
@@ -72,9 +72,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     }
 
     /**
-     * 更新用户
+     * 更新用户基本信息表
      *
-     * @param dto 用户更新
+     * @param dto 用户基本信息表更新
      */
     @Override
     public void updateUser(UserDto dto) {
@@ -84,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     }
 
     /**
-     * 删除|批量删除用户
+     * 删除|批量删除用户基本信息表
      *
      * @param ids 删除id列表
      */

@@ -10,20 +10,20 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(name = "UserVO对象", title = "用户基本信息表", description = "用户基本信息表的VO对象")
-public class UserVo {
+@Schema(name = "RoleVO对象", title = "系统角色表", description = "系统角色表的VO对象")
+public class RoleVo {
 
-    @Schema(name = "id", title = "主键")
+    @Schema(name = "id", title = "主键ID")
     private Long id;
 
-    @Schema(name = "username", title = "用户名")
-    private String username;
+    @Schema(name = "roleName", title = "角色名称")
+    private String roleName;
 
-    @Schema(name = "password", title = "密码")
-    private String password;
+    @Schema(name = "description", title = "角色描述")
+    private String description;
 
-    @Schema(name = "email", title = "邮箱")
-    private String email;
+    @Schema(name = "remark", title = "备注信息")
+    private String remark;
 
     @Schema(name = "createTime", title = "创建时间")
     private LocalDateTime createTime;
@@ -37,7 +37,7 @@ public class UserVo {
     @Schema(name = "updateUser", title = "更新用户ID")
     private Long updateUser;
 
-    @Schema(name = "isDeleted", title = "是否被删除")
+    @Schema(name = "isDeleted", title = "是否删除：0-未删除，1-已删除")
     private Boolean isDeleted;
 
 }

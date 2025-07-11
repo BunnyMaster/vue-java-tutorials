@@ -1,14 +1,17 @@
 package com.spring.step2.security.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.spring.step2.domain.entity.PermissionEntity;
 import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +22,27 @@ public class DbUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 查询当前用户
-        QueryWrapper<UserEntity> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(UserEntity::getUsername, username);
-        UserEntity userEntity = userMapper.selectOne(wrapper);
+        UserEntity userEntity = userMapper.selectByUsername(username);
 
         // 判断当前用户是否存在
         if (userEntity == null) {
             throw new UsernameNotFoundException("用户不存在");
         }
 
-        return User.builder().username(userEntity.getUsername())
+        // 设置用户权限
+        List<SimpleGrantedAuthority> authorities = findPermissionByUserId(userEntity.getId()).stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+
+        return User.builder()
+                .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
+                .authorities(authorities)
                 .build();
+    }
+
+    public List<String> findPermissionByUserId(Long userId) {
+        List<PermissionEntity> permissionList = userMapper.selectPermissionByUserId(userId);
+        return permissionList.stream().map(PermissionEntity::getPermissionCode).toList();
     }
 }

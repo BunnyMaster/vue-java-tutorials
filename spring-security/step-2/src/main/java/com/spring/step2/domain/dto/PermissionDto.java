@@ -1,7 +1,8 @@
-package com.spring.step2.domain.vo;
+package com.spring.step2.domain.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,20 +11,21 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(name = "UserVO对象", title = "用户基本信息表", description = "用户基本信息表的VO对象")
-public class UserVo {
+@Builder
+@Schema(name = "PermissionDTO对象", title = "系统权限表", description = "系统权限表的DTO对象")
+public class PermissionDto {
 
-    @Schema(name = "id", title = "主键")
+    @Schema(name = "id", title = "主键ID")
     private Long id;
 
-    @Schema(name = "username", title = "用户名")
-    private String username;
+    @Schema(name = "permissionCode", title = "权限编码")
+    private String permissionCode;
 
-    @Schema(name = "password", title = "密码")
-    private String password;
+    @Schema(name = "description", title = "权限描述")
+    private String description;
 
-    @Schema(name = "email", title = "邮箱")
-    private String email;
+    @Schema(name = "remark", title = "备注信息")
+    private String remark;
 
     @Schema(name = "createTime", title = "创建时间")
     private LocalDateTime createTime;
@@ -37,8 +39,7 @@ public class UserVo {
     @Schema(name = "updateUser", title = "更新用户ID")
     private Long updateUser;
 
-    @Schema(name = "isDeleted", title = "是否被删除")
+    @Schema(name = "isDeleted", title = "是否删除：0-未删除，1-已删除")
     private Boolean isDeleted;
 
 }
-

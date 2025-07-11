@@ -36,4 +36,25 @@
         </where>
     </select>
 
+    <!-- 根据用户id查找当前用户的权限 -->
+    <select id="selectPermissionByUserId" resultType="com.spring.step2.domain.entity.PermissionEntity">
+        SELECT DISTINCT p.*
+        FROM t_permission p
+                 JOIN t_role_permission rp ON p.id = rp.permission_id
+                 JOIN t_user_role ur ON rp.role_id = ur.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+
+    <!-- 根据用户名查询当前用户 -->
+    <select id="selectByUsername" resultType="com.spring.step2.domain.entity.UserEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        <where>
+            <if test="username != null and username != ;;">
+                username=#{username}
+            </if>
+        </where>
+    </select>
+
 </mapper>

@@ -1,5 +1,6 @@
 package com.spring.step2.controller;
 
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.spring.step2.domain.dto.UserDto;
 import com.spring.step2.domain.entity.UserEntity;
@@ -19,21 +20,21 @@ import java.util.List;
 
 /**
  * <p>
- * 用户 前端控制器
+ * 用户基本信息表 前端控制器
  * </p>
  *
  * @author Bunny
- * @since 2025-07-11 14:49:46
+ * @since 2025-07-11 22:36:53
  */
-@Tag(name = "用户", description = "用户相关接口")
+@Tag(name = "用户基本信息表", description = "用户基本信息表相关接口")
 @RestController
-@RequestMapping("/api/user/user")
+@RequestMapping("/api/coupon/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "分页查询用户", description = "分页用户")
+    @Operation(summary = "分页查询用户基本信息表", description = "分页用户基本信息表")
     @GetMapping("{page}/{limit}")
     public Result<PageResult<UserVo>> getUserPage(
             @Parameter(name = "page", description = "当前页", required = true)
@@ -46,21 +47,21 @@ public class UserController {
         return Result.success(pageResult);
     }
 
-    @Operation(summary = "添加用户", description = "添加用户")
+    @Operation(summary = "添加用户基本信息表", description = "添加用户基本信息表")
     @PostMapping()
     public Result<String> addUser(@Valid @RequestBody UserDto dto) {
         userService.addUser(dto);
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
     }
 
-    @Operation(summary = "更新用户", description = "更新用户")
+    @Operation(summary = "更新用户基本信息表", description = "更新用户基本信息表")
     @PutMapping()
     public Result<String> updateUser(@Valid @RequestBody UserDto dto) {
         userService.updateUser(dto);
         return Result.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
-    @Operation(summary = "删除用户", description = "删除用户")
+    @Operation(summary = "删除用户基本信息表", description = "删除用户基本信息表")
     @DeleteMapping()
     public Result<String> deleteUser(@RequestBody List<Long> ids) {
         userService.deleteUser(ids);
