@@ -294,3 +294,50 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 }
 ```
+
+## 当前用户登录信息
+
+用户的信息都保存在`SecurityContextHolder.getContext()`的上下文中。
+
+```java
+/**
+ * 获取当前认证用户的基本信息
+ * 使用Spring Security的SecurityContextHolder获取当前认证信息
+ */
+@Operation(summary = "当前用户的信息", description = "当前用户的信息")
+@GetMapping("/current-user")
+public Authentication getCurrentUser() {
+    // 从SecurityContextHolder获取当前认证对象
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    
+    // 打印当前用户名和权限信息到控制台（用于调试）
+    System.out.println("Current user: " + auth.getName());
+    System.out.println("Authorities: " + auth.getAuthorities());
+    
+    // 返回完整的认证对象
+    return auth;
+}
+
+/**
+ * 获取当前用户的详细信息
+ * 从认证主体中提取UserDetails信息
+ */
+@Operation(summary = "获取用户详情", description = "获取用户详情")
+@GetMapping("user-detail")
+public UserDetails getCurrentUserDetail() {
+    // 从SecurityContextHolder获取当前认证对象
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    
+    // 获取认证主体(principal)
+    Object principal = auth.getPrincipal();
+
+    // 检查主体是否是UserDetails实例
+    if (principal instanceof UserDetails) {
+        // 如果是，则转换为UserDetails并返回
+        return (UserDetails) principal;
+    } else {
+        // 如果不是UserDetails类型，返回null
+        return null;
+    }
+}
+```
