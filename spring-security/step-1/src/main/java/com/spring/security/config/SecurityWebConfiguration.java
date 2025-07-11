@@ -1,11 +1,14 @@
 package com.spring.security.config;
 
+import com.spring.security.handler.SecurityAccessDeniedHandler;
+import com.spring.security.handler.SecurityAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @EnableMethodSecurity
@@ -18,7 +21,7 @@ public class SecurityWebConfiguration {
         String[] permitAllUrls = {
                 "/", "/doc.html/**",
                 "/webjars/**", "/images/**", ".well-known/**", "favicon.ico", "/error/**",
-                "/v3/api-docs/**"
+                "/swagger-ui/**", "/v3/api-docs/**"
         };
 
         http.authorizeHttpRequests(authorizeRequests ->
@@ -49,7 +52,14 @@ public class SecurityWebConfiguration {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login-page?logout=true")
                         .permitAll()
-                );
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(configurer -> configurer
+                        .accessDeniedHandler(new SecurityAccessDeniedHandler())
+                        .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
+                )
+        ;
+
         return http.build();
     }
 }
