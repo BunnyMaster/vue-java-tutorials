@@ -10,9 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
-@EnableMethodSecurity
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityWebConfiguration {
 
     @Bean
@@ -27,6 +27,7 @@ public class SecurityWebConfiguration {
                                 // 访问路径为 /api 时需要进行认证
                                 authorizeRequests
                                         .requestMatchers(permitAllUrls).permitAll()
+                                        // .requestMatchers("/api/**").hasAnyRole("Admin", "ADMIN", "admin")
                                         .anyRequest().permitAll()
                         // .requestMatchers("/api/security/**").permitAll()
                         // .requestMatchers(HttpMethod.GET, "/api/anonymous/**").anonymous()
