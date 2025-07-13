@@ -11,13 +11,13 @@ public class WebController {
         return "index";
     }
 
-    @GetMapping("/login-page")
+    @GetMapping("/login")
     public String showLoginPage() {
-        return "login";
+        return "loginPage";
     }
 
     @GetMapping("/user")
     public String showUserPage() {
-        return "user/index";
+        return "userPage";
     }
 }

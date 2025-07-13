@@ -159,10 +159,7 @@
             async onSearch() {
                 const {pageNo, pageSize} = this.searchForm;
                 // 查询数据
-                const {data, message} = await axiosInstance.get(`/user/${pageNo}/${pageSize}`, {params: this.form})
-
-                // 提示加载成功
-                antd.message.success(message);
+                const {data} = await axiosInstance.get(`/user/${pageNo}/${pageSize}`, {params: this.form})
 
                 // 赋值数据
                 this.userList = data.list;
