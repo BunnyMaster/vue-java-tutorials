@@ -32,6 +32,9 @@
 </head>
 <body>
 <div class="container-fluid" id="app">
+    <dialog-user :is-add="dialogFormFlag" :on-search="onSearch" :userinfo="userinfo"></dialog-user>
+
+    <!-- 头部 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fas fa-search me-2"></i>用户查询</span>
@@ -42,12 +45,12 @@
                     <div class="col-md-4">
                         <label class="form-label" for="username"><i class="fas fa-user me-1"></i>用户名</label>
                         <input autocomplete="false" class="form-control" id="username" placeholder="请输入用户名"
-                               type="text" v-model="form.username">
+                               type="text" v-model="searchForm.username">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label" for="email"><i class="fas fa-envelope me-1"></i>邮箱</label>
                         <input autocomplete="false" class="form-control" id="email" placeholder="请输入邮箱"
-                               type="email" v-model="form.email">
+                               type="email" v-model="searchForm.email">
                     </div>
                     <div class="col-md-4">
                         <div class="search-btn-group">
@@ -64,10 +67,11 @@
         </div>
     </div>
 
+    <!-- 表格 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fas fa-users me-2"></i>用户列表</span>
-            <button class="btn btn-sm btn-success ">
+            <button @click="onAdd" class="btn btn-sm btn-success" data-bs-target="#userBackdrop" data-bs-toggle="modal">
                 <i class="fas fa-plus me-1"></i>新增用户
             </button>
         </div>
@@ -93,11 +97,11 @@
                         <td>{{formatDate(user.updateTime)}}</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <button @click="onEdit(user)" class="btn btn-outline-primary btn-action">
+                                <button @click="onEdit(user)" class="btn btn-outline-primary btn-action"
+                                        data-bs-target="#userBackdrop" data-bs-toggle="modal">
                                     <i class="fas fa-edit"></i> 修改
                                 </button>
-                                <button @click="onDeleted(user)" class="btn btn-outline-danger btn-action"
-                                        data-bs-target="#staticBackdrop">
+                                <button @click="onDeleted(user)" class="btn btn-outline-danger btn-action">
                                     <i class="fas fa-trash"></i> 删除
                                 </button>
                             </div>
@@ -107,20 +111,8 @@
                 </table>
             </div>
 
-            <nav aria-label="Page navigation" class="mt-3">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <a @click="pageNoDecrease" class="page-link" href="javascript:">上一页</a>
-                    </li>
-                    <li :class="{active:page===form.pageNo}" :key="index" class="page-item"
-                        v-for="(page,index) in form.pages">
-                        <a class="page-link" href="javascript:">1</a>
-                    </li>
-                    <li class="page-item">
-                        <a @click="pageNoIncrease" class="page-link" href="javascript:">下一页</a>
-                    </li>
-                </ul>
-            </nav>
+            <!-- 表格分页 -->
+            <pagination :on-search="onSearch" v-model:pagination="searchForm"></pagination>
         </div>
     </div>
 </div>
@@ -129,20 +121,29 @@
 <script th:src="@{/src/config/popper-config.js}"></script>
 <!-- 加载全局axios配置 -->
 <script th:src="@{/src/config/axios-config.js}"></script>
+
+<!-- 分页 -->
+<script th:src="@{/src/components/Pagination.js}"></script>
+<!-- 用户表单 -->
+<script th:src="@{/src/views/user/DialogUser.js}"></script>
 <script>
     const {createApp, ref} = Vue;
 
     const app = createApp({
-        components: {},
         data() {
             return {
-                form: ref({
+                // 查询表单
+                searchForm: ref({
                     username: undefined,
                     email: undefined,
                     pageNo: 1,
                     pageSize: 30,
-                    pages: 3
+                    pages: 0
                 }),
+                // 用户信息
+                userinfo: ref({}),
+                // 弹窗标题
+                dialogFormFlag: ref(false),
                 // 查询用户列表
                 userList: ref([])
             };
@@ -153,39 +154,44 @@
             formatDate(date) {
                 return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
             },
-            /* 当前分页+1 */
-            pageNoIncrease() {
-                this.form.pageNo++;
-                this.onSearch();
-            },
-            /* 当前分页-1 */
-            pageNoDecrease() {
-                this.form.pageNo--;
-                this.onSearch();
-            },
 
             /* 加载数据 */
             async onSearch() {
-                const {pageNo, pageSize} = this.form;
+                const {pageNo, pageSize} = this.searchForm;
+                // 查询数据
                 const {data, message} = await axiosInstance.get(`/user/${pageNo}/${pageSize}`, {params: this.form})
 
+                // 提示加载成功
                 antd.message.success(message);
 
+                // 赋值数据
                 this.userList = data.list;
-                this.form.pageNo = data.pageNo;
-                this.form.pageSize = data.pageSize;
-                this.form.pages = data.pages;
+
+                // 设置分页内容
+                this.searchForm.pageNo = data.pageNo;
+                this.searchForm.pageSize = data.pageSize;
+                this.searchForm.pages = data.pages;
             },
+
             /* 重制表单 */
             onRest() {
-                this.form.username = undefined;
-                this.form.email = undefined;
+                this.searchForm.username = undefined;
+                this.searchForm.email = undefined;
                 this.onSearch();
             },
-            /* 修改 */
-            onEdit() {
 
+            /* 添加 */
+            onAdd() {
+                this.dialogFormFlag = true;
+                this.userinfo = {};
             },
+
+            /* 修改 */
+            onEdit(user) {
+                this.dialogFormFlag = false;
+                this.userinfo = user;
+            },
+
             /* 删除 */
             async onDeleted(user) {
                 const result = confirm("确认删除？");
@@ -203,6 +209,8 @@
         },
     });
 
+    app.component('Pagination', Pagination)
+    app.component('DialogUser', DialogUser)
     app.mount('#app');
 </script>
 </html>

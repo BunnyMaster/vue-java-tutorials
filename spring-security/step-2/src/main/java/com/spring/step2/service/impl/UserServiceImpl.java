@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -65,8 +66,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
         UserEntity user = new UserEntity();
         BeanUtils.copyProperties(dto, user);
 
-        // 设置用户密码
+        // 用户密码是否为空，为空设置默认密码
         String password = user.getPassword();
+        password = StringUtils.hasText(password) ? password : "123456";
+
+        // 设置用户密码
         String encodePassword = passwordEncoder.encode(password);
         user.setPassword(encodePassword);
 
@@ -82,6 +86,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     public void updateUser(UserDto dto) {
         UserEntity user = new UserEntity();
         BeanUtils.copyProperties(dto, user);
+
+        // 设置用户密码
+        String password = user.getPassword();
+        if (StringUtils.hasText(password)) {
+            String encodePassword = passwordEncoder.encode(password);
+            user.setPassword(encodePassword);
+        }
+
         updateById(user);
     }
 
