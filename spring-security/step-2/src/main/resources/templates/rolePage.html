@@ -44,9 +44,9 @@
             <form @reset="onRest" @submit.prevent="onSearch">
                 <div class="row g-3 align-items-center">
                     <div class="col-md-4">
-                        <label class="form-label" for="roleName"><i class="fas fa-user-alt me-1"></i>角色名</label>
-                        <input autocomplete="false" class="form-control" id="roleName" placeholder="请输入角色名"
-                               type="text" v-model="searchForm.roleName">
+                        <label class="form-label" for="roleCode"><i class="fas fa-user-alt me-1"></i>角色名</label>
+                        <input autocomplete="false" class="form-control" id="roleCode" placeholder="请输入角色名"
+                               type="text" v-model="searchForm.roleCode">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label" for="description"><i class="fas fa-text-width me-1"></i>描述</label>
@@ -98,7 +98,7 @@
                     <tbody>
                     <tr :key="role.id" v-for="(role,index) in dataList">
                         <th scope="row">{{index + 1}}</th>
-                        <td>{{role.roleName}}</td>
+                        <td>{{role.roleCode}}</td>
                         <td>{{role.description}}</td>
                         <td>{{role.remark}}</td>
                         <td>{{formatDate(role.createTime)}}</td>
@@ -142,7 +142,7 @@
             return {
                 // 查询表单
                 searchForm: ref({
-                    roleName: undefined,
+                    roleCode: undefined,
                     description: undefined,
                     remark: undefined,
                     pageNo: 1,
@@ -181,8 +181,9 @@
 
             /* 重制表单 */
             onRest() {
-                this.searchForm.roleName = undefined;
+                this.searchForm.roleCode = undefined;
                 this.searchForm.description = undefined;
+                this.searchForm.remark = undefined;
                 this.onSearch();
             },
 

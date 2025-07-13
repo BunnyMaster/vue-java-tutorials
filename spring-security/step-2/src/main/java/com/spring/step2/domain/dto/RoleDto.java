@@ -19,9 +19,9 @@ public class RoleDto {
     @Schema(name = "id", title = "主键ID")
     private Long id;
 
-    @Schema(name = "roleName", title = "角色名称")
-    @NotBlank(message = "角色名称不能为空")
-    private String roleName;
+    @Schema(name = "roleCode", title = "角色码")
+    @NotBlank(message = "角色码不能为空")
+    private String roleCode;
 
     @Schema(name = "description", title = "角色描述")
     @NotBlank(message = "角色描述不能为空")

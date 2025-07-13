@@ -1,8 +1,8 @@
-const DialogRole = {
+const DialogRole = defineComponent({
     name: "DialogRole",
     template: `
         <div class="modal fade" id="roleBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="roleBackdropLabel" aria-hidden="true" ref="modalRef">
+            aria-labelledby="roleBackdropLabel" ref="modalRef">
             <div class="modal-dialog">
                 <div class="modal-content">
         
@@ -16,9 +16,9 @@ const DialogRole = {
                         <!-- 内容 -->
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label class="form-label" for="dialogRoleName"><i class="fas fa-user-alt me-1"></i>角色名</label>
-                                <input autocomplete="false" class="form-control" id="dialogRoleName" placeholder="请输入角色名"
-                                    type="text" v-model="form.roleName" required>
+                                <label class="form-label" for="dialogRoleCode"><i class="fas fa-user-alt me-1"></i>角色名</label>
+                                <input autocomplete="false" class="form-control" id="dialogRoleCode" placeholder="请输入角色名"
+                                    type="text" v-model="form.roleCode" required>
                                 <div class="form-text">在这里输入你的角色名。</div>
                             </div>
                             <div class="mb-3">
@@ -94,4 +94,4 @@ const DialogRole = {
             this.modalInstance.dispose();
         }
     }
-};
+});

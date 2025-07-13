@@ -14,8 +14,8 @@ import lombok.experimental.Accessors;
 @Schema(name = "Role对象", title = "系统角色表", description = "系统角色表的实体类对象")
 public class RoleEntity extends BaseEntity {
 
-    @Schema(name = "roleName", title = "角色名称")
-    private String roleName;
+    @Schema(name = "roleCode", title = "角色码")
+    private String roleCode;
 
     @Schema(name = "description", title = "角色描述")
     private String description;

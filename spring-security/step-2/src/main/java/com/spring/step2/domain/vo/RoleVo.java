@@ -21,8 +21,8 @@ public class RoleVo {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    @Schema(name = "roleName", title = "角色名称")
-    private String roleName;
+    @Schema(name = "roleCode", title = "角色名称")
+    private String roleCode;
 
     @Schema(name = "description", title = "角色描述")
     private String description;

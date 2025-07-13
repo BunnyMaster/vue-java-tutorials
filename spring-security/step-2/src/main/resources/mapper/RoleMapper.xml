@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.spring.step2.domain.entity.RoleEntity">
         <id column="id" property="id"/>
-        <id column="role_name" property="roleName"/>
+        <id column="role_name" property="roleCode"/>
         <id column="description" property="description"/>
         <id column="remark" property="remark"/>
         <id column="create_time" property="createTime"/>
@@ -30,8 +30,8 @@
             <if test="dto.id != null and dto.id != ''">
                 and id like CONCAT('%',#{dto.id},'%')
             </if>
-            <if test="dto.roleName != null and dto.roleName != ''">
-                and role_name like CONCAT('%',#{dto.roleName},'%')
+            <if test="dto.roleCode != null and dto.roleCode != ''">
+                and role_code like CONCAT('%',#{dto.roleCode},'%')
             </if>
             <if test="dto.description != null and dto.description != ''">
                 and description like CONCAT('%',#{dto.description},'%')
