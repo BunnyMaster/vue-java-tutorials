@@ -35,6 +35,7 @@
 <div class="container-fluid" id="app">
     <dialog-user :is-add="dialogFormFlag" :on-search="onSearch" :userinfo="userinfo"></dialog-user>
 
+    <header-navs></header-navs>
     <!-- 头部 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -123,6 +124,8 @@
 <!-- 加载全局axios配置 -->
 <script th:src="@{/src/config/axios-config.js}"></script>
 
+<!-- 头部导航 -->
+<script th:src="@{/src/components/HeaderNavs.js}"></script>
 <!-- 分页 -->
 <script th:src="@{/src/components/Pagination.js}"></script>
 <!-- 用户表单 -->
@@ -210,8 +213,9 @@
         },
     });
 
-    app.component('Pagination', Pagination)
-    app.component('DialogUser', DialogUser)
+    app.component('HeaderNavs', HeaderNavs);
+    app.component('Pagination', Pagination);
+    app.component('DialogUser', DialogUser);
     app.mount('#app');
 </script>
 </html>

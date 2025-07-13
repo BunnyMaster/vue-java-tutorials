@@ -36,6 +36,7 @@
     <dialog-permission :is-add="isAdd" :on-search="onSearch"
                        :permission-info="permissionInfo"></dialog-permission>
 
+    <header-navs></header-navs>
     <!-- 头部 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -133,6 +134,8 @@
 <!-- 加载全局axios配置 -->
 <script th:src="@{/src/config/axios-config.js}"></script>
 
+<!-- 头部导航 -->
+<script th:src="@{/src/components/HeaderNavs.js}"></script>
 <!-- 分页 -->
 <script th:src="@{/src/components/Pagination.js}"></script>
 <!-- 权限表单 -->
@@ -220,6 +223,7 @@
         },
     });
 
+    app.component('HeaderNavs', HeaderNavs)
     app.component('Pagination', Pagination)
     app.component('DialogPermission', DialogPermission)
     app.mount('#app');

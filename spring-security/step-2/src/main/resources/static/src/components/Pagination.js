@@ -1,4 +1,3 @@
-const {defineComponent} = Vue;
 /*
     // pagination 类型
     const pagination = {
