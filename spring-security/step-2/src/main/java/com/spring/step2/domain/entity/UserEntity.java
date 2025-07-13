@@ -1,6 +1,6 @@
 package com.spring.step2.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class UserEntity extends BaseEntity {
     private String email;
 
     @Schema(name = "isDeleted", title = "是否被删除")
-    @TableLogic
+    @TableField(exist = false)
     private Boolean isDeleted;
 
 }

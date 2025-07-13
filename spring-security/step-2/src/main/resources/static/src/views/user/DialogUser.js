@@ -15,28 +15,27 @@ const DialogUser = defineComponent({
                     <form @submit.prevent="onSubmit">
                         <!-- 内容 -->
                         <div class="modal-body">
-                      
-                                <div class="mb-3">
-                                    <label class="form-label" for="dialogUsername"><i class="fas fa-user me-1"></i>用户名</label>
-                                    <input autocomplete="false" class="form-control" id="dialogUsername" placeholder="请输入用户名" 
-                                    type="text" v-model="userinfo.username" required>
-                                    <div class="form-text">在这里输入你的用户名。</div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label" for="dialogPassword"><i class="fas fa-lock me-1"></i>密码</label>
-                                    <input autocomplete="false" class="form-control" id="dialogPassword" placeholder="请输入密码"
-                                        type="password" v-model="userinfo.password">
-                                    <div class="form-text">如果不修改或添加不填写此项。</div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label" for="dialogEmail"><i class="fas fa-envelope me-1"></i>邮箱</label>
-                                    <input autocomplete="false" class="form-control" id="dialogEmail" placeholder="请输入邮箱" 
-                                    type="email" v-model="userinfo.email" required>
-                                    <div class="form-text">在这里输入你的邮箱。</div>
-                                </div>
-                           
+        
+                            <div class="mb-3">
+                                <label class="form-label" for="dialogUsername"><i class="fas fa-user me-1"></i>用户名</label>
+                                <input autocomplete="false" class="form-control" id="dialogUsername" placeholder="请输入用户名"
+                                    type="text" v-model="form.username" required>
+                                <div class="form-text">在这里输入你的用户名。</div>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label class="form-label" for="dialogPassword"><i class="fas fa-lock me-1"></i>密码</label>
+                                <input autocomplete="false" class="form-control" id="dialogPassword" placeholder="请输入密码"
+                                    type="password" v-model="form.password">
+                                <div class="form-text">如果不修改或添加不填写此项。</div>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label class="form-label" for="dialogEmail"><i class="fas fa-envelope me-1"></i>邮箱</label>
+                                <input autocomplete="false" class="form-control" id="dialogEmail" placeholder="请输入邮箱"
+                                    type="email" v-model="form.email" required>
+                                <div class="form-text">在这里输入你的邮箱。</div>
+                            </div>
                         </div>
         
                         <!-- 底部 -->
@@ -59,15 +58,16 @@ const DialogUser = defineComponent({
     },
     data() {
         return {
-            modalInstance: ref(null)
+            modalInstance: ref(null),
+            form: ref({}),
         }
     },
     methods: {
         async onSubmit() {
             // 是否添加表单
             const {code, message} = this.isAdd ?
-                await axiosInstance.post("/user", this.userinfo) :
-                await axiosInstance.put("/user", this.userinfo);
+                await axiosInstance.post("/user", this.form) :
+                await axiosInstance.put("/user", this.form);
 
             if (code === 200) {
                 antd.message.success(message);
@@ -76,6 +76,12 @@ const DialogUser = defineComponent({
                 this.onSearch();
             }
         }
+    },
+    watch: {
+        userinfo(val) {
+            // 创建深拷贝，而不是直接赋值
+            this.form = JSON.parse(JSON.stringify(val));
+        },
     },
     mounted() {
         // 初始化模态框实例

@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
     <!-- Font Awesome -->
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.15.4/css/all.min.css}">
-    <link rel="stylesheet" th:href="@{/src/lib/css/user/style.css}">
+    <link rel="stylesheet" th:href="@{/src/lib/css/tablePage.css}">
     <!-- Vue3 -->
     <script th:src="@{/src/lib/js/vue/vue.global.js}"></script>
     <!-- Bootstrap JS Bundle with Popper -->
@@ -89,7 +89,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr :key="user.id" v-for="(user,index) in userList">
+                    <tr :key="user.id" v-for="(user,index) in dataList">
                         <th scope="row">{{index + 1}}</th>
                         <td>{{user.username}}</td>
                         <td>{{user.email}}</td>
@@ -145,7 +145,7 @@
                 // 弹窗标题
                 dialogFormFlag: ref(false),
                 // 查询用户列表
-                userList: ref([])
+                dataList: ref([])
             };
         },
         computed: {},
@@ -159,10 +159,10 @@
             async onSearch() {
                 const {pageNo, pageSize} = this.searchForm;
                 // 查询数据
-                const {data} = await axiosInstance.get(`/user/${pageNo}/${pageSize}`, {params: this.form})
+                const {data} = await axiosInstance.get(`/user/${pageNo}/${pageSize}`, {params: this.searchForm})
 
                 // 赋值数据
-                this.userList = data.list;
+                this.dataList = data.list;
 
                 // 设置分页内容
                 this.searchForm.pageNo = data.pageNo;
@@ -197,8 +197,10 @@
                 // 删除用户
                 const {code, message} = await axiosInstance.delete(`/user`, {data: [user.id]});
                 if (code === 200) {
-                    antd.message.success(message);
+                    this.onSearch();
                 }
+
+                antd.message.success(message);
             },
         },
         mounted() {
