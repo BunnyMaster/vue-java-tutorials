@@ -19,9 +19,6 @@ public class UserVo {
     @Schema(name = "username", title = "用户名")
     private String username;
 
-    @Schema(name = "password", title = "密码")
-    private String password;
-
     @Schema(name = "email", title = "邮箱")
     private String email;
 
@@ -36,9 +33,6 @@ public class UserVo {
 
     @Schema(name = "updateUser", title = "更新用户ID")
     private Long updateUser;
-
-    @Schema(name = "isDeleted", title = "是否被删除")
-    private Boolean isDeleted;
 
 }
 

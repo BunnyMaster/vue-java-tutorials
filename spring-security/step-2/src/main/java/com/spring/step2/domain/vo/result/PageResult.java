@@ -25,6 +25,9 @@ public class PageResult<T> implements Serializable {
     @Schema(name = "pageSize", title = "每页记录数")
     private Long pageSize;
 
+    @Schema(name = "pages", title = "总分页数")
+    private Long pages;
+
     @Schema(name = "total", title = "总记录数")
     private Long total;
 

@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Tag(name = "用户基本信息表", description = "用户基本信息表相关接口")
 @RestController
-@RequestMapping("/api/coupon/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -44,7 +44,7 @@ public class UserController {
             UserDto dto) {
         Page<UserEntity> pageParams = new Page<>(page, limit);
         PageResult<UserVo> pageResult = userService.getUserPage(pageParams, dto);
-        return Result.success(pageResult);
+        return Result.success(pageResult, ResultCodeEnum.LOAD_FINISHED);
     }
 
     @Operation(summary = "添加用户基本信息表", description = "添加用户基本信息表")

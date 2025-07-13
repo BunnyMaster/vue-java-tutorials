@@ -46,6 +46,7 @@ public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper,
                 .list(page.getRecords())
                 .pageNo(page.getCurrent())
                 .pageSize(page.getSize())
+                .pages(page.getPages())
                 .total(page.getTotal())
                 .build();
     }

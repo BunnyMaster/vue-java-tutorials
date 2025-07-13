@@ -46,6 +46,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleEntity> impleme
                 .list(page.getRecords())
                 .pageNo(page.getCurrent())
                 .pageSize(page.getSize())
+                .pages(page.getPages())
                 .total(page.getTotal())
                 .build();
     }

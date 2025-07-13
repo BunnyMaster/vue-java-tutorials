@@ -45,10 +45,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     public PageResult<UserVo> getUserPage(Page<UserEntity> pageParams, UserDto dto) {
         IPage<UserVo> page = baseMapper.selectListByPage(pageParams, dto);
 
+
         return PageResult.<UserVo>builder()
                 .list(page.getRecords())
                 .pageNo(page.getCurrent())
                 .pageSize(page.getSize())
+                .pages(page.getPages())
                 .total(page.getTotal())
                 .build();
     }

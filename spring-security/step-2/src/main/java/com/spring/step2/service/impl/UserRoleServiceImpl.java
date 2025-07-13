@@ -46,6 +46,7 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRoleEnt
                 .list(page.getRecords())
                 .pageNo(page.getCurrent())
                 .pageSize(page.getSize())
+                .pages(page.getPages())
                 .total(page.getTotal())
                 .build();
     }
