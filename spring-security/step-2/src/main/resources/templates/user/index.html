@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.15.4/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/src/lib/css/user/style.css}">
+    <!-- Vue3 -->
+    <script th:src="@{/src/lib/js/vue/vue.global.js}"></script>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js}"></script>
+    <!-- 本地引入 popper JS -->
+    <script th:src="@{/src/lib/js/boostrap/popper.min.js}"></script>
+    <!-- 本地引入 axios JS -->
+    <script th:src="@{/src/lib/js/axios/axios.min.js}"></script>
+    <!-- 引入dayjs -->
+    <script th:src="@{/src/lib/js/dayjs/dayjs.min.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/customParseFormat.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/weekday.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/localeData.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/weekOfYear.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/weekYear.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/advancedFormat.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/quarterOfYear.js}"></script>
+    <!-- 引入 antd JS -->
+    <script th:src="@{/src/lib/js/dayjs/antd.min.js}"></script>
+
+    <title>用户管理系统</title>
+</head>
+<body>
+<div class="container-fluid" id="app">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-search me-2"></i>用户查询</span>
+        </div>
+        <div class="card-body">
+            <form @reset="onRest" @submit.prevent="onSearch">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-4">
+                        <label class="form-label" for="username"><i class="fas fa-user me-1"></i>用户名</label>
+                        <input autocomplete="false" class="form-control" id="username" placeholder="请输入用户名"
+                               type="text" v-model="form.username">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="email"><i class="fas fa-envelope me-1"></i>邮箱</label>
+                        <input autocomplete="false" class="form-control" id="email" placeholder="请输入邮箱"
+                               type="email" v-model="form.email">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="search-btn-group">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search me-1"></i>查询
+                            </button>
+                            <button class="btn btn-outline-secondary" type="reset">
+                                <i class="fas fa-redo me-1"></i>重置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-users me-2"></i>用户列表</span>
+            <button class="btn btn-sm btn-success ">
+                <i class="fas fa-plus me-1"></i>新增用户
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col" width="5%">#</th>
+                        <th scope="col" width="22%">用户名</th>
+                        <th scope="col" width="22%">邮箱</th>
+                        <th scope="col" width="17%">创建时间</th>
+                        <th scope="col" width="17%">更新时间</th>
+                        <th scope="col" width="16%">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr :key="user.id" v-for="(user,index) in userList">
+                        <th scope="row">{{index + 1}}</th>
+                        <td>{{user.username}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{formatDate(user.createTime)}}</td>
+                        <td>{{formatDate(user.updateTime)}}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button @click="onEdit(user)" class="btn btn-outline-primary btn-action">
+                                    <i class="fas fa-edit"></i> 修改
+                                </button>
+                                <button @click="onDeleted(user)" class="btn btn-outline-danger btn-action"
+                                        data-bs-target="#staticBackdrop">
+                                    <i class="fas fa-trash"></i> 删除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <nav aria-label="Page navigation" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a @click="pageNoDecrease" class="page-link" href="javascript:">上一页</a>
+                    </li>
+                    <li :class="{active:page===form.pageNo}" :key="index" class="page-item"
+                        v-for="(page,index) in form.pages">
+                        <a class="page-link" href="javascript:">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a @click="pageNoIncrease" class="page-link" href="javascript:">下一页</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+</body>
+<!-- 设置 popper 提示框 -->
+<script th:src="@{/src/config/popper-config.js}"></script>
+<!-- 加载全局axios配置 -->
+<script th:src="@{/src/config/axios-config.js}"></script>
+<script>
+    const {createApp, ref} = Vue;
+
+    const app = createApp({
+        components: {},
+        data() {
+            return {
+                form: ref({
+                    username: undefined,
+                    email: undefined,
+                    pageNo: 1,
+                    pageSize: 30,
+                    pages: 3
+                }),
+                // 查询用户列表
+                userList: ref([])
+            };
+        },
+        computed: {},
+        methods: {
+            /* 格式化时间 */
+            formatDate(date) {
+                return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+            },
+            /* 当前分页+1 */
+            pageNoIncrease() {
+                this.form.pageNo++;
+                this.onSearch();
+            },
+            /* 当前分页-1 */
+            pageNoDecrease() {
+                this.form.pageNo--;
+                this.onSearch();
+            },
+
+            /* 加载数据 */
+            async onSearch() {
+                const {pageNo, pageSize} = this.form;
+                const {data, message} = await axiosInstance.get(`/user/${pageNo}/${pageSize}`, {params: this.form})
+
+                antd.message.success(message);
+
+                this.userList = data.list;
+                this.form.pageNo = data.pageNo;
+                this.form.pageSize = data.pageSize;
+                this.form.pages = data.pages;
+            },
+            /* 重制表单 */
+            onRest() {
+                this.form.username = undefined;
+                this.form.email = undefined;
+                this.onSearch();
+            },
+            /* 修改 */
+            onEdit() {
+
+            },
+            /* 删除 */
+            async onDeleted(user) {
+                const result = confirm("确认删除？");
+                if (!result) return false;
+
+                // 删除用户
+                const {code, message} = await axiosInstance.delete(`/user`, {data: [user.id]});
+                if (code === 200) {
+                    antd.message.success(message);
+                }
+            },
+        },
+        mounted() {
+            this.onSearch();
+        },
+    });
+
+    app.mount('#app');
+</script>
+</html>

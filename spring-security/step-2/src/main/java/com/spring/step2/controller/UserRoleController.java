@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Tag(name = "用户角色关联表", description = "用户角色关联表相关接口")
 @RestController
-@RequestMapping("/api/coupon/user-role")
+@RequestMapping("/api/user-role")
 @RequiredArgsConstructor
 public class UserRoleController {
 
