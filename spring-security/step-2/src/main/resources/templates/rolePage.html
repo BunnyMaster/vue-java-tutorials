@@ -29,29 +29,34 @@
     <!-- 引入 antd JS -->
     <script th:src="@{/src/lib/js/dayjs/antd.min.js}"></script>
 
-    <title>用户管理系统</title>
+    <title>角色管理系统</title>
 </head>
 <body>
 <div class="container-fluid" id="app">
-    <dialog-user :is-add="dialogFormFlag" :on-search="onSearch" :userinfo="userinfo"></dialog-user>
+    <dialog-role :is-add="dialogFormFlag" :on-search="onSearch" :role-info="roleInfo"></dialog-role>
 
     <!-- 头部 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="fas fa-search me-2"></i>用户查询</span>
+            <span><i class="fas fa-search me-2"></i>角色查询</span>
         </div>
         <div class="card-body">
             <form @reset="onRest" @submit.prevent="onSearch">
                 <div class="row g-3 align-items-center">
                     <div class="col-md-4">
-                        <label class="form-label" for="username"><i class="fas fa-user me-1"></i>用户名</label>
-                        <input autocomplete="false" class="form-control" id="username" placeholder="请输入用户名"
-                               type="text" v-model="searchForm.username">
+                        <label class="form-label" for="roleName"><i class="fas fa-user-alt me-1"></i>角色名</label>
+                        <input autocomplete="false" class="form-control" id="roleName" placeholder="请输入角色名"
+                               type="text" v-model="searchForm.roleName">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label" for="email"><i class="fas fa-envelope me-1"></i>邮箱</label>
-                        <input autocomplete="false" class="form-control" id="email" placeholder="请输入邮箱"
-                               type="email" v-model="searchForm.email">
+                        <label class="form-label" for="description"><i class="fas fa-text-width me-1"></i>描述</label>
+                        <input autocomplete="false" class="form-control" id="description" placeholder="请输入描述"
+                               type="text" v-model="searchForm.description">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="remark"><i class="fas fa-info me-1"></i>简述</label>
+                        <input autocomplete="false" class="form-control" id="remark" placeholder="请输入简述"
+                               type="text" v-model="searchForm.remark">
                     </div>
                     <div class="col-md-4">
                         <div class="search-btn-group">
@@ -71,9 +76,9 @@
     <!-- 表格 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="fas fa-users me-2"></i>用户列表</span>
-            <button @click="onAdd" class="btn btn-sm btn-success" data-bs-target="#userBackdrop" data-bs-toggle="modal">
-                <i class="fas fa-plus me-1"></i>新增用户
+            <span><i class="fas fa-users me-2"></i>角色列表</span>
+            <button @click="onAdd" class="btn btn-sm btn-success" data-bs-target="#roleBackdrop" data-bs-toggle="modal">
+                <i class="fas fa-plus me-1"></i>新增角色
             </button>
         </div>
         <div class="card-body">
@@ -82,27 +87,29 @@
                     <thead class="table-light">
                     <tr>
                         <th scope="col" width="5%">#</th>
-                        <th scope="col" width="22%">用户名</th>
-                        <th scope="col" width="22%">邮箱</th>
-                        <th scope="col" width="17%">创建时间</th>
-                        <th scope="col" width="17%">更新时间</th>
-                        <th scope="col" width="16%">操作</th>
+                        <th scope="col" width="15%">角色名</th>
+                        <th scope="col" width="15%">描述</th>
+                        <th scope="col" width="15%">简述</th>
+                        <th scope="col" width="15%">创建时间</th>
+                        <th scope="col" width="15%">更新时间</th>
+                        <th scope="col" width="20%">操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr :key="user.id" v-for="(user,index) in dataList">
+                    <tr :key="role.id" v-for="(role,index) in dataList">
                         <th scope="row">{{index + 1}}</th>
-                        <td>{{user.username}}</td>
-                        <td>{{user.email}}</td>
-                        <td>{{formatDate(user.createTime)}}</td>
-                        <td>{{formatDate(user.updateTime)}}</td>
+                        <td>{{role.roleName}}</td>
+                        <td>{{role.description}}</td>
+                        <td>{{role.remark}}</td>
+                        <td>{{formatDate(role.createTime)}}</td>
+                        <td>{{formatDate(role.updateTime)}}</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <button @click="onEdit(user)" class="btn btn-outline-primary btn-action"
-                                        data-bs-target="#userBackdrop" data-bs-toggle="modal">
+                                <button @click="onEdit(role)" class="btn btn-outline-primary btn-action"
+                                        data-bs-target="#roleBackdrop" data-bs-toggle="modal">
                                     <i class="fas fa-edit"></i> 修改
                                 </button>
-                                <button @click="onDeleted(user)" class="btn btn-outline-danger btn-action">
+                                <button @click="onDeleted(role)" class="btn btn-outline-danger btn-action">
                                     <i class="fas fa-trash"></i> 删除
                                 </button>
                             </div>
@@ -125,27 +132,28 @@
 
 <!-- 分页 -->
 <script th:src="@{/src/components/Pagination.js}"></script>
-<!-- 用户表单 -->
-<script th:src="@{/src/views/user/DialogUser.js}"></script>
+<!-- 角色表单 -->
+<script th:src="@{/src/views/role/DialogRole.js}"></script>
 <script>
-    const {createApp, ref} = Vue;
+    const {createApp, ref, toRaw} = Vue;
 
     const app = createApp({
         data() {
             return {
                 // 查询表单
                 searchForm: ref({
-                    username: undefined,
-                    email: undefined,
+                    roleName: undefined,
+                    description: undefined,
+                    remark: undefined,
                     pageNo: 1,
                     pageSize: 30,
                     pages: 0
                 }),
-                // 用户信息
-                userinfo: ref({}),
+                // 角色信息
+                roleInfo: ref({}),
                 // 弹窗标题
                 dialogFormFlag: ref(false),
-                // 查询用户列表
+                // 查询角色列表
                 dataList: ref([])
             };
         },
@@ -160,7 +168,7 @@
             async onSearch() {
                 const {pageNo, pageSize} = this.searchForm;
                 // 查询数据
-                const {data} = await axiosInstance.get(`/user/${pageNo}/${pageSize}`, {params: this.searchForm})
+                const {data} = await axiosInstance.get(`/role/${pageNo}/${pageSize}`, {params: this.searchForm})
 
                 // 赋值数据
                 this.dataList = data.list;
@@ -173,32 +181,32 @@
 
             /* 重制表单 */
             onRest() {
-                this.searchForm.username = undefined;
-                this.searchForm.email = undefined;
+                this.searchForm.roleName = undefined;
+                this.searchForm.description = undefined;
                 this.onSearch();
             },
 
             /* 添加 */
             onAdd() {
                 this.dialogFormFlag = true;
-                this.userinfo = {};
+                this.roleInfo = {};
             },
 
             /* 修改 */
-            onEdit(user) {
+            onEdit(roleInfo) {
                 this.dialogFormFlag = false;
-                this.userinfo = user;
+                this.roleInfo = roleInfo;
             },
 
             /* 删除 */
-            async onDeleted(user) {
+            async onDeleted(roleInfo) {
                 const result = confirm("确认删除？");
                 if (!result) return false;
 
-                // 删除用户
-                const {code, message} = await axiosInstance.delete(`/user`, {data: [user.id]});
+                // 删除角色
+                const {code, message} = await axiosInstance.delete(`/role`, {data: [roleInfo.id]});
                 if (code === 200) {
-                    this.onSearch();
+                    await this.onSearch();
                     antd.message.success(message);
                 } else {
                     antd.message.error(message);
@@ -211,7 +219,7 @@
     });
 
     app.component('Pagination', Pagination)
-    app.component('DialogUser', DialogUser)
+    app.component('DialogRole', DialogRole)
     app.mount('#app');
 </script>
 </html>

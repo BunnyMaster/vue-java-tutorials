@@ -1,6 +1,7 @@
 package com.spring.step2.domain.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,12 +20,15 @@ public class RoleDto {
     private Long id;
 
     @Schema(name = "roleName", title = "角色名称")
+    @NotBlank(message = "角色名称不能为空")
     private String roleName;
 
     @Schema(name = "description", title = "角色描述")
+    @NotBlank(message = "角色描述不能为空")
     private String description;
 
     @Schema(name = "remark", title = "备注信息")
+    @NotBlank(message = "备注信息不能为空")
     private String remark;
 
     @Schema(name = "createTime", title = "创建时间")

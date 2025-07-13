@@ -1,5 +1,8 @@
 package com.spring.step2.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +17,8 @@ import java.time.LocalDateTime;
 public class RoleVo {
 
     @Schema(name = "id", title = "主键ID")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     @Schema(name = "roleName", title = "角色名称")

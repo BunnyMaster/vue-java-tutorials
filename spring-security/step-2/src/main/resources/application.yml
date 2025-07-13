@@ -44,5 +44,7 @@ mybatis-plus:
 
 logging:
   level:
-    com.spring: debug
     root: info
+    com.spring: debug
+    org.springframework.security: debug
+

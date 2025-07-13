@@ -20,4 +20,9 @@ public class WebController {
     public String showUserPage() {
         return "userPage";
     }
+
+    @GetMapping("/role")
+    public String showRolePage() {
+        return "rolePage";
+    }
 }

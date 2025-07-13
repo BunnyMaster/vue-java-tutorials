@@ -1,5 +1,6 @@
 package com.spring.step2.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class PermissionEntity extends BaseEntity {
     private String remark;
 
     @Schema(name = "isDeleted", title = "是否删除：0-未删除，1-已删除")
+    @TableField(exist = false)
     private Boolean isDeleted;
 
 }
