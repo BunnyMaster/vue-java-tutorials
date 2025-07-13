@@ -1,4 +1,4 @@
-/* 提高 Antd Message 的 z-index */
+/* 提高 Antd Message 的 z-index，让提示框为最上层 */
 .ant-message {
     z-index: 1100 !important;
 }

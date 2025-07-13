@@ -29,11 +29,11 @@
     <!-- 引入 antd JS -->
     <script th:src="@{/src/lib/js/dayjs/antd.min.js}"></script>
 
-    <title>角色管理系统</title>
+    <title>角色管理页面</title>
 </head>
 <body>
 <div class="container-fluid" id="app">
-    <dialog-role :is-add="dialogFormFlag" :on-search="onSearch" :role-info="roleInfo"></dialog-role>
+    <dialog-role :is-add="isAdd" :on-search="onSearch" :role-info="roleInfo"></dialog-role>
 
     <!-- 头部 -->
     <div class="card">
@@ -152,7 +152,7 @@
                 // 角色信息
                 roleInfo: ref({}),
                 // 弹窗标题
-                dialogFormFlag: ref(false),
+                isAdd: ref(false),
                 // 查询角色列表
                 dataList: ref([])
             };
@@ -189,13 +189,13 @@
 
             /* 添加 */
             onAdd() {
-                this.dialogFormFlag = true;
+                this.isAdd = true;
                 this.roleInfo = {};
             },
 
             /* 修改 */
             onEdit(roleInfo) {
-                this.dialogFormFlag = false;
+                this.isAdd = false;
                 this.roleInfo = roleInfo;
             },
 

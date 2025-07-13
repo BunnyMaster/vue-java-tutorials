@@ -25,4 +25,9 @@ public class WebController {
     public String showRolePage() {
         return "rolePage";
     }
+
+    @GetMapping("/permission")
+    public String showPermissionPage() {
+        return "permissionPage";
+    }
 }

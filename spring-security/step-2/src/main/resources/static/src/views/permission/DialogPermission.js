@@ -1,14 +1,14 @@
-const DialogRole = defineComponent({
-    name: "DialogRole",
+const DialogPermission = defineComponent({
+    name: "DialogPermission",
     template: `
-        <div class="modal fade" id="roleBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="roleBackdropLabel" ref="modalRef">
+        <div class="modal fade" id="permissionBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="permissionBackdropLabel" ref="modalRef">
             <div class="modal-dialog">
                 <div class="modal-content">
         
                     <!-- 头部 -->
                     <div class="modal-header">
-                        <h5 class="modal-title">{{isAdd?"新增角色":"修改角色"}}</h5>
+                        <h5 class="modal-title">{{isAdd?"新增权限":"修改权限"}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
         
@@ -16,10 +16,10 @@ const DialogRole = defineComponent({
                         <!-- 内容 -->
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label class="form-label" for="dialogRoleCode"><i class="fas fa-user-alt me-1"></i>角色码</label>
-                                <input autocomplete="false" class="form-control" id="dialogRoleCode" placeholder="请输入角色名"
-                                    type="text" v-model="form.roleCode" required>
-                                <div class="form-text">在这里输入你的角色码。</div>
+                                <label class="form-label" for="dialogPermissionCode"><i class="fas fa-user-alt me-1"></i>权限码</label>
+                                <input autocomplete="false" class="form-control" id="dialogPermissionCode" placeholder="请输入权限码"
+                                    type="text" v-model="form.permissionCode" required>
+                                <div class="form-text">在这里输入你的权限码。</div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="dialogDescription"><i class="fas fa-user-alt me-1"></i>描述</label>
@@ -48,8 +48,8 @@ const DialogRole = defineComponent({
     props: {
         // 是否添加
         isAdd: {type: Boolean, default: false},
-        // 角色信息
-        roleInfo: {type: Object, required: true},
+        // 权限信息
+        permissionInfo: {type: Object, required: true},
         // 加载函数
         onSearch: {type: Function, required: true},
     },
@@ -63,8 +63,8 @@ const DialogRole = defineComponent({
         async onSubmit() {
             // 是否添加表单
             const {code, message} = this.isAdd ?
-                await axiosInstance.post("/role", this.form) :
-                await axiosInstance.put("/role", this.form);
+                await axiosInstance.post("/permission", this.form) :
+                await axiosInstance.put("/permission", this.form);
 
             if (code === 200) {
                 antd.message.success(message);
@@ -75,7 +75,7 @@ const DialogRole = defineComponent({
         }
     },
     watch: {
-        roleInfo(val) {
+        permissionInfo(val) {
             // 创建深拷贝，而不是直接赋值
             this.form = JSON.parse(JSON.stringify(val));
         }

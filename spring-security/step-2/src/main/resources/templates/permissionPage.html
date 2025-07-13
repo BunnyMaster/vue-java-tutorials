@@ -29,29 +29,36 @@
     <!-- 引入 antd JS -->
     <script th:src="@{/src/lib/js/dayjs/antd.min.js}"></script>
 
-    <title>用户管理页面</title>
+    <title>权限管理页面</title>
 </head>
 <body>
 <div class="container-fluid" id="app">
-    <dialog-user :is-add="dialogFormFlag" :on-search="onSearch" :userinfo="userinfo"></dialog-user>
+    <dialog-permission :is-add="isAdd" :on-search="onSearch"
+                       :permission-info="permissionInfo"></dialog-permission>
 
     <!-- 头部 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="fas fa-search me-2"></i>用户查询</span>
+            <span><i class="fas fa-search me-2"></i>权限查询</span>
         </div>
         <div class="card-body">
             <form @reset="onRest" @submit.prevent="onSearch">
                 <div class="row g-3 align-items-center">
                     <div class="col-md-4">
-                        <label class="form-label" for="username"><i class="fas fa-user me-1"></i>用户名</label>
-                        <input autocomplete="false" class="form-control" id="username" placeholder="请输入用户名"
-                               type="text" v-model="searchForm.username">
+                        <label class="form-label" for="permissionCode"><i
+                                class="fas fa-power-off me-1"></i>权限码</label>
+                        <input autocomplete="false" class="form-control" id="permissionCode" placeholder="请输入权限码"
+                               type="text" v-model="searchForm.permissionCode">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label" for="email"><i class="fas fa-envelope me-1"></i>邮箱</label>
-                        <input autocomplete="false" class="form-control" id="email" placeholder="请输入邮箱"
-                               type="email" v-model="searchForm.email">
+                        <label class="form-label" for="description"><i class="fas fa-text-width me-1"></i>描述</label>
+                        <input autocomplete="false" class="form-control" id="description" placeholder="请输入描述"
+                               type="text" v-model="searchForm.description">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="remark"><i class="fas fa-info me-1"></i>简述</label>
+                        <input autocomplete="false" class="form-control" id="remark" placeholder="请输入简述"
+                               type="text" v-model="searchForm.remark">
                     </div>
                     <div class="col-md-4">
                         <div class="search-btn-group">
@@ -71,9 +78,10 @@
     <!-- 表格 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="fas fa-users me-2"></i>用户列表</span>
-            <button @click="onAdd" class="btn btn-sm btn-success" data-bs-target="#userBackdrop" data-bs-toggle="modal">
-                <i class="fas fa-plus me-1"></i>新增用户
+            <span><i class="fas fa-power-off me-2"></i>权限列表</span>
+            <button @click="onAdd" class="btn btn-sm btn-success"
+                    data-bs-target="#permissionBackdrop" data-bs-toggle="modal">
+                <i class="fas fa-plus me-1"></i>新增权限
             </button>
         </div>
         <div class="card-body">
@@ -82,27 +90,29 @@
                     <thead class="table-light">
                     <tr>
                         <th scope="col" width="5%">#</th>
-                        <th scope="col" width="22%">用户名</th>
-                        <th scope="col" width="22%">邮箱</th>
-                        <th scope="col" width="17%">创建时间</th>
-                        <th scope="col" width="17%">更新时间</th>
-                        <th scope="col" width="16%">操作</th>
+                        <th scope="col" width="15%">权限名</th>
+                        <th scope="col" width="15%">描述</th>
+                        <th scope="col" width="15%">简述</th>
+                        <th scope="col" width="15%">创建时间</th>
+                        <th scope="col" width="15%">更新时间</th>
+                        <th scope="col" width="20%">操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr :key="user.id" v-for="(user,index) in dataList">
+                    <tr :key="permission.id" v-for="(permission,index) in dataList">
                         <th scope="row">{{index + 1}}</th>
-                        <td>{{user.username}}</td>
-                        <td>{{user.email}}</td>
-                        <td>{{formatDate(user.createTime)}}</td>
-                        <td>{{formatDate(user.updateTime)}}</td>
+                        <td>{{permission.permissionCode}}</td>
+                        <td>{{permission.description}}</td>
+                        <td>{{permission.remark}}</td>
+                        <td>{{formatDate(permission.createTime)}}</td>
+                        <td>{{formatDate(permission.updateTime)}}</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <button @click="onEdit(user)" class="btn btn-outline-primary btn-action"
-                                        data-bs-target="#userBackdrop" data-bs-toggle="modal">
+                                <button @click="onEdit(permission)" class="btn btn-outline-primary btn-action"
+                                        data-bs-target="#permissionBackdrop" data-bs-toggle="modal">
                                     <i class="fas fa-edit"></i> 修改
                                 </button>
-                                <button @click="onDeleted(user)" class="btn btn-outline-danger btn-action">
+                                <button @click="onDeleted(permission)" class="btn btn-outline-danger btn-action">
                                     <i class="fas fa-trash"></i> 删除
                                 </button>
                             </div>
@@ -125,8 +135,8 @@
 
 <!-- 分页 -->
 <script th:src="@{/src/components/Pagination.js}"></script>
-<!-- 用户表单 -->
-<script th:src="@{/src/views/user/DialogUser.js}"></script>
+<!-- 权限表单 -->
+<script th:src="@{/src/views/permission/DialogPermission.js}"></script>
 <script>
     const {createApp, ref} = Vue;
 
@@ -135,17 +145,17 @@
             return {
                 // 查询表单
                 searchForm: ref({
-                    username: undefined,
+                    permissionCode: undefined,
                     email: undefined,
                     pageNo: 1,
                     pageSize: 30,
                     pages: 0
                 }),
-                // 用户信息
-                userinfo: ref({}),
+                // 权限信息
+                permissionInfo: ref({}),
                 // 弹窗标题
-                dialogFormFlag: ref(false),
-                // 查询用户列表
+                isAdd: ref(false),
+                // 查询权限列表
                 dataList: ref([])
             };
         },
@@ -160,7 +170,7 @@
             async onSearch() {
                 const {pageNo, pageSize} = this.searchForm;
                 // 查询数据
-                const {data} = await axiosInstance.get(`/user/${pageNo}/${pageSize}`, {params: this.searchForm})
+                const {data} = await axiosInstance.get(`/permission/${pageNo}/${pageSize}`, {params: this.searchForm})
 
                 // 赋值数据
                 this.dataList = data.list;
@@ -173,32 +183,32 @@
 
             /* 重制表单 */
             onRest() {
-                this.searchForm.username = undefined;
+                this.searchForm.permissionCode = undefined;
                 this.searchForm.email = undefined;
                 this.onSearch();
             },
 
             /* 添加 */
             onAdd() {
-                this.dialogFormFlag = true;
-                this.userinfo = {};
+                this.isAdd = true;
+                this.permissionInfo = {};
             },
 
             /* 修改 */
-            onEdit(user) {
-                this.dialogFormFlag = false;
-                this.userinfo = user;
+            onEdit(permission) {
+                this.isAdd = false;
+                this.permissionInfo = permission;
             },
 
             /* 删除 */
-            async onDeleted(user) {
+            async onDeleted(permission) {
                 const result = confirm("确认删除？");
                 if (!result) return false;
 
-                // 删除用户
-                const {code, message} = await axiosInstance.delete(`/user`, {data: [user.id]});
+                // 删除权限
+                const {code, message} = await axiosInstance.delete(`/permission`, {data: [permission.id]});
                 if (code === 200) {
-                    this.onSearch();
+                    await this.onSearch();
                     antd.message.success(message);
                 } else {
                     antd.message.error(message);
@@ -211,7 +221,7 @@
     });
 
     app.component('Pagination', Pagination)
-    app.component('DialogUser', DialogUser)
+    app.component('DialogPermission', DialogPermission)
     app.mount('#app');
 </script>
 </html>
