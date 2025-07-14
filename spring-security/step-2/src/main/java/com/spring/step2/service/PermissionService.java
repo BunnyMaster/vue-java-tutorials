@@ -2,7 +2,7 @@ package com.spring.step2.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.spring.step2.domain.dto.PermissionDto;
+import com.spring.step2.domain.dto.permission.PermissionDto;
 import com.spring.step2.domain.entity.PermissionEntity;
 import com.spring.step2.domain.vo.PermissionVo;
 import com.spring.step2.domain.vo.result.PageResult;
@@ -46,4 +46,12 @@ public interface PermissionService extends IService<PermissionEntity> {
      * @param ids 删除id列表
      */
     void deletePermission(List<Long> ids);
+
+    /**
+     * 获取所有的权限列表
+     *
+     * @return 所有权限列表
+     */
+    List<PermissionVo> getAllPermission();
+
 }

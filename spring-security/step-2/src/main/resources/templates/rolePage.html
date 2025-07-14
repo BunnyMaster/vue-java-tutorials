@@ -36,6 +36,10 @@
     <dialog-role :is-add="isAdd" :on-search="onSearch" :role-info="roleInfo"></dialog-role>
 
     <header-navs></header-navs>
+
+    <!-- 分配权限 -->
+    <assign-permission :role-info="roleInfo"></assign-permission>
+
     <!-- 头部 -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -110,6 +114,10 @@
                                         data-bs-target="#roleBackdrop" data-bs-toggle="modal">
                                     <i class="fas fa-edit"></i> 修改
                                 </button>
+                                <button @click="onAssignPermission(role)" class="btn btn-outline-primary btn-action"
+                                        data-bs-target="#assignPermissionOffCanvas" data-bs-toggle="offcanvas">
+                                    <i class="fas fa-cloud"></i> 分配权限
+                                </button>
                                 <button @click="onDeleted(role)" class="btn btn-outline-danger btn-action">
                                     <i class="fas fa-trash"></i> 删除
                                 </button>
@@ -137,6 +145,8 @@
 <script th:src="@{/src/components/Pagination.js}"></script>
 <!-- 角色表单 -->
 <script th:src="@{/src/views/role/DialogRole.js}"></script>
+<!-- 角色分配权限 -->
+<script th:src="@{/src/views/role/AssignPermission.js}"></script>
 <script>
     const {createApp, ref, toRaw} = Vue;
 
@@ -202,6 +212,11 @@
                 this.roleInfo = roleInfo;
             },
 
+            /* 分配权限 */
+            onAssignPermission(roleInfo) {
+                this.roleInfo = roleInfo;
+            },
+
             /* 删除 */
             async onDeleted(roleInfo) {
                 const result = confirm("确认删除？");
@@ -225,6 +240,7 @@
     app.component('HeaderNavs', HeaderNavs);
     app.component('Pagination', Pagination);
     app.component('DialogRole', DialogRole);
+    app.component('AssignPermission', AssignPermission);
     app.mount('#app');
 </script>
 </html>

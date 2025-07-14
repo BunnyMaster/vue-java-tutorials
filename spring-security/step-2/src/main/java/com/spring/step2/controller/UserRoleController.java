@@ -66,7 +66,7 @@ public class UserRoleController {
     @PostMapping("assign-role")
     public Result<String> assignUserRole(@Valid @RequestBody AssignUserRoleDto dto) {
         userRoleService.assignUserRole(dto);
-        return Result.success(ResultCodeEnum.SUCCESS);
+        return Result.success();
     }
 
     @Operation(summary = "更新用户角色关联表", description = "更新用户角色关联表")

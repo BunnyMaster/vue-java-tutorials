@@ -1,7 +1,7 @@
 package com.spring.step2.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.spring.step2.domain.dto.RoleDto;
+import com.spring.step2.domain.dto.role.RoleDto;
 import com.spring.step2.domain.entity.RoleEntity;
 import com.spring.step2.domain.vo.RoleVo;
 import com.spring.step2.domain.vo.result.PageResult;

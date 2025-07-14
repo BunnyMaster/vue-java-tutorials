@@ -1,7 +1,8 @@
 package com.spring.step2.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.spring.step2.domain.dto.RolePermissionDto;
+import com.spring.step2.domain.dto.role.AssignRolePermissionDto;
+import com.spring.step2.domain.dto.role.RolePermissionDto;
 import com.spring.step2.domain.entity.RolePermissionEntity;
 import com.spring.step2.domain.vo.RolePermissionVo;
 import com.spring.step2.domain.vo.result.PageResult;
@@ -46,11 +47,25 @@ public class RolePermissionController {
         return Result.success(pageResult);
     }
 
+    @GetMapping("permissions")
+    @Operation(summary = "根据角色id获取权限内容", description = "根据角色id获取权限内容")
+    public Result<List<RolePermissionVo>> getRolePermissionById(Long permissionId) {
+        List<RolePermissionVo> voList = rolePermissionService.getRolePermissionById(permissionId);
+        return Result.success(voList);
+    }
+
     @Operation(summary = "添加角色权限关联表", description = "添加角色权限关联表")
     @PostMapping()
     public Result<String> addRolePermission(@Valid @RequestBody RolePermissionDto dto) {
         rolePermissionService.addRolePermission(dto);
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
+    }
+
+    @Operation(summary = "为角色分配权限", description = "根据角色id分配权限")
+    @PostMapping("assign-permission")
+    public Result<String> assignRolePermission(@Valid @RequestBody AssignRolePermissionDto dto) {
+        rolePermissionService.assignRolePermission(dto);
+        return Result.success();
     }
 
     @Operation(summary = "更新角色权限关联表", description = "更新角色权限关联表")

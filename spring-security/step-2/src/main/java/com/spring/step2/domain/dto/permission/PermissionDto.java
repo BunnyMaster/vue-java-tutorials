@@ -1,7 +1,6 @@
-package com.spring.step2.domain.dto;
+package com.spring.step2.domain.dto.permission;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,22 +12,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "RoleDTO对象", title = "系统角色表", description = "系统角色表的DTO对象")
-public class RoleDto {
+@Schema(name = "PermissionDTO对象", title = "系统权限表", description = "系统权限表的DTO对象")
+public class PermissionDto {
 
     @Schema(name = "id", title = "主键ID")
     private Long id;
 
-    @Schema(name = "roleCode", title = "角色码")
-    @NotBlank(message = "角色码不能为空")
-    private String roleCode;
+    @Schema(name = "permissionCode", title = "权限编码")
+    private String permissionCode;
 
-    @Schema(name = "description", title = "角色描述")
-    @NotBlank(message = "角色描述不能为空")
+    @Schema(name = "description", title = "权限描述")
     private String description;
 
     @Schema(name = "remark", title = "备注信息")
-    @NotBlank(message = "备注信息不能为空")
     private String remark;
 
     @Schema(name = "createTime", title = "创建时间")

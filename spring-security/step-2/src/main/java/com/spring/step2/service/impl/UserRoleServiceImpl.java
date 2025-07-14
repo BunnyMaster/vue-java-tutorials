@@ -112,9 +112,9 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRoleEnt
     public void assignUserRole(AssignUserRoleDto dto) {
         Long userId = dto.getUserId();
         List<Long> roleIds = dto.getRoleIds();
-        
+
         // 先删除已经分配的角色
-        baseMapper.deleteByUserId(dto);
+        baseMapper.deleteByUserId(userId);
 
         // 为用户分配角色
         List<UserRoleEntity> entityList = roleIds.stream().map(roleId -> {

@@ -4,11 +4,13 @@ package com.spring.step2.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.spring.step2.domain.dto.RolePermissionDto;
+import com.spring.step2.domain.dto.role.RolePermissionDto;
 import com.spring.step2.domain.entity.RolePermissionEntity;
 import com.spring.step2.domain.vo.RolePermissionVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -30,4 +32,18 @@ public interface RolePermissionMapper extends BaseMapper<RolePermissionEntity> {
      */
     IPage<RolePermissionVo> selectListByPage(@Param("page") Page<RolePermissionEntity> pageParams, @Param("dto") RolePermissionDto dto);
 
+    /**
+     * 根据角色id获取权限内容
+     *
+     * @param permissionId 权限id
+     * @return 角色权限列表
+     */
+    List<RolePermissionEntity> selectListByPermissionId(Long permissionId);
+
+    /**
+     * 先删除当前已经分配的角色权限内容
+     *
+     * @param roleId 角色id
+     */
+    void deleteByRoleId(Long roleId);
 }

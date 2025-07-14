@@ -2,10 +2,12 @@ package com.spring.step2.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.spring.step2.domain.dto.RolePermissionDto;
+import com.spring.step2.domain.dto.role.AssignRolePermissionDto;
+import com.spring.step2.domain.dto.role.RolePermissionDto;
 import com.spring.step2.domain.entity.RolePermissionEntity;
 import com.spring.step2.domain.vo.RolePermissionVo;
 import com.spring.step2.domain.vo.result.PageResult;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -46,4 +48,19 @@ public interface RolePermissionService extends IService<RolePermissionEntity> {
      * @param ids 删除id列表
      */
     void deleteRolePermission(List<Long> ids);
+
+    /**
+     * 根据角色id获取权限内容
+     *
+     * @param permissionId 权限id
+     * @return 角色权限列表
+     */
+    List<RolePermissionVo> getRolePermissionById(Long permissionId);
+
+    /**
+     * 根据角色id分配权限
+     *
+     * @param dto 为角色分配权限 {@link AssignRolePermissionDto}
+     */
+    void assignRolePermission(@Valid AssignRolePermissionDto dto);
 }

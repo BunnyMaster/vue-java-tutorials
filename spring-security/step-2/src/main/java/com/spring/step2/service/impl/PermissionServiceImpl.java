@@ -4,7 +4,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.spring.step2.domain.dto.PermissionDto;
+import com.spring.step2.domain.dto.permission.PermissionDto;
 import com.spring.step2.domain.entity.PermissionEntity;
 import com.spring.step2.domain.vo.PermissionVo;
 import com.spring.step2.domain.vo.result.PageResult;
@@ -83,5 +83,19 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     @Override
     public void deletePermission(List<Long> ids) {
         removeByIds(ids);
+    }
+
+    /**
+     * 获取所有的权限列表
+     *
+     * @return 所有权限列表
+     */
+    @Override
+    public List<PermissionVo> getAllPermission() {
+        return list().stream().map(permissionEntity -> {
+            PermissionVo permissionVo = new PermissionVo();
+            BeanUtils.copyProperties(permissionEntity, permissionVo);
+            return permissionVo;
+        }).toList();
     }
 }

@@ -19,6 +19,13 @@
         id,role_id,permission_id,create_time,update_time,create_user,update_user,is_deleted
     </sql>
 
+    <!-- 先删除当前已经分配的角色权限内容 -->
+    <delete id="deleteByRoleId">
+        delete
+        from t_role_permission
+        where role_id = #{roleId}
+    </delete>
+
     <!-- 分页查询角色权限关联表内容 -->
     <select id="selectListByPage" resultType="com.spring.step2.domain.vo.RolePermissionVo">
         select
@@ -26,6 +33,17 @@
         from t_role_permission
         <where>
             base.is_deleted = 0
+        </where>
+    </select>
+
+    <!-- 根据角色id获取权限内容 -->
+    <select id="selectListByPermissionId" resultType="com.spring.step2.domain.entity.RolePermissionEntity">
+        select *
+        from t_role_permission
+        <where>
+            <if test="permissionId != null">
+                permission_id = #{permissionId}
+            </if>
         </where>
     </select>
 

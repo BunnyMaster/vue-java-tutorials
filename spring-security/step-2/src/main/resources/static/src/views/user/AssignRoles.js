@@ -70,7 +70,7 @@ const AssignRoles = defineComponent({
             const {id} = value;
             // 如果没有id直接返回
             if (!id) return;
-            console.log(id)
+
             // 获取角色列表
             await this.getRoleList();
 

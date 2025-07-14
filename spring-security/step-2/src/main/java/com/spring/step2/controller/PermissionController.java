@@ -1,7 +1,7 @@
 package com.spring.step2.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.spring.step2.domain.dto.PermissionDto;
+import com.spring.step2.domain.dto.permission.PermissionDto;
 import com.spring.step2.domain.entity.PermissionEntity;
 import com.spring.step2.domain.vo.PermissionVo;
 import com.spring.step2.domain.vo.result.PageResult;
@@ -44,6 +44,13 @@ public class PermissionController {
         Page<PermissionEntity> pageParams = new Page<>(page, limit);
         PageResult<PermissionVo> pageResult = permissionService.getPermissionPage(pageParams, dto);
         return Result.success(pageResult);
+    }
+
+    @Operation(summary = "所有的权限列表", description = "获取所有的权限列表")
+    @GetMapping("all")
+    public Result<List<PermissionVo>> getAllPermission() {
+        List<PermissionVo> voList = permissionService.getAllPermission();
+        return Result.success(voList);
     }
 
     @Operation(summary = "添加系统权限表", description = "添加系统权限表")

@@ -3,7 +3,6 @@ package com.spring.step2.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.spring.step2.domain.dto.user.AssignUserRoleDto;
 import com.spring.step2.domain.dto.user.UserRoleDto;
 import com.spring.step2.domain.entity.UserRoleEntity;
 import com.spring.step2.domain.vo.UserRoleVo;
@@ -43,8 +42,8 @@ public interface UserRoleMapper extends BaseMapper<UserRoleEntity> {
     /**
      * 根据用户id删除用户相关分配角色
      *
-     * @param dto 用户分配角色DTO {@link AssignUserRoleDto}
+     * @param userId 用户id
      */
-    void deleteByUserId(AssignUserRoleDto dto);
+    void deleteByUserId(Long userId);
 
 }

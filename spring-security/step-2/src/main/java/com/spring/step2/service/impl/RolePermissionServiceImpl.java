@@ -4,7 +4,8 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.spring.step2.domain.dto.RolePermissionDto;
+import com.spring.step2.domain.dto.role.AssignRolePermissionDto;
+import com.spring.step2.domain.dto.role.RolePermissionDto;
 import com.spring.step2.domain.entity.RolePermissionEntity;
 import com.spring.step2.domain.vo.RolePermissionVo;
 import com.spring.step2.domain.vo.result.PageResult;
@@ -83,5 +84,45 @@ public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper,
     @Override
     public void deleteRolePermission(List<Long> ids) {
         removeByIds(ids);
+    }
+
+    /**
+     * 根据角色id获取权限内容
+     *
+     * @param permissionId 权限id
+     * @return 角色权限列表
+     */
+    @Override
+    public List<RolePermissionVo> getRolePermissionById(Long permissionId) {
+        List<RolePermissionEntity> list = baseMapper.selectListByPermissionId(permissionId);
+
+        return list.stream().map(rolePermissionEntity -> {
+            RolePermissionVo rolePermissionVo = new RolePermissionVo();
+            BeanUtils.copyProperties(rolePermissionEntity, rolePermissionVo);
+            return rolePermissionVo;
+        }).toList();
+    }
+
+    /**
+     * 根据角色id分配权限
+     *
+     * @param dto 为角色分配权限 {@link AssignRolePermissionDto}
+     */
+    @Override
+    public void assignRolePermission(AssignRolePermissionDto dto) {
+        Long roleId = dto.getRoleId();
+        List<Long> permissionIds = dto.getPermissionIds();
+
+        // 先删除当前已经分配的角色权限内容
+        baseMapper.deleteByRoleId(roleId);
+
+        List<RolePermissionEntity> rolePermissionEntityList = permissionIds.stream().map(permissionId -> {
+            RolePermissionEntity rolePermissionEntity = new RolePermissionEntity();
+            rolePermissionEntity.setRoleId(roleId);
+            rolePermissionEntity.setPermissionId(permissionId);
+            return rolePermissionEntity;
+        }).toList();
+
+        saveBatch(rolePermissionEntityList);
     }
 }
