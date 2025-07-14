@@ -554,6 +554,51 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 ## 关于UserDetailsService的深入解析
 
+> [!IMPORTANT]
+>
+> 在SpringSecurity6中版本是6.3.10，如果显式的为User设置角色，在示例的Security上下文中时获取不到roles相关信息的，只能获取到authorities信息。
+>
+> 如果需要使用角色判断需要将角色的内容和权限内容一并放到authorities中。
+>
+> 在SpringSecurity6中不用显式的为角色添加`ROLE_`像这样的字符串，Security会为我们亲自加上，如果加上会有异常抛出：`ROLE_USER cannot start with ROLE_ (it is automatically added)...`
+
+```java
+// 设置用户权限
+return User.builder()
+        .username(userEntity.getUsername())
+        .password(userEntity.getPassword())
+        .roles(roles)
+        // 设置用户 authorities
+        .authorities(authorities)
+        .build();
+```
+
+如有上述需要可以尝试这样写。
+
+```java
+// 设置用户角色
+String[] roles = findUserRolesByUserId(userId);
+
+// 设置用户权限
+List<String> permissionsByUserId = findPermissionByUserId(userId);
+String[] permissions = permissionsByUserId.toArray(String[]::new);
+
+// 也可以转成下面的形式
+// List<String> permissions = permissionsByUserId.stream()
+//         .map(SimpleGrantedAuthority::new)
+//         .toList();
+
+String[] authorities = ArrayUtils.addAll(roles, permissions);
+
+// 设置用户权限
+return User.builder()
+        .username(userEntity.getUsername())
+        .password(userEntity.getPassword())
+        // 设置用户 authorities
+        .authorities(authorities)
+        .build();
+```
+
 ### 简单阐述
 
 #### 1. UserDetailsService的核心作用
@@ -846,3 +891,290 @@ graph TD
     E --> F
     F --> G[返回认证结果]
 ```
+
+## 注解使用
+
+### 1. 基础使用说明
+
+> [!IMPORTANT] 
+>
+> 使用权限注解时需注意：
+>
+> - `hasAuthority()` 严格区分大小写
+> - 类级别注解会被方法级别注解覆盖
+> - 默认需要启用注解支持：`@EnableMethodSecurity`
+
+如果需要使用某个注解，直接在方法加上即可，当然也可以加载类上面。
+
+如果类上面也加了注解，方法也加了，那么方法的会覆盖掉类上的。
+
+```java
+@PreAuthorize("hasAuthority('permission:read')")
+@PostAuthorize("returnObject.data == authentication.name")
+@Operation(summary = "分页查询系统角色表", description = "分页系统角色表")
+@GetMapping("{page}/{limit}")
+public Result<PageResult<RoleVo>> getRolePage(
+        @Parameter(name = "page", description = "当前页", required = true)
+        @PathVariable("page") Integer page,
+        @Parameter(name = "limit", description = "每页记录数", required = true)
+        @PathVariable("limit") Integer limit,
+        RoleDto dto) {
+    Page<RoleEntity> pageParams = new Page<>(page, limit);
+    PageResult<RoleVo> pageResult = roleService.getRolePage(pageParams, dto);
+    return Result.success(pageResult);
+}
+```
+
+### 2. 前置与后置授权对比
+
+在Spring Security 6中，`@PreAuthorize`和`@PostAuthorize`确实有不同的执行时机和行为，你的理解基本正确，我来详细说明一下：
+
+#### 1. @PreAuthorize
+
+- **执行时机**：在方法执行**之前**进行权限检查
+- **行为**：
+  - 如果当前用户没有满足注解中指定的权限条件，方法**不会被执行**，直接抛出`AccessDeniedException`
+  - 这是一种"先验"的权限检查方式，可以防止无权限用户触发方法执行
+- **典型用途**：适用于方法执行前的权限验证，特别是当方法执行可能有副作用(如修改数据)时
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+public void deleteUser(Long userId) {
+    // 只有ADMIN角色可以执行此方法
+    // 如果不是ADMIN，代码不会执行到这里
+}
+```
+
+#### 2. @PostAuthorize
+
+- **执行时机**：在方法执行**之后**进行权限检查
+- **行为**：
+  - 方法**会先完整执行**，然后在返回结果前检查权限
+  - 如果权限检查不通过，同样会抛出`AccessDeniedException`，但方法已经执行完毕
+  - 可以基于方法的返回值进行权限判断(使用`returnObject`引用返回值)
+- **典型用途**：适用于需要根据方法返回结果决定是否允许访问的情况
+
+```java
+@PostAuthorize("returnObject.owner == authentication.name")
+public Document getDocument(Long docId) {
+    // 方法会先执行
+    // 返回前检查文档所有者是否是当前用户
+    return documentRepository.findById(docId);
+}
+```
+
+**如果需要关闭**
+
+```java
+@Configuration
+@EnableMethodSecurity(prePostEnabled = false)
+class MethodSecurityConfig {
+    
+}
+```
+
+
+
+#### 关键区别总结
+
+| 特性             | @PreAuthorize        | @PostAuthorize                 |
+| ---------------- | -------------------- | ------------------------------ |
+| 执行时机         | 方法执行前           | 方法执行后                     |
+| 方法是否会被执行 | 不满足条件时不执行   | 总是执行                       |
+| 可访问的上下文   | 方法参数             | 方法参数和返回值(returnObject) |
+| 性能影响         | 更好(避免不必要执行) | 稍差(方法总会执行)             |
+| 主要用途         | 防止未授权访问       | 基于返回值的访问控制           |
+
+> [!CAUTION] 
+>
+> 如果使用`PostAuthorize`注解，但是服务中没有标记事务注解，那么会将整个方法全部执行，即使没有权限也不会回滚。
+>
+> **默认情况下，Spring 事务会对未捕获的 `RuntimeException` 进行回滚**，因此：
+>
+> - 如果事务仍然活跃（未提交），则会回滚。
+> - 但如果事务已经提交（例如方法执行完毕且事务已提交），则**不会回滚**。
+
+1. **优先使用@PreAuthorize**：除非你需要基于返回值做判断，否则应该使用`@PreAuthorize`，因为它能更早地阻止未授权访问
+
+2. **注意方法副作用**：使用`@PostAuthorize`时要特别注意，即使最终会拒绝访问，方法中的所有代码(包括数据库修改等操作)都已经执行了
+
+3. **组合使用**：有时可以组合使用两者，先用`@PreAuthorize`做基本权限检查，再用`@PostAuthorize`做更精细的检查
+
+4. **性能敏感场景**：对于性能敏感或可能产生副作用的方法，避免使用`@PostAuthorize`
+
+**使用示例**
+
+```java
+@Tag(name = "测试接口", description = "测试用的接口")
+@Slf4j
+@RestController
+@RequestMapping("/api/test")
+public class TestController {
+
+    @PreAuthorize("hasAuthority('role::read')")
+    @Operation(summary = "拥有 role:read 的角色可以访问", description = "当前用户拥有 role:read 角色可以访问这个接口")
+    @GetMapping("role-user")
+    public Result<String> roleUser() {
+        return Result.success();
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "拥有 USER 的角色可以访问", description = "当前用户拥有 USER 角色可以访问这个接口")
+    @GetMapping("upper-user")
+    public Result<String> upperUser() {
+        String data = "是区分大小写的";
+        return Result.success(data);
+    }
+
+    @PreAuthorize("hasAuthority('user')")
+    @Operation(summary = "拥有 USER 的角色可以访问", description = "当前用户拥有 USER 角色可以访问这个接口")
+    @GetMapping("lower-user")
+    public Result<String> lowerUser() {
+        String data = "如果是大写，但是在这里是小写无法访问";
+        return Result.success(data);
+    }
+
+    @PostAuthorize("returnObject.data == authentication.name")
+    @Operation(summary = "测试使用返回参数判断权限", description = "测试使用返回参数判断权限 用户拥有 role::read 可以访问这个接口")
+    @GetMapping("test-post-authorize")
+    public Result<String> testPostAuthorize() {
+        log.info("方法内容已经执行。。。");
+        String data = "Bunny";
+        return Result.success(data);
+    }
+}
+```
+
+### 3. 高级用法
+
+#### 元注解封装
+
+```java
+// 管理员权限注解
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@PreAuthorize("hasRole('ADMIN')")
+public @interface AdminOnly {}
+
+// 资源所属校验注解
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@PostAuthorize("returnObject.ownerId == authentication.principal.id")
+public @interface ResourceOwner {}
+```
+
+#### 模板化注解
+
+```java
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@PreAuthorize("hasAuthority('USER') or hasAuthority(#permission)")
+public @interface UserOrPermission {
+    String permission();
+}
+
+// 使用示例
+@UserOrPermission(permission = "report:read")
+public Report getReport(Long id) { ... }
+```
+
+### 4. 其他注解支持
+
+#### JSR-250注解
+
+需显式启用：
+
+```java
+@EnableMethodSecurity(jsr250Enabled = true)
+```
+
+提供注解：
+
+- `@RolesAllowed("ROLE")` - 等效于`@PreAuthorize("hasRole('ROLE')")`
+- `@PermitAll` - 允许所有访问
+- `@DenyAll` - 拒绝所有访问
+
+#### 已废弃注解
+
+- `@Secured` 在Spring Security 6中已废弃，如需使用需显式启用：
+
+  ```java
+  @EnableMethodSecurity(securedEnabled = true)
+  ```
+
+### 5. 最佳实践示例
+
+```java
+@Tag(name = "权限测试接口")
+@RestController
+@RequestMapping("/api/auth-test")
+public class AuthTestController {
+
+    // 精确权限控制
+    @AdminOnly
+    @GetMapping("/admin")
+    public Result<String> adminEndpoint() {
+        return Result.success("Admin access");
+    }
+
+    // 复合权限检查
+    @PreAuthorize("hasAnyAuthority('DATA_READ', 'REPORT_READ')")
+    @GetMapping("/reports")
+    public Result<List<Report>> getReports() {
+        return Result.success(reportService.getAll());
+    }
+
+    // 返回值校验
+    @ResourceOwner
+    @GetMapping("/documents/{id}")
+    public Document getDocument(@PathVariable Long id) {
+        return docService.getById(id); // 执行后校验所有者
+    }
+
+    // 模板注解使用
+    @UserOrPermission(permission = "audit:read")
+    @GetMapping("/audit-logs")
+    public Result<PageResult<AuditLog>> getAuditLogs(Pageable pageable) {
+        return Result.success(auditService.getLogs(pageable));
+    }
+}
+```
+
+### 关键注意事项
+
+1. **事务边界问题**：
+
+   - `@PostAuthorize`注解的方法若包含写操作，需确保：
+
+     ```java
+     @Transactional
+     @PostAuthorize("...")
+     public void updateData() {
+         // 若授权失败，已执行的操作不会回滚
+     }
+     ```
+
+2. **权限命名规范**：
+
+   - 角色：`ROLE_ADMIN`（自动前缀）
+   - 权限：`module:action`（如`user:delete`）
+
+3. **性能考虑**：
+
+   - 避免在`@PostAuthorize`中执行耗时操作
+   - 对高频接口优先使用`@PreAuthorize`
+
+4. **测试覆盖**：
+
+   - 必须为每个安全注解编写测试用例
+   - 验证正向和反向场景
+
+5. **注解组合**：
+
+   ```java
+   @AdminOnly
+   @PostAuthorize("returnObject.status == 'PUBLIC'")
+   public Content getContent(Long id) {
+       // 需要管理员权限且只允许返回公开内容
+   }
+   ```

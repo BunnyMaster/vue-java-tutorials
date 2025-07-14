@@ -51,4 +51,9 @@ public class Knife4jConfig {
     public GroupedOpenApi test() {
         return GroupedOpenApi.builder().group("测试接口").pathsToMatch("/api/test/**").build();
     }
+
+    @Bean
+    public GroupedOpenApi testAdmin() {
+        return GroupedOpenApi.builder().group("测试包含管理员接口").pathsToMatch("/api/test-admin/**").build();
+    }
 }
