@@ -43,7 +43,7 @@ public class DbUserDetailService implements UserDetailsService {
         String[] authorities = permissionsByUserId.toArray(String[]::new);
 
         // 也可以转成下面的形式
-        // authorities = permissionsByUserId.stream()
+        // List<String> authorities = permissionsByUserId.stream()
         //         .map(SimpleGrantedAuthority::new)
         //         .toList();
 

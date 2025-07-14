@@ -1,5 +1,7 @@
 # Spring Security 6 入门指南
 
+![image-20250714202213150](./images/image-20250714202213150.png)
+
 ## 基本配置
 
 ### 添加依赖
@@ -403,6 +405,24 @@ public UserDetails getCurrentUserDetail() {
 
 ### 角色与权限配置
 
+> [!IMPORTANT]
+>
+> 1. **角色与权限的区别**：
+>    - `hasRole()`会自动添加"ROLE_"前缀
+>    - `hasAuthority()`直接使用指定的权限字符串
+> 2. **匹配顺序**：
+>    - Spring Security会按照配置的顺序进行匹配
+>    - 更具体的路径应该放在前面，通用规则（如anyRequest）放在最后
+> 3. **方法选择建议**：
+>    - `hasRole()`/`hasAnyRole()`：适合基于角色的访问控制
+>    - `hasAuthority()`/`hasAnyAuthority()`：适合更细粒度的权限控制
+>    - `authenticated()`：只需认证通过，不检查具体角色/权限
+>    - `permitAll()`：完全开放访问
+> 4. **最佳实践**：
+>    - 对于REST API，通常使用`authenticated()`配合方法级权限控制
+>    - 静态资源应明确配置`permitAll()`
+>    - 生产环境不建议使用`anyRequest().permitAll()`
+
 #### 1. 基于角色的URL访问控制
 
 ##### 单角色配置
@@ -517,27 +537,26 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 }
 ```
 
-### 重要说明
+### 基于方法的授权
 
-1. **角色与权限的区别**：
-   - `hasRole()`会自动添加"ROLE_"前缀
-   - `hasAuthority()`直接使用指定的权限字符串
-2. **匹配顺序**：
-   - Spring Security会按照配置的顺序进行匹配
-   - 更具体的路径应该放在前面，通用规则（如anyRequest）放在最后
-3. **方法选择建议**：
-   - `hasRole()`/`hasAnyRole()`：适合基于角色的访问控制
-   - `hasAuthority()`/`hasAnyAuthority()`：适合更细粒度的权限控制
-   - `authenticated()`：只需认证通过，不检查具体角色/权限
-   - `permitAll()`：完全开放访问
-4. **最佳实践**：
-   - 对于REST API，通常使用`authenticated()`配合方法级权限控制
-   - 静态资源应明确配置`permitAll()`
-   - 生产环境不建议使用`anyRequest().permitAll()`
+> [!NOTE]
+>
+> 通过在任何 `@Configuration` 类上添加 `@EnableMethodSecurity` 注解。
+>
+> Spring Boot Starter Security 默认情况下不会激活方法级别的授权。
+
+#### 提供的注解
+
+1. @PreAuthorize
+2. @PostAuthorize
+3. @PreFilter
+4. @PostFilter
 
 ## 关于UserDetailsService的深入解析
 
-### 1. UserDetailsService的核心作用
+### 简单阐述
+
+#### 1. UserDetailsService的核心作用
 
 `UserDetailsService`是Spring Security的核心接口，负责提供用户认证数据。它只有一个核心方法：
 
@@ -547,7 +566,7 @@ UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
 
 当用户尝试登录时，Spring Security会自动调用这个方法来获取用户详情。
 
-### 2. 为什么不需要手动校验密码？
+#### 2. 为什么不需要手动校验密码？
 
 在标准的表单登录流程中，Spring Security的认证流程会自动处理密码校验，这是因为：
 
@@ -568,7 +587,7 @@ UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
    D --> E[认证成功/失败]
    ```
 
-### 3. 完整的安全配置示例
+#### 3. 完整的安全配置示例
 
 ```java
 @Configuration
@@ -609,7 +628,7 @@ public class SecurityConfig {
 }
 ```
 
-### 4. 关键注意事项
+#### 4. 关键注意事项
 
 1. **必须提供PasswordEncoder**：  
    如果没有配置，会出现`There is no PasswordEncoder mapped`错误
@@ -635,7 +654,7 @@ public class SecurityConfig {
    - 存在`PasswordEncoder` bean
    - 没有显式配置`AuthenticationManager`
 
-### 5. 扩展场景
+#### 5. 扩展场景
 
 如果需要自定义认证逻辑（如增加验证码校验），可以：
 
@@ -671,7 +690,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
 http.authenticationProvider(customAuthProvider);
 ```
 
-### 总结对比表
+#### 总结对比表
 
 | 场景         | 需要手动处理                       | 自动处理                |
 | ------------ | ---------------------------------- | ----------------------- |
@@ -681,3 +700,149 @@ http.authenticationProvider(customAuthProvider);
 | 权限加载     | 通过`UserDetails.getAuthorities()` | ✅                       |
 
 这样设计的好处是：开发者只需关注业务数据获取（用户信息查询），安全相关的校验逻辑由框架统一处理，既保证了安全性又减少了重复代码。
+
+### 获取角色与权限
+
+#### 1. 角色信息处理
+
+在`UserDetailsService`实现中获取并设置用户角色：
+
+```java
+@Override
+public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    // 1. 查询用户基本信息
+    UserEntity userEntity = userMapper.selectByUsername(username);
+    if (userEntity == null) {
+        throw new UsernameNotFoundException("用户不存在");
+    }
+
+    // 2. 获取角色信息（自动添加ROLE_前缀）
+    String[] roles = findUserRolesByUserId(userEntity.getId());
+    
+    // 3. 获取权限信息
+    List<String> permissions = findPermissionsByUserId(userEntity.getId());
+    
+    return User.builder()
+            .username(userEntity.getUsername())
+            .password(userEntity.getPassword())
+            // 角色会自动添加ROLE_前缀
+            .roles(roles)  
+            // 直接作为权限字符串使用
+            .authorities(permissions.toArray(new String[0])) 
+            .build();
+}
+```
+
+**关键说明**：
+
+- `roles()`方法会自动为角色添加`ROLE_`前缀（如`ADMIN`会变成`ROLE_ADMIN`）
+- 角色和权限在Spring Security中是不同概念，角色本质是带有特殊前缀的权限
+
+#### 2. 权限信息处理（两种方式）
+
+**方式一：直接使用字符串**
+
+```java
+List<String> permissions = findPermissionsByUserId(userId);
+return User.withUsername(username)
+           .authorities(permissions.toArray(new String[0]))
+           // ...
+           .build();
+```
+
+**方式二：转换为SimpleGrantedAuthority**
+
+```java
+List<GrantedAuthority> authorities = permissions.stream()
+    .map(SimpleGrantedAuthority::new)
+    .collect(Collectors.toList());
+
+return User.withUsername(username)
+           .authorities(authorities)
+           // ...
+           .build();
+```
+
+**权限实现类对比**：
+
+| 实现类                       | 适用场景      | 特点             |
+| ---------------------------- | ------------- | ---------------- |
+| `SimpleGrantedAuthority`     | 普通权限/角色 | 最常用实现       |
+| `SwitchUserGrantedAuthority` | 用户切换场景  | 包含原始用户信息 |
+| `JaasGrantedAuthority`       | JAAS集成      | 用于Java认证服务 |
+
+#### 3. Mapper配置优化
+
+**角色查询Mapper**：
+
+```xml
+<select id="selectRolesByUserId" resultType="com.example.entity.Role">
+    SELECT r.* 
+    FROM t_role r
+    JOIN t_user_role ur ON r.id = ur.role_id
+    WHERE ur.user_id = #{userId}
+</select>
+```
+
+**权限查询Mapper**：
+
+```xml
+<select id="selectPermissionsByUserId" resultType="java.lang.String">
+    SELECT p.permission_code
+    FROM t_permission p
+    JOIN t_role_permission rp ON p.id = rp.permission_id
+    JOIN t_user_role ur ON rp.role_id = ur.role_id
+    WHERE ur.user_id = #{userId}
+</select>
+```
+
+#### 4. 重要注意事项
+
+1. **角色与权限的存储建议**：
+
+   - 角色建议存储为`ADMIN`、`USER`等形式
+   - 权限建议存储为`user:read`、`order:delete`等具体操作
+
+2. **性能优化**：
+
+   ```java
+   // 使用一次查询获取所有权限信息（避免N+1查询）
+   @Select("SELECT p.permission_code FROM ... WHERE ur.user_id = #{userId}")
+   List<String> selectAllUserPermissions(@Param("userId") Long userId);
+   ```
+
+3. **Spring Security的默认行为**：
+
+   - 如果同时配置`roles()`和`authorities()`，后者会覆盖前者
+   - 推荐统一使用`authorities()`方法处理所有授权信息
+
+4. **最佳实践示例**：
+
+```java
+List<GrantedAuthority> authorities = new ArrayList<>();
+// 添加角色（手动添加ROLE_前缀）
+roles.forEach(role -> 
+    authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+// 添加权限
+authorities.addAll(permissions.stream()
+    .map(SimpleGrantedAuthority::new)
+    .toList());
+
+return User.builder()
+    // ...
+    .authorities(authorities)
+    .build();
+```
+
+#### 5. 完整流程示意图
+
+```mermaid
+graph TD
+    A[登录请求] --> B[调用UserDetailsService]
+    B --> C[查询用户基本信息]
+    C --> D[查询用户角色]
+    C --> E[查询用户权限]
+    D --> F[构建UserDetails对象]
+    E --> F
+    F --> G[返回认证结果]
+```
