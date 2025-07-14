@@ -29,6 +29,63 @@ public class SecurityWebConfiguration {
 - 使用默认登录页：`.formLogin(Customizer.withDefaults())`
 - 禁用表单登录：`.formLogin(AbstractHttpConfigurer::disable)`
 
+#### 配置示例
+
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+@RequiredArgsConstructor
+public class SecurityWebConfiguration {
+
+    private final DbUserDetailService dbUserDetailService;
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http.authorizeHttpRequests(authorizeRequests ->
+                        // 访问路径为 /api 时需要进行认证
+                        authorizeRequests
+                                // 只认证 /api/** 下的所有接口
+                                .requestMatchers("/api/**").authenticated()
+                                // 其余请求都放行
+                                .anyRequest().permitAll()
+                )
+                .formLogin(loginPage -> loginPage
+                        // 自定义登录页路径
+                        .loginPage("/login-page")
+                        // 处理登录的URL（默认就是/login）
+                        .loginProcessingUrl("/login")
+                        // 登录成功跳转
+                        .defaultSuccessUrl("/")
+                        // 登录失败跳转
+                        .failureUrl("/login-page?error=true")
+                        .permitAll()
+                )
+                // 使用默认的登录
+                // .formLogin(Customizer.withDefaults())
+                // 禁用表单登录
+                // .formLogin(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login-page?logout=true")
+                        .permitAll()
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(configurer -> configurer
+                        // 自定无权访问返回内容
+                        .accessDeniedHandler(new SecurityAccessDeniedHandler())
+                        // 自定义未授权返回内容
+                        .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
+                )
+
+                .userDetailsService(dbUserDetailService)
+        ;
+
+        return http.build();
+    }
+}
+```
+
 ## 认证与授权配置
 
 ### URL访问控制
@@ -477,3 +534,150 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
    - 对于REST API，通常使用`authenticated()`配合方法级权限控制
    - 静态资源应明确配置`permitAll()`
    - 生产环境不建议使用`anyRequest().permitAll()`
+
+## 关于UserDetailsService的深入解析
+
+### 1. UserDetailsService的核心作用
+
+`UserDetailsService`是Spring Security的核心接口，负责提供用户认证数据。它只有一个核心方法：
+
+```java
+UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+```
+
+当用户尝试登录时，Spring Security会自动调用这个方法来获取用户详情。
+
+### 2. 为什么不需要手动校验密码？
+
+在标准的表单登录流程中，Spring Security的认证流程会自动处理密码校验，这是因为：
+
+1. **自动集成密码编码器**：  
+   Spring Security会自动使用配置的`PasswordEncoder`来比对：
+
+   - 用户提交的明文密码
+   - 数据库中存储的加密密码（通过`UserDetails`返回）
+
+2. **认证流程内部处理**：  
+   认证管理器(`AuthenticationManager`)会自动处理以下流程：
+
+   ```mermaid
+   graph TD
+   A[用户提交凭证] --> B[调用UserDetailsService]
+   B --> C[获取UserDetails]
+   C --> D[PasswordEncoder比对密码]
+   D --> E[认证成功/失败]
+   ```
+
+### 3. 完整的安全配置示例
+
+```java
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfig {
+
+    private final DbUserDetailService dbUserDetailService;
+    private final PasswordEncoder passwordEncoder;
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
+            )
+            .formLogin(form -> form
+                .loginProcessingUrl("/login")
+                .permitAll()
+            )
+            // 即使不显式设置也会自动生效
+            .userDetailsService(dbUserDetailService)
+            // 必须配置PasswordEncoder
+            .authenticationManager(authenticationManager(http));
+        
+        return http.build();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(dbUserDetailService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .build();
+    }
+}
+```
+
+### 4. 关键注意事项
+
+1. **必须提供PasswordEncoder**：  
+   如果没有配置，会出现`There is no PasswordEncoder mapped`错误
+
+   ```java
+   @Bean
+   PasswordEncoder passwordEncoder() {
+       return new BCryptPasswordEncoder();
+   }
+   ```
+
+2. **UserDetails实现要求**：  
+   你的自定义`UserDetails`实现必须包含：
+
+   - 正确的用户名
+   - 加密后的密码
+   - 账号状态信息（是否过期/锁定等）
+
+3. **自动发现机制**：  
+   当以下条件满足时，Spring Boot会自动配置：
+
+   - 容器中存在唯一的`UserDetailsService`实现
+   - 存在`PasswordEncoder` bean
+   - 没有显式配置`AuthenticationManager`
+
+### 5. 扩展场景
+
+如果需要自定义认证逻辑（如增加验证码校验），可以：
+
+```java
+@Component
+@RequiredArgsConstructor
+public class CustomAuthProvider implements AuthenticationProvider {
+
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public Authentication authenticate(Authentication auth) {
+        // 自定义逻辑
+        UserDetails user = userDetailsService.loadUserByUsername(auth.getName());
+        // 手动密码比对
+        if (!passwordEncoder.matches(auth.getCredentials().toString(), user.getPassword())) {
+            throw new BadCredentialsException("密码错误");
+        }
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+}
+```
+
+然后在配置中注册：
+
+```java
+http.authenticationProvider(customAuthProvider);
+```
+
+### 总结对比表
+
+| 场景         | 需要手动处理                       | 自动处理                |
+| ------------ | ---------------------------------- | ----------------------- |
+| 用户查找     | 实现`loadUserByUsername()`         | ✅                       |
+| 密码比对     | ❌                                  | 由`PasswordEncoder`处理 |
+| 账号状态检查 | 通过`UserDetails`返回的状态        | ✅                       |
+| 权限加载     | 通过`UserDetails.getAuthorities()` | ✅                       |
+
+这样设计的好处是：开发者只需关注业务数据获取（用户信息查询），安全相关的校验逻辑由框架统一处理，既保证了安全性又减少了重复代码。

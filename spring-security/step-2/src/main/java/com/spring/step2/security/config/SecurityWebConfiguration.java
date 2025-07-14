@@ -2,7 +2,6 @@ package com.spring.step2.security.config;
 
 import com.spring.step2.security.handler.SecurityAccessDeniedHandler;
 import com.spring.step2.security.handler.SecurityAuthenticationEntryPoint;
-import com.spring.step2.security.service.DbUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityWebConfiguration {
-
-    private final DbUserDetailService dbUserDetailService;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -57,7 +54,6 @@ public class SecurityWebConfiguration {
                         // 自定义未授权返回内容
                         .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
                 )
-                .userDetailsService(dbUserDetailService)
         ;
 
         return http.build();

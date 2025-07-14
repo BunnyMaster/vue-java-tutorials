@@ -57,4 +57,11 @@
         </where>
     </select>
 
+    <!-- 根据用户id查找该用户的角色内容 -->
+    <select id="selectRolesByUserId" resultType="com.spring.step2.domain.entity.RoleEntity">
+        select *
+        from t_user_role tur
+                 join t_role tr on tur.role_id = tr.id
+    </select>
+
 </mapper>

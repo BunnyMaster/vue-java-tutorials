@@ -2,20 +2,22 @@ package com.spring.step2.security.service;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.spring.step2.domain.entity.PermissionEntity;
+import com.spring.step2.domain.entity.RoleEntity;
 import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @DS("testJwt")
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DbUserDetailService implements UserDetailsService {
 
@@ -31,18 +33,47 @@ public class DbUserDetailService implements UserDetailsService {
             throw new UsernameNotFoundException("用户不存在");
         }
 
+        Long userId = userEntity.getId();
+
+        // 设置用户角色
+        String[] roles = findUserRolesByUserId(userId);
+
         // 设置用户权限
-        List<SimpleGrantedAuthority> authorities = findPermissionByUserId(userEntity.getId()).stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+        List<String> permissionsByUserId = findPermissionByUserId(userId);
+        String[] authorities = permissionsByUserId.toArray(String[]::new);
+
+        // 也可以转成下面的形式
+        // authorities = permissionsByUserId.stream()
+        //         .map(SimpleGrantedAuthority::new)
+        //         .toList();
 
         return User.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
+                // 设置用户角色
+                .roles(roles)
+                // 设置用户权限
                 .authorities(authorities)
                 .build();
     }
 
+    /**
+     * 根据用户id查找该用户的角色内容
+     *
+     * @param userId 用户id
+     * @return 当前用户的角色信息
+     */
+    public String[] findUserRolesByUserId(Long userId) {
+        List<RoleEntity> roleList = userMapper.selectRolesByUserId(userId);
+        return roleList.stream().map(RoleEntity::getRoleCode).toArray(String[]::new);
+    }
+
+    /**
+     * 根据用户id查找该用户的权限内容
+     *
+     * @param userId 用户id
+     * @return 当前用户的权限信息
+     */
     public List<String> findPermissionByUserId(Long userId) {
         List<PermissionEntity> permissionList = userMapper.selectPermissionByUserId(userId);
         return permissionList.stream().map(PermissionEntity::getPermissionCode).toList();

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.spring.step2.domain.dto.user.UserDto;
 import com.spring.step2.domain.entity.PermissionEntity;
+import com.spring.step2.domain.entity.RoleEntity;
 import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.domain.vo.UserVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -47,4 +48,12 @@ public interface UserMapper extends BaseMapper<UserEntity> {
      * @return 用户 {@link UserEntity}
      */
     UserEntity selectByUsername(String username);
+
+    /**
+     * 根据用户id查找该用户的角色内容
+     *
+     * @param userId 用户id
+     * @return 当前用户的角色信息
+     */
+    List<RoleEntity> selectRolesByUserId(Long userId);
 }

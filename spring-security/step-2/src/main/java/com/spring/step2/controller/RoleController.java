@@ -29,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/role")
 @RequiredArgsConstructor
+
 public class RoleController {
 
     private final RoleService roleService;
