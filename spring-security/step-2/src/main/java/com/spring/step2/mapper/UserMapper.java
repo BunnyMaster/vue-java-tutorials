@@ -3,7 +3,7 @@ package com.spring.step2.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.spring.step2.domain.dto.UserDto;
+import com.spring.step2.domain.dto.user.UserDto;
 import com.spring.step2.domain.entity.PermissionEntity;
 import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.domain.vo.UserVo;

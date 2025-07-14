@@ -4,7 +4,8 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.spring.step2.domain.dto.UserRoleDto;
+import com.spring.step2.domain.dto.user.AssignUserRoleDto;
+import com.spring.step2.domain.dto.user.UserRoleDto;
 import com.spring.step2.domain.entity.UserRoleEntity;
 import com.spring.step2.domain.vo.UserRoleVo;
 import com.spring.step2.domain.vo.result.PageResult;
@@ -83,5 +84,45 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRoleEnt
     @Override
     public void deleteUserRole(List<Long> ids) {
         removeByIds(ids);
+    }
+
+    /**
+     * 根据用户id获取当前用户角色列表
+     *
+     * @param userId 用户id
+     * @return 用户和角色列表
+     */
+    @Override
+    public List<UserRoleVo> getRoleListByUserId(Long userId) {
+        List<UserRoleEntity> userRoleEntityList = baseMapper.getRoleListByUserId(userId);
+        return userRoleEntityList.stream().map(userRoleEntity -> {
+                    UserRoleVo userRoleVo = new UserRoleVo();
+                    BeanUtils.copyProperties(userRoleEntity, userRoleVo);
+                    return userRoleVo;
+                })
+                .toList();
+    }
+
+    /**
+     * 根据用户id分配用户角色
+     *
+     * @param dto 用户分配角色DTO {@link AssignUserRoleDto}
+     */
+    @Override
+    public void assignUserRole(AssignUserRoleDto dto) {
+        Long userId = dto.getUserId();
+        List<Long> roleIds = dto.getRoleIds();
+        
+        // 先删除已经分配的角色
+        baseMapper.deleteByUserId(dto);
+
+        // 为用户分配角色
+        List<UserRoleEntity> entityList = roleIds.stream().map(roleId -> {
+            UserRoleEntity userRoleEntity = new UserRoleEntity();
+            userRoleEntity.setUserId(userId);
+            userRoleEntity.setRoleId(roleId);
+            return userRoleEntity;
+        }).toList();
+        saveBatch(entityList);
     }
 }

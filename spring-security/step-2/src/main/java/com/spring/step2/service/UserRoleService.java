@@ -2,10 +2,12 @@ package com.spring.step2.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.spring.step2.domain.dto.UserRoleDto;
+import com.spring.step2.domain.dto.user.AssignUserRoleDto;
+import com.spring.step2.domain.dto.user.UserRoleDto;
 import com.spring.step2.domain.entity.UserRoleEntity;
 import com.spring.step2.domain.vo.UserRoleVo;
 import com.spring.step2.domain.vo.result.PageResult;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -46,4 +48,19 @@ public interface UserRoleService extends IService<UserRoleEntity> {
      * @param ids 删除id列表
      */
     void deleteUserRole(List<Long> ids);
+
+    /**
+     * 根据用户id获取当前用户角色列表
+     *
+     * @param userId 用户id
+     * @return 用户和角色列表
+     */
+    List<UserRoleVo> getRoleListByUserId(Long userId);
+
+    /**
+     * 根据用户id分配用户角色
+     *
+     * @param dto 用户分配角色DTO {@link AssignUserRoleDto}
+     */
+    void assignUserRole(@Valid AssignUserRoleDto dto);
 }

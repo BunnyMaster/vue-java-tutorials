@@ -3,18 +3,19 @@ package com.spring.step2.domain.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.spring.step2.domain.vo.base.BaseVo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "UserVO对象", title = "用户基本信息表", description = "用户基本信息表的VO对象")
-public class UserVo {
+public class UserVo extends BaseVo {
 
     @Schema(name = "id", title = "主键")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -26,18 +27,6 @@ public class UserVo {
 
     @Schema(name = "email", title = "邮箱")
     private String email;
-
-    @Schema(name = "createTime", title = "创建时间")
-    private LocalDateTime createTime;
-
-    @Schema(name = "updateTime", title = "更新时间")
-    private LocalDateTime updateTime;
-
-    @Schema(name = "createUser", title = "创建用户ID")
-    private Long createUser;
-
-    @Schema(name = "updateUser", title = "更新用户ID")
-    private Long updateUser;
 
 }
 

@@ -46,6 +46,13 @@ public class RoleController {
         return Result.success(pageResult);
     }
 
+    @Operation(summary = "获取全部角色列表", description = "获取全部角色列表")
+    @GetMapping("all")
+    public Result<List<RoleVo>> getRoleList() {
+        List<RoleVo> roleVoList = roleService.getRoleList();
+        return Result.success(roleVoList);
+    }
+
     @Operation(summary = "添加系统角色表", description = "添加系统角色表")
     @PostMapping()
     public Result<String> addRole(@Valid @RequestBody RoleDto dto) {

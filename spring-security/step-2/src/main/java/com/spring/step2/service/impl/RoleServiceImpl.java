@@ -84,4 +84,20 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleEntity> impleme
     public void deleteRole(List<Long> ids) {
         removeByIds(ids);
     }
+
+    /**
+     * 获取全部角色列表
+     *
+     * @return 角色列表
+     */
+    @Override
+    public List<RoleVo> getRoleList() {
+        return list().stream()
+                .map(roleEntity -> {
+                    RoleVo roleVo = new RoleVo();
+                    BeanUtils.copyProperties(roleEntity, roleVo);
+                    return roleVo;
+                })
+                .toList();
+    }
 }

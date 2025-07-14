@@ -13,7 +13,7 @@ public enum ResultCodeEnum {
     ADD_SUCCESS(200, "添加成功"),
     UPDATE_SUCCESS(200, "修改成功"),
     DELETE_SUCCESS(200, "删除成功"),
-    SORT_SUCCESS(200, "排序成功"),
+    ASSIGN_SUCCESS(200, "排序成功"),
     SUCCESS_UPLOAD(200, "上传成功"),
     SUCCESS_LOGOUT(200, "退出成功"),
     EMAIL_CODE_REFRESH(200, "邮箱验证码已刷新"),

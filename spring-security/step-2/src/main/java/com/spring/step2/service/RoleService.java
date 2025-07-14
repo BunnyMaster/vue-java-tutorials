@@ -47,4 +47,12 @@ public interface RoleService extends IService<RoleEntity> {
      * @param ids 删除id列表
      */
     void deleteRole(List<Long> ids);
+
+    /**
+     * 获取全部角色列表
+     *
+     * @return 角色列表
+     */
+    List<RoleVo> getRoleList();
+
 }

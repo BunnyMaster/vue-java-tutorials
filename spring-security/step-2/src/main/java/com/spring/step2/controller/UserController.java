@@ -2,7 +2,7 @@ package com.spring.step2.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.spring.step2.domain.dto.UserDto;
+import com.spring.step2.domain.dto.user.UserDto;
 import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.domain.vo.UserVo;
 import com.spring.step2.domain.vo.result.PageResult;

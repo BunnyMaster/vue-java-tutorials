@@ -1,4 +1,4 @@
-package com.spring.step2.domain.entity;
+package com.spring.step2.domain.entity.base;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
