@@ -16,10 +16,24 @@ const DialogPermission = defineComponent({
                         <!-- 内容 -->
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label class="form-label" for="dialogPermissionCode"><i class="fas fa-user-alt me-1"></i>权限码</label>
+                                <label class="form-label" for="dialogPermissionCode"><i
+                                        class="fas fa-user-alt me-1"></i>权限码</label>
                                 <input autocomplete="false" class="form-control" id="dialogPermissionCode" placeholder="请输入权限码"
                                     type="text" v-model="form.permissionCode" required>
                                 <div class="form-text">在这里输入你的权限码。</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="url"><i class="fas fa-ruler me-1"></i>URL</label>
+                                <input autocomplete="false" class="form-control" id="url" placeholder="请输入URL" type="text"
+                                    v-model="form.url">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="method"><i class="fas fa-pager me-1"></i>请求方法名称</label>
+                                <select class="form-select" aria-label="Default select example" v-model="form.method">
+                                    <option v-for="method in requestMethod" :key="method">
+                                        {{method}}
+                                    </option>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="dialogDescription"><i class="fas fa-user-alt me-1"></i>描述</label>
@@ -57,6 +71,7 @@ const DialogPermission = defineComponent({
         return {
             modalInstance: ref(null),
             form: ref({}),
+            requestMethod: ref(["", "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE"])
         }
     },
     methods: {

@@ -1,6 +1,6 @@
 package com.spring.step2.config.web;
 
-import com.spring.step2.context.BaseContext;
+import com.spring.step2.config.context.BaseContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Configuration;

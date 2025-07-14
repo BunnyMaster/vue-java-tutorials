@@ -18,6 +18,12 @@ public class PermissionEntity extends BaseEntity {
     @Schema(name = "permissionCode", title = "权限编码")
     private String permissionCode;
 
+    @Schema(name = "url", description = "URL")
+    private String url;
+
+    @Schema(name = "method", description = "请求方法类型")
+    private String method;
+
     @Schema(name = "description", title = "权限描述")
     private String description;
 

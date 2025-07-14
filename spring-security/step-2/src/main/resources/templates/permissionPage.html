@@ -52,6 +52,18 @@
                                type="text" v-model="searchForm.permissionCode">
                     </div>
                     <div class="col-md-4">
+                        <label class="form-label" for="url"><i
+                                class="fas fa-ruler me-1"></i>URL</label>
+                        <input autocomplete="false" class="form-control" id="url" placeholder="请输入URL"
+                               type="text" v-model="searchForm.url">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="method"><i
+                                class="fas fa-pager me-1"></i>请求方法名称</label>
+                        <input autocomplete="false" class="form-control" id="method" placeholder="请输入请求方法名称"
+                               type="text" v-model="searchForm.method">
+                    </div>
+                    <div class="col-md-4">
                         <label class="form-label" for="description"><i class="fas fa-text-width me-1"></i>描述</label>
                         <input autocomplete="false" class="form-control" id="description" placeholder="请输入描述"
                                type="text" v-model="searchForm.description">
@@ -91,9 +103,11 @@
                     <thead class="table-light">
                     <tr>
                         <th scope="col" width="5%">#</th>
-                        <th scope="col" width="15%">权限名</th>
-                        <th scope="col" width="15%">描述</th>
-                        <th scope="col" width="15%">简述</th>
+                        <th scope="col" width="10%">权限名</th>
+                        <th scope="col" width="10%">描述</th>
+                        <th scope="col" width="10%">简述</th>
+                        <th scope="col" width="10%">地址</th>
+                        <th scope="col" width="5%">方法</th>
                         <th scope="col" width="15%">创建时间</th>
                         <th scope="col" width="15%">更新时间</th>
                         <th scope="col" width="20%">操作</th>
@@ -105,6 +119,8 @@
                         <td>{{permission.permissionCode}}</td>
                         <td>{{permission.description}}</td>
                         <td>{{permission.remark}}</td>
+                        <td>{{permission.url}}</td>
+                        <td>{{permission.method}}</td>
                         <td>{{formatDate(permission.createTime)}}</td>
                         <td>{{formatDate(permission.updateTime)}}</td>
                         <td>
@@ -149,7 +165,10 @@
                 // 查询表单
                 searchForm: ref({
                     permissionCode: undefined,
-                    email: undefined,
+                    url: undefined,
+                    method: undefined,
+                    description: undefined,
+                    remark: undefined,
                     pageNo: 1,
                     pageSize: 30,
                     pages: 0
@@ -187,7 +206,10 @@
             /* 重制表单 */
             onRest() {
                 this.searchForm.permissionCode = undefined;
-                this.searchForm.email = undefined;
+                this.searchForm.url = undefined;
+                this.searchForm.method = undefined;
+                this.searchForm.description = undefined;
+                this.searchForm.remark = undefined;
                 this.onSearch();
             },
 

@@ -1,7 +1,7 @@
 package com.spring.step2.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.spring.step2.context.BaseContext;
+import com.spring.step2.config.context.BaseContext;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 

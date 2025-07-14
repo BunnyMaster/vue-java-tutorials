@@ -1,4 +1,4 @@
-package com.spring.step2.context;
+package com.spring.step2.config.context;
 
 
 public class BaseContext {

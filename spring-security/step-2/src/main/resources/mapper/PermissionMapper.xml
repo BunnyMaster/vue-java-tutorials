@@ -6,6 +6,8 @@
     <resultMap id="BaseResultMap" type="com.spring.step2.domain.entity.PermissionEntity">
         <id column="id" property="id"/>
         <id column="permission_code" property="permissionCode"/>
+        <id column="url" property="url"/>
+        <id column="method" property="method"/>
         <id column="description" property="description"/>
         <id column="remark" property="remark"/>
         <id column="create_time" property="createTime"/>
@@ -17,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,permission_code,description,remark,create_time,update_time,create_user,update_user,is_deleted
+        id,permission_code,url,method,description,remark,create_time,update_time,create_user,update_user,is_deleted
     </sql>
 
     <!-- 分页查询系统权限表内容 -->
@@ -29,6 +31,12 @@
             is_deleted = 0
             <if test="dto.permissionCode != null and dto.permissionCode != ''">
                 and permission_code like CONCAT('%',#{dto.permissionCode},'%')
+            </if>
+            <if test="dto.url != null and dto.url != ''">
+                and url like CONCAT('%',#{dto.url},'%')
+            </if>
+            <if test="dto.method != null and dto.method != ''">
+                and method like CONCAT('%',#{dto.method},'%')
             </if>
             <if test="dto.description != null and dto.description != ''">
                 and description like CONCAT('%',#{dto.description},'%')
