@@ -341,3 +341,139 @@ public UserDetails getCurrentUserDetail() {
     }
 }
 ```
+
+## URL资源认证配置
+
+### 角色与权限配置
+
+#### 1. 基于角色的URL访问控制
+
+##### 单角色配置
+
+配置`/api/**`路径下的所有接口需要`ADMIN`角色才能访问：
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 注意：会自动添加"ROLE_"前缀，实际检查的是ROLE_ADMIN
+            .requestMatchers("/api/**").hasRole("ADMIN")
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+##### 多角色配置（满足任一角色即可访问）
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 检查是否有ADMIN或USER角色（自动添加ROLE_前缀）
+            .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+#### 2. 基于权限的URL访问控制
+
+##### 需要所有指定权限
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 需要同时拥有"all"和"read"权限
+            .requestMatchers("/api/**").hasAuthority("all")
+            .requestMatchers("/api/**").hasAuthority("read")
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+##### 满足任一权限即可
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 拥有"all"或"read"任一权限即可访问
+            .requestMatchers("/api/**").hasAnyAuthority("all", "read")
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+### 综合配置策略
+
+#### 1. 基本配置模式
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 特定路径需要认证
+            .requestMatchers("/api/**").authenticated()
+            // 其他请求全部放行
+            .anyRequest().permitAll()
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+#### 2. 多路径匹配配置
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // 定义无需认证的白名单路径
+    String[] permitAllUrls = {
+        "/", "/doc.html/**",
+        "/webjars/**", "/images/**", 
+        "/.well-known/**", "/favicon.ico", 
+        "/error/**", "/swagger-ui/**", 
+        "/v3/api-docs/**"
+    };
+
+    http.authorizeHttpRequests(authorize -> authorize
+            // API路径需要认证
+            .requestMatchers("/api/**").authenticated()
+            // 白名单路径直接放行
+            .requestMatchers(permitAllUrls).permitAll()
+            // 其他请求需要登录（非匿名访问）
+            .anyRequest().authenticated()
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+### 重要说明
+
+1. **角色与权限的区别**：
+   - `hasRole()`会自动添加"ROLE_"前缀
+   - `hasAuthority()`直接使用指定的权限字符串
+2. **匹配顺序**：
+   - Spring Security会按照配置的顺序进行匹配
+   - 更具体的路径应该放在前面，通用规则（如anyRequest）放在最后
+3. **方法选择建议**：
+   - `hasRole()`/`hasAnyRole()`：适合基于角色的访问控制
+   - `hasAuthority()`/`hasAnyAuthority()`：适合更细粒度的权限控制
+   - `authenticated()`：只需认证通过，不检查具体角色/权限
+   - `permitAll()`：完全开放访问
+4. **最佳实践**：
+   - 对于REST API，通常使用`authenticated()`配合方法级权限控制
+   - 静态资源应明确配置`permitAll()`
+   - 生产环境不建议使用`anyRequest().permitAll()`

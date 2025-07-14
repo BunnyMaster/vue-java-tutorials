@@ -2,6 +2,7 @@ package com.spring.step2.security.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.spring.step2.domain.vo.result.Result;
+import com.spring.step2.domain.vo.result.ResultCodeEnum;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,8 +18,10 @@ public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.error("CustomerAccessDeniedHandler:{}", accessDeniedException.getLocalizedMessage());
 
-        Result<Object> result = Result.error(accessDeniedException.getMessage());
+        // 无权访问接口
+        Result<Object> result = Result.error(accessDeniedException.getMessage(), ResultCodeEnum.FAIL_NO_ACCESS_DENIED);
 
+        // 转成JSON格式
         Object json = JSON.toJSON(result);
 
         // 返回响应

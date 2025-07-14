@@ -1,5 +1,6 @@
 package com.spring.step2.security.service;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.spring.step2.domain.entity.PermissionEntity;
 import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.mapper.UserMapper;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@DS("testJwt")
 @Service
 @RequiredArgsConstructor
 public class DbUserDetailService implements UserDetailsService {

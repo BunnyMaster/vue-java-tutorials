@@ -2,6 +2,8 @@ package com.spring.step2.security.config;
 
 import com.spring.step2.security.handler.SecurityAccessDeniedHandler;
 import com.spring.step2.security.handler.SecurityAuthenticationEntryPoint;
+import com.spring.step2.security.service.DbUserDetailService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,27 +15,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityWebConfiguration {
+
+    private final DbUserDetailService dbUserDetailService;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        String[] permitAllUrls = {
-                "/", "/doc.html/**",
-                "/webjars/**", "/images/**", ".well-known/**", "favicon.ico", "/error/**",
-                "/swagger-ui/**", "/v3/api-docs/**"
-        };
 
         http.authorizeHttpRequests(authorizeRequests ->
-                                // 访问路径为 /api 时需要进行认证
-                                authorizeRequests
-                                        .requestMatchers(permitAllUrls).permitAll()
-                                        // .requestMatchers("/api/**").hasAnyRole("Admin", "ADMIN", "admin")
-                                        .anyRequest().permitAll()
-                        // .requestMatchers("/api/security/**").permitAll()
-                        // .requestMatchers(HttpMethod.GET, "/api/anonymous/**").anonymous()
-                        // // 会自动变成 ROLE_ADMIN
-                        // // .requestMatchers("/api/**").hasRole("ADMIN")
-                        // .requestMatchers("/api/**").hasAnyAuthority("all", "read")
+                        // 访问路径为 /api 时需要进行认证
+                        authorizeRequests
+                                // 只认证 /api/** 下的所有接口
+                                .requestMatchers("/api/**").authenticated()
+                                // 其余请求都放行
+                                .anyRequest().permitAll()
                 )
                 .formLogin(loginPage -> loginPage
                         // 自定义登录页路径
@@ -56,9 +52,12 @@ public class SecurityWebConfiguration {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(configurer -> configurer
+                        // 自定无权访问返回内容
                         .accessDeniedHandler(new SecurityAccessDeniedHandler())
+                        // 自定义未授权返回内容
                         .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
                 )
+                .userDetailsService(dbUserDetailService)
         ;
 
         return http.build();

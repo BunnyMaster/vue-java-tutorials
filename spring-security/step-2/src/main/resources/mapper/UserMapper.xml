@@ -51,8 +51,8 @@
         <include refid="Base_Column_List"/>
         from t_user
         <where>
-            <if test="username != null and username != ;;">
-                username=#{username}
+            <if test="username != null and username != null">
+                username = #{username}
             </if>
         </where>
     </select>
