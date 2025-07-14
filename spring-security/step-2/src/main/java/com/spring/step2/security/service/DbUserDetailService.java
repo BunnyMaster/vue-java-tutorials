@@ -6,6 +6,7 @@ import com.spring.step2.domain.entity.RoleEntity;
 import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,19 +41,20 @@ public class DbUserDetailService implements UserDetailsService {
 
         // 设置用户权限
         List<String> permissionsByUserId = findPermissionByUserId(userId);
-        String[] authorities = permissionsByUserId.toArray(String[]::new);
+        String[] permissions = permissionsByUserId.toArray(String[]::new);
 
         // 也可以转成下面的形式
-        // List<String> authorities = permissionsByUserId.stream()
+        // List<String> permissions = permissionsByUserId.stream()
         //         .map(SimpleGrantedAuthority::new)
         //         .toList();
 
+        String[] authorities = ArrayUtils.addAll(roles, permissions);
+
+        // 设置用户权限
         return User.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
-                // 设置用户角色
-                .roles(roles)
-                // 设置用户权限
+                // 设置用户 authorities
                 .authorities(authorities)
                 .build();
     }

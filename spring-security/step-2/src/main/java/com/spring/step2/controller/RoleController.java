@@ -11,6 +11,7 @@ import com.spring.step2.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class RoleController {
         return Result.success(pageResult);
     }
 
+    @PermitAll
     @Operation(summary = "获取全部角色列表", description = "获取全部角色列表")
     @GetMapping("all")
     public Result<List<RoleVo>> getRoleList() {

@@ -16,7 +16,7 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        log.error("CustomerAccessDeniedHandler:{}", authException.getLocalizedMessage());
+        log.error("SecurityAuthenticationEntryPoint:{}", authException.getLocalizedMessage());
 
         // 未认证---未登录
         Result<Object> result = Result.error(authException.getMessage(), ResultCodeEnum.LOGIN_AUTH);

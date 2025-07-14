@@ -5,6 +5,7 @@ import com.spring.step2.domain.vo.result.Result;
 import com.spring.step2.domain.vo.result.ResultCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -102,5 +103,11 @@ public class GlobalExceptionHandler {
         } else {
             return Result.error(ResultCodeEnum.UNKNOWN_EXCEPTION);
         }
+    }
+
+    // 处理无权访问异常
+    @ExceptionHandler(AccessDeniedException.class)
+    public Result<String> handleAccessDenied(AccessDeniedException exception) {
+        return Result.error(exception.getMessage(), ResultCodeEnum.FAIL_NO_ACCESS_DENIED);
     }
 }

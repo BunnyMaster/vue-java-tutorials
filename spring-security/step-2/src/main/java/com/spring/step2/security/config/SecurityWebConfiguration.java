@@ -48,12 +48,12 @@ public class SecurityWebConfiguration {
                         .permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(configurer -> configurer
-                        // 自定无权访问返回内容
-                        .accessDeniedHandler(new SecurityAccessDeniedHandler())
-                        // 自定义未授权返回内容
-                        .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
-                )
+                .exceptionHandling(exception -> {
+                    // 请求未授权接口
+                    exception.authenticationEntryPoint(new SecurityAuthenticationEntryPoint());
+                    // 没有权限访问
+                    exception.accessDeniedHandler(new SecurityAccessDeniedHandler());
+                })
         ;
 
         return http.build();

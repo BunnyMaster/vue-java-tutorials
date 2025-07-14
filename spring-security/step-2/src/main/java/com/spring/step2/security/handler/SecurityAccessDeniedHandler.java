@@ -14,12 +14,13 @@ import java.io.IOException;
 
 @Slf4j
 public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
+    
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("CustomerAccessDeniedHandler:{}", accessDeniedException.getLocalizedMessage());
+        log.error("SecurityAccessDeniedHandler:{}", accessDeniedException.getLocalizedMessage());
 
         // 无权访问接口
-        Result<Object> result = Result.error(accessDeniedException.getMessage(), ResultCodeEnum.FAIL_NO_ACCESS_DENIED);
+        Result<Object> result = Result.error(accessDeniedException.getMessage(), ResultCodeEnum.LOGIN_AUTH);
 
         // 转成JSON格式
         Object json = JSON.toJSON(result);

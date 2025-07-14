@@ -46,4 +46,9 @@ public class Knife4jConfig {
     public GroupedOpenApi security() {
         return GroupedOpenApi.builder().group("security接口").pathsToMatch("/api/security/**").build();
     }
+
+    @Bean
+    public GroupedOpenApi test() {
+        return GroupedOpenApi.builder().group("测试接口").pathsToMatch("/api/test/**").build();
+    }
 }

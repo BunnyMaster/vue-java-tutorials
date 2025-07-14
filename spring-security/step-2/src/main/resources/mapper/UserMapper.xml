@@ -59,9 +59,14 @@
 
     <!-- 根据用户id查找该用户的角色内容 -->
     <select id="selectRolesByUserId" resultType="com.spring.step2.domain.entity.RoleEntity">
-        select *
-        from t_user_role tur
-                 join t_role tr on tur.role_id = tr.id
+        SELECT tr.*
+        FROM t_user_role tur
+        JOIN t_role tr ON tur.role_id = tr.id
+        <where>
+            <if test="userId != null">
+                tur.user_id = #{userId}
+            </if>
+        </where>
     </select>
 
 </mapper>

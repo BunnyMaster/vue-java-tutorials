@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "系统权限表", description = "系统权限表相关接口")
 @RestController
-@RequestMapping(value = "/api/permission", method = RequestMethod.DELETE)
+@RequestMapping(value = "/api/permission")
 @RequiredArgsConstructor
 public class PermissionController {
 
