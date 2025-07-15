@@ -1238,3 +1238,23 @@ public Result<String> lowerUser(String name) {
 }
 ```
 
+## 使用自定义授权管理器
+
+## 将方法与自定义切入点相匹配
+
+由于是基于 Spring AOP 构建的，您可以声明与注解无关的模式，类似于请求级别的授权。 这具有将方法级别的授权规则集中化的潜在优势。
+
+例如，可以发布自己的 `Advisor` 或使用 `<protect-pointcut>` 将 AOP 表达式与服务层的授权规则相匹配，如下所示：
+
+```java
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole
+
+@Bean
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+static Advisor protectServicePointcut() {
+    AspectJExpressionPointcut pattern = new AspectJExpressionPointcut()
+    pattern.setExpression("execution(* com.mycompany.*Service.*(..))")
+    return new AuthorizationManagerBeforeMethodInterceptor(pattern, hasRole("USER"))
+}
+```
+
