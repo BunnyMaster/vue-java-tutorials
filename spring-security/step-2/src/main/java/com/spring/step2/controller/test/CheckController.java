@@ -1,4 +1,4 @@
-package com.spring.step2.controller;
+package com.spring.step2.controller.test;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

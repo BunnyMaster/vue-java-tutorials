@@ -1078,6 +1078,35 @@ public @interface UserOrPermission {
 public Report getReport(Long id) { ... }
 ```
 
+**自定义Any模板元注解**
+
+如果需要自定义任意权限都可通过需要引入下面的内容。
+
+```java
+@Bean
+static PrePostTemplateDefaults prePostTemplateDefaults() {
+	return new PrePostTemplateDefaults();
+}
+```
+
+**示例**
+
+```java
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@PreAuthorize("hasAnyAuthority({auth})")
+public @interface HasAnyAuthority {
+    String[] auth();
+}
+
+@HasAnyAuthority(auth = {"'USER'", "'ADMIN'"})
+@Operation(summary = "拥有 HasAnyXXX 的角色可以访问", description = "当前用户拥有 HasAnyXXX 角色可以访问这个接口")
+@GetMapping("role-user")
+public Result<String> roleUser() {
+    return Result.success();
+}
+```
+
 ### 4. 其他注解支持
 
 #### JSR-250注解

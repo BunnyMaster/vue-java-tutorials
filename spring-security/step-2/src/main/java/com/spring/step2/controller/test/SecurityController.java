@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "测试接口", description = "测试用的接口")
+@Tag(name = "NORMAl接口", description = "测试用的NORMAl接口")
 @Slf4j
 @RestController
-@RequestMapping("/api/test")
-public class TestController {
+@RequestMapping("/api/security/normal")
+public class SecurityController {
 
     @PreAuthorize("hasAuthority('role::read')")
     @Operation(summary = "拥有 role:read 的角色可以访问", description = "当前用户拥有 role:read 角色可以访问这个接口")
