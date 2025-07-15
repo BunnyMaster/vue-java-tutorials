@@ -1080,6 +1080,10 @@ public Report getReport(Long id) { ... }
 
 **自定义Any模板元注解**
 
+> [!WARNING]
+>
+> SpringSecurity6.3.10版本与最新版的6.5.1写法不一样。
+
 如果需要自定义任意权限都可通过需要引入下面的内容。
 
 ```java
@@ -1207,3 +1211,30 @@ public class AuthTestController {
        // 需要管理员权限且只允许返回公开内容
    }
    ```
+
+## 通过编程方式授权方法
+
+```java
+@Component("auth")
+public class AuthorizationLogic {
+
+    public boolean decide(String name) {
+        System.out.println(name);
+        // 直接使用name的实现
+        return name.equalsIgnoreCase("user");
+    }
+
+}
+```
+
+在控制器中使用
+
+```java
+@PreAuthorize("@auth.decide(#name)")
+@Operation(summary = "拥有 USER 的角色可以访问", description = "当前用户拥有 USER 角色可以访问这个接口")
+@GetMapping("lower-user")
+public Result<String> lowerUser(String name) {
+    return Result.success(name);
+}
+```
+

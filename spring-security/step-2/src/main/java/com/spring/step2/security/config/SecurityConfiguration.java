@@ -14,6 +14,32 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 public class SecurityConfiguration {
 
+    /**
+     * 注册一个用于Spring Security预授权/后授权的模板元注解默认配置Bean。
+     *
+     * <p>该Bean提供了基于SpEL表达式的权限校验模板，可用于自定义组合注解。</p>
+     *
+     * <h3>典型用法</h3>
+     * <p>通过此配置可以简化自定义权限注解的定义，例如：</p>
+     * <pre>{@code
+     * &#064;Target({ElementType.METHOD, ElementType.TYPE})
+     * &#064;Retention(RetentionPolicy.RUNTIME)
+     * &#064;PreAuthorize("hasAnyAuthority(  // 使用模板提供的表达式语法
+     * public @interface HasAnyAuthority {
+     *     String[] auth();  // 接收权限列表参数
+     * }
+     * }</pre>
+     *
+     * <h3>注意事项</h3>
+     * <ul>
+     *   <li>需要确保Spring Security的预授权功能已启用</li>
+     *   <li>模板表达式应符合SpEL语法规范</li>
+     * </ul>
+     *
+     * @return PrePostTemplateDefaults 实例，用于预/后授权注解的默认配置
+     * @see org.springframework.security.access.prepost.PreAuthorize
+     * @see org.springframework.security.access.prepost.PostAuthorize
+     */
     @Bean
     PrePostTemplateDefaults prePostTemplateDefaults() {
         return new PrePostTemplateDefaults();
