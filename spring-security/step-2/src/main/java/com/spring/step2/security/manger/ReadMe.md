@@ -1,0 +1,1 @@
+如果需要重写验证逻辑(自定义)使用这里面的类，并在配置类`AuthorizationManagerConfiguration`解开注释，

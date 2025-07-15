@@ -1077,7 +1077,9 @@ public class AuthTestController {
 }
 ```
 
-## 通过编程方式授权方法
+## 其余授权方式
+
+### 通过编程方式授权方法
 
 如果需要对权限做出自定义的需求，将传入参数作为判断权限条件，这会很有用，比如某些参数不可以传入，或者参数做权限校验等。
 
@@ -1121,13 +1123,13 @@ public Result<String> lowerUser(String name) {
 }
 ```
 
-## 使用自定义授权管理器
+### 使用自定义授权管理器
 
 在实际开发中对于SpringSecurity提供的两个权限校验注解`@PreAuthorize`和`@PostAuthorize`，需要对这两个进行覆盖或者改造，需要实现两个`AuthorizationManager<T>`。
 
 实现完成后需要显式的在配置中禁用原先的内容。
 
-### 1. 实现前置
+#### 1. 实现前置
 
 在方法中写入自己的校验逻辑。
 
@@ -1148,7 +1150,7 @@ public class PostAuthorizationManager implements AuthorizationManager<MethodInvo
 }
 ```
 
-### 2. 实现后置
+#### 2. 实现后置
 
 ```java
 /**
@@ -1168,7 +1170,7 @@ public class PreAuthorizationManager implements AuthorizationManager<MethodInvoc
 }
 ```
 
-### 3. 禁用自带的
+#### 3. 禁用自带的
 
 需要加上注解`@EnableMethodSecurity(prePostEnabled = false)`。
 
@@ -1192,7 +1194,7 @@ public class AuthorizationManagerConfiguration {
 }
 ```
 
-## 将方法与自定义切入点相匹配
+### 将方法与自定义切入点相匹配
 
 由于是基于 Spring AOP 构建的，您可以声明与注解无关的模式，类似于请求级别的授权。 这具有将方法级别的授权规则集中化的潜在优势。
 
@@ -1210,3 +1212,146 @@ static Advisor protectServicePointcut() {
 }
 ```
 
+## 监听授权事件
+
+监听授权事件分为两种，一种是授权成功的事件，一种是授权失败事件。
+
+对于授权事件可以作为日志进行处理，一般来说会处理授权失败事件，如果要处理成功的事件确保不会影响太多业务上的内容。
+
+### 授权失败和成功事件
+
+在这里说下失败的事件，如果要处理成功的事件和失败的事件一样。
+
+授权事件都实现于`AuthorizationEvent`接口：
+
+```java
+public class AuthorizationDeniedEvent<T> extends AuthorizationEvent {}
+public class AuthorizationGrantedEvent<T> extends AuthorizationEvent {}
+```
+
+**getSource和getObject**
+
+这两个本质上是一样的，`getObject`也是获取`getSource`只是Security做了类型转换：`(T) getSource();`。
+
+所以在获取的时候如果传入了泛型，那么直接获取`getObject`即可。
+
+如果要获取别的信息可以自己手动转换`getSource`方法内容。
+
+源码如下：
+
+```java
+public class AuthorizationDeniedEvent<T> extends AuthorizationEvent {
+
+    public AuthorizationDeniedEvent(Supplier<Authentication> authentication, T object, AuthorizationDecision decision) {
+       super(authentication, object, decision);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T getObject() {
+       return (T) getSource();
+    }
+
+}
+```
+
+**Authentication**
+
+获取授权相关的信息，比如当前用户会话Id(前后端不分离)，当前用户的IP地址(remoteAddress)等。
+
+如下面的信息：
+
+```JSON
+{
+  "authorities": [
+    {
+      "authority": "ROLE_ADMIN"
+    },
+    {
+      "authority": "ROLE_USER"
+    }
+  ],
+  "details": {
+    "remoteAddress": "0:0:0:0:0:0:0:1",
+    "sessionId": "B830DE326FC6F4468B539A7A519C0257"
+  },
+  "authenticated": true,
+  "principal": {
+    "password": null,
+    "username": "Bunny",
+    "authorities": [
+      {
+        "authority": "ROLE_ADMIN"
+      },
+      {
+        "authority": "ROLE_USER"
+      }
+    ],
+    "accountNonExpired": true,
+    "accountNonLocked": true,
+    "credentialsNonExpired": true,
+    "enabled": true
+  },
+  "credentials": null,
+  "name": "Bunny"
+}
+```
+
+**AuthorizationDecision**
+
+授权方法上的信息，被拒绝的方法名称、表达式信息。
+
+```properties
+ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('ADMIN')]
+```
+
+### 示例
+
+```java
+@Slf4j
+@Component
+public class AuthenticationEvents {
+
+    /**
+     * 监听拒绝授权内容
+     *
+     * @param failure 授权失败
+     */
+    @EventListener
+    public void onFailure(AuthorizationDeniedEvent<MethodInvocation> failure) {
+        // getSource 和 getObject意思一样，一种是传入泛型自动转换一种是要手动转换
+        Object source = failure.getSource();
+
+        // 直接获取泛型对象
+        MethodInvocation methodInvocation = failure.getObject();
+        Method method = methodInvocation.getMethod();
+        Object[] args = methodInvocation.getArguments();
+
+        log.warn("方法调用被拒绝: {}.{}, 参数: {}",
+                method.getDeclaringClass().getSimpleName(),
+                method.getName(),
+                Arrays.toString(args));
+
+        // 这里面的信息，和接口 /api/security/current-user 内容一样
+        Authentication authentication = failure.getAuthentication().get();
+
+        AuthorizationDecision authorizationDecision = failure.getAuthorizationDecision();
+        // ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('ADMIN')]
+        System.out.println(authorizationDecision);
+
+        log.warn("授权失败 - 用户: {}, 权限: {}", authentication.getName(), authorizationDecision);
+    }
+
+
+    /**
+     * 监听授权的内容
+     * 如果要监听授权成功的内容，这个内容可能相当的多，毕竟正常情况授权成功的内容还是比较多的。
+     * 既然内容很多又要监听，如果真的需要，一定要处理好业务逻辑，不要被成功的消息淹没。
+     *
+     * @param success 授权成功
+     */
+    @EventListener
+    public void onSuccess(AuthorizationGrantedEvent<Object> success) {
+    }
+}
+```
