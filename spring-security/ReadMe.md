@@ -1355,3 +1355,169 @@ public class AuthenticationEvents {
     }
 }
 ```
+
+## 实现JWT的认证
+
+### 生成JWT令牌
+
+> [!TIP]
+>
+> 如果需要JWTUtil工具类需要到项目的`com.spring.step2.utils.JwtTokenUtil`下寻找。
+
+在Spring的配置文件中写入下面的内容。
+
+```yaml
+jwtToken:
+  # 密钥
+  secret: aVeryLongAndSecureRandomStringWithAtLeast32Characters
+  # 主题
+  subject: SecurityBunny
+  # 过期事件 7天
+  expired: 604800
+```
+
+之后要读取配置文件中的信息。
+
+在文件中包含三个方法，分别是：创建令牌，解析令牌为用户名，解析令牌为用户Id。
+
+```java
+@Configuration
+@ConfigurationProperties(prefix = "jwt-token")
+public class JwtBearTokenService {
+
+    @Value("${jwtToken.secret}")
+    public String secret;
+
+    @Value("${jwtToken.subject}")
+    public String subject;
+
+    // private final SecretKey securityKey = Keys.hmacShaKeyFor("Bunny-Auth-Server-Private-SecretKey".getBytes(StandardCharsets.UTF_8));
+    // JWT 的 秘钥
+    @Value("${jwtToken.expired}")
+    public Long expired;
+
+    /**
+     * 创建Token
+     *
+     * @param userId   用户Id
+     * @param username 用户名
+     * @return 令牌Token
+     */
+    public String createToken(Long userId, String username,
+                              List<String> roles, List<String> permissions) {
+        SecretKey key = getSecretKey();
+        // return JwtTokenUtil.createToken(userId, username, subject, key, expired);
+        return JwtTokenUtil.createToken(userId, username, roles, permissions, subject, key, expired);
+    }
+
+    /**
+     * 获取安全密钥
+     *
+     * @return {@link SecretKey}
+     */
+    private SecretKey getSecretKey() {
+        byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
+        return new SecretKeySpec(secretBytes, "HmacSHA256");
+    }
+
+    /**
+     * 根据Token获取用户名
+     *
+     * @param token 令牌
+     * @return 用户名
+     */
+    public String getUsernameFromToken(String token) {
+        SecretKey secretKey = getSecretKey();
+        return JwtTokenUtil.getUsername(token, secretKey);
+    }
+
+    /**
+     * 根据Token获取用户Id
+     *
+     * @param token 令牌
+     * @return 用户Id
+     */
+    public Long getUserIdFromToken(String token) {
+        SecretKey secretKey = getSecretKey();
+        return JwtTokenUtil.getUserId(token, secretKey);
+    }
+
+    /**
+     * 根据Token获取用户Id
+     *
+     * @param token 令牌
+     * @return 用户Id
+     */
+    public Map<String, Object> getMapByToken(String token) {
+        SecretKey secretKey = getSecretKey();
+        return JwtTokenUtil.getMapByToken(token, secretKey);
+    }
+
+}
+```
+
+之后对方法进行测试。
+
+```java
+@SpringBootTest
+class JwtBearTokenServiceTest {
+
+    private String token;
+
+    @Autowired
+    private JwtBearTokenService jwtBearTokenService;
+
+    @Autowired
+    private DbUserDetailService dbUserDetailService;
+
+    @Test
+    void createToken() {
+        long userId = 1944384432521744386L;
+        List<String> roles = dbUserDetailService.findUserRolesByUserId(userId);
+        List<String> permissions = dbUserDetailService.findPermissionByUserId(userId);
+
+        String token = jwtBearTokenService.createToken(userId,
+                "Bunny",
+                roles,
+                permissions);
+        this.token = token;
+        System.out.println(token);
+    }
+
+    @Test
+    void getUsernameFromToken() {
+        createToken();
+
+        String username = jwtBearTokenService.getUsernameFromToken(token);
+        System.out.println(username);
+
+        Long userId = jwtBearTokenService.getUserIdFromToken(token);
+        System.out.println(userId);
+
+        Map<String, Object> map = jwtBearTokenService.getMapByToken(token);
+
+        List<?> roles = (List<?>) map.get("roles");
+        System.out.println(roles);
+
+        // 安全转换 permissions
+        List<?> permissions = (List<?>) map.get("permissions");
+        System.out.println(permissions);
+    }
+}
+```
+
+输出以下内容：
+
+```properties
+# 生成的令牌
+eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFMyNTYifQ.H4sIAAAAAAAA_0WMzQ6CMBCE32XPNIHSH-hNowcOepB4Mh5qWRKMFNLSRGJ8d6tiPEyyM7PzPcCHCyio0QTXTfM6WDtDAngfQWWSU16yjLMEgkdXNTErGcuLKMppJt-3-JZW9xhBP4AbbuhBnWC12VX7GBzr7QHOCYzo-s77brCf-m-VcqibZbqY-H-duojFFAUvTUtaqTVhVEpSmEIQnjV5m_NUtIbC8wV0LG6kzgAAAA.lf4TXuafIQ2X5Ec3CsKR5ZN3q9KpJkeEBiYQbmNMuoQ
+# 解析的用户名
+Bunny
+# 解析的用户Id
+1944384432521744386
+# 解析的用户角色
+[ADMIN, USER]
+# 解析的用户权限
+[permission::read, role::read]
+```
+

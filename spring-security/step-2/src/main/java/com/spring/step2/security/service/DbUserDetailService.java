@@ -37,7 +37,7 @@ public class DbUserDetailService implements UserDetailsService {
         Long userId = userEntity.getId();
 
         // 设置用户角色
-        String[] roles = findUserRolesByUserId(userId);
+        String[] roles = findUserRolesByUserId(userId).toArray(String[]::new);
 
         // 设置用户权限
         List<String> permissionsByUserId = findPermissionByUserId(userId);
@@ -66,9 +66,9 @@ public class DbUserDetailService implements UserDetailsService {
      * @param userId 用户id
      * @return 当前用户的角色信息
      */
-    public String[] findUserRolesByUserId(Long userId) {
+    public List<String> findUserRolesByUserId(Long userId) {
         List<RoleEntity> roleList = userMapper.selectRolesByUserId(userId);
-        return roleList.stream().map(RoleEntity::getRoleCode).toArray(String[]::new);
+        return roleList.stream().map(RoleEntity::getRoleCode).toList();
     }
 
     /**
