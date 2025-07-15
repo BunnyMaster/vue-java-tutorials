@@ -56,6 +56,7 @@ public class DbUserDetailService implements UserDetailsService {
                 .password(userEntity.getPassword())
                 // 设置用户 authorities
                 .authorities(authorities)
+                .roles(roles)
                 .build();
     }
 

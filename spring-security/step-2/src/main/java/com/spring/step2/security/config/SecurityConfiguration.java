@@ -1,15 +1,10 @@
 package com.spring.step2.security.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authorization.method.PrePostTemplateDefaults;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 public class SecurityConfiguration {
@@ -43,27 +38,6 @@ public class SecurityConfiguration {
     @Bean
     PrePostTemplateDefaults prePostTemplateDefaults() {
         return new PrePostTemplateDefaults();
-    }
-
-    /**
-     * 添加内存用户
-     *
-     * @return {@link ConditionalOnMissingBean}
-     */
-    @Bean
-    @ConditionalOnMissingBean(UserDetailsService.class)
-    InMemoryUserDetailsManager inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
-        // 使用注入的密码加密器进行密码加密
-        String generatedPassword = passwordEncoder.encode("123456");
-
-        // 创建用户 权限为只读
-        UserDetails bunny = User.withUsername("bunny").password(generatedPassword).roles("USER").authorities("read").build();
-
-        // 管理员可以查看全部
-        UserDetails admin = User.withUsername("admin").password(generatedPassword).roles("ADMIN").authorities("all", "read").build();
-
-        // 返回内存中的用户
-        return new InMemoryUserDetailsManager(bunny, admin);
     }
 
     /**

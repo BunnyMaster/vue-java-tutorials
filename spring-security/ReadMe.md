@@ -1,10 +1,13 @@
 # Spring Security 6 入门指南
 
+整个数据库的表构建差不多是这样的，也是简化的，作为一个小demo讲解。
+
 ![image-20250714202213150](./images/image-20250714202213150.png)
 
 ## 基本配置
 
 ### 添加依赖
+
 在Maven项目中添加Spring Security依赖：
 ```xml
 <dependency>
@@ -14,6 +17,9 @@
 ```
 
 ### 基础安全配置
+
+这个注解可以放在任何的配置类或者是启动项上。
+
 创建一个配置类启用Web安全：
 ```java
 @EnableWebSecurity
@@ -24,14 +30,17 @@ public class SecurityWebConfiguration {
 
 ## 自定义登录配置
 
-### 重要提示
-使用自定义页面时，必须在控制器中明确指定跳转地址，否则Security无法正确路由，即使URL正确也无法跳转。
+> [!IMPORTANT]
+>
+> 使用自定义页面时，必须在控制器中明确指定跳转地址，否则Security无法正确路由，即使URL正确也无法跳转。
 
 ### 启用与禁用选项
 - 使用默认登录页：`.formLogin(Customizer.withDefaults())`
 - 禁用表单登录：`.formLogin(AbstractHttpConfigurer::disable)`
 
-#### 配置示例
+> 上述不仅适用于登录页。同样也适用于csrf等一些其它组件。
+
+### 配置示例
 
 ```java
 @Configuration
@@ -88,31 +97,16 @@ public class SecurityWebConfiguration {
 }
 ```
 
-## 认证与授权配置
+1. **配置内存用户：**
 
-### URL访问控制
-
-#### 基本认证拦截
-```java
-String[] permitAllUrls = {
-    "/", "/doc.html/**",
-    "/webjars/**", "/images/**", ".well-known/**", "favicon.ico", "/error/**",
-    "/v3/api-docs/**"
-};
-
-http.authorizeHttpRequests(authorizeRequests ->
-    authorizeRequests
-        .requestMatchers("/api/**").authenticated()
-        .requestMatchers(permitAllUrls).permitAll()
-)
-```
-
-#### 基于权限的拦截
-> [!WARNING]
+> [!WARNING] 
 >
-> 内存模式下无法获取角色信息。
+> 可以作为测试使用，或者是应急访问使用，比如管理员账号密码忘了。
+>
+> 如果是长期使用是不推荐的。
+>
+> ⚠️ 生产环境通常不推荐常规使用内存用户。
 
-1. 配置内存用户：
 ```java
 @Bean
 @ConditionalOnMissingBean(UserDetailsService.class)
@@ -137,15 +131,152 @@ InMemoryUserDetailsManager inMemoryUserDetailsManager(PasswordEncoder passwordEn
 }
 ```
 
-2. 配置资源权限：
+## URL认证与授权配置
+
+> [!NOTE]
+>
+> 一般在`http.authorizeHttpRequests`配置的都是粗粒度的，在方法上是细粒度的。
+>
+> 所使用的内容根据业务而定。
+
+### 1. 基本角色认证拦截
+
+**基本介绍**
+
+- 如果匹配的地址较多可以创建数组，之后将数组传入
+
+- 数组可以允许全部通过也可以全部鉴权。
+
 ```java
-authorizeRequests
-    .requestMatchers(permitAllUrls).permitAll()
-    .requestMatchers("/api/security/**").permitAll()
-    .requestMatchers(HttpMethod.GET, "/api/anonymous/**").anonymous()
-    // 使用hasRole会自动添加ROLE_前缀
-    // .requestMatchers("/api/**").hasRole("ADMIN")
-    .requestMatchers("/api/**").hasAnyAuthority("all", "read")
+String[] permitAllUrls = {
+    "/", "/doc.html/**",
+    "/webjars/**", "/images/**", ".well-known/**", "favicon.ico", "/error/**",
+    "/v3/api-docs/**"
+};
+
+http.authorizeHttpRequests(authorizeRequests ->
+    authorizeRequests
+        .requestMatchers("/api/**").authenticated()
+        .requestMatchers(permitAllUrls).permitAll()
+)
+```
+
+> [!NOTE]
+>
+> 通过`SecurityContextHolder`查看下当前用户的信息。
+>
+> 详细的可以看下与项目的接口地址：`/api/security/current-user`
+
+1. ##### 单角色配置
+
+配置`/api/**`路径下的所有接口需要`ADMIN`角色才能访问：
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 注意：会自动添加"ROLE_"前缀，实际检查的是ROLE_ADMIN
+            .requestMatchers("/api/**").hasRole("ADMIN")
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+##### 多角色配置（满足任一角色即可访问）
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 检查是否有ADMIN或USER角色（自动添加ROLE_前缀）
+            .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+### 2. 基于权限的URL访问控制
+
+#### 需要所有指定权限
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 需要同时拥有"all"和"read"权限
+            .requestMatchers("/api/**").hasAuthority("all")
+            .requestMatchers("/api/**").hasAuthority("read")
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+#### 满足任一权限即可
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 拥有"all"或"read"任一权限即可访问
+            .requestMatchers("/api/**").hasAnyAuthority("all", "read")
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+### 综合配置策略
+
+#### 1. 基本配置模式
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(authorize -> authorize
+            // 特定路径需要认证
+            .requestMatchers("/api/**").authenticated()
+            // 其他请求全部放行
+            .anyRequest().permitAll()
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
+```
+
+#### 2. 多路径匹配配置
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // 定义无需认证的白名单路径
+    String[] permitAllUrls = {
+        "/", "/doc.html/**",
+        "/webjars/**", "/images/**", 
+        "/.well-known/**", "/favicon.ico", 
+        "/error/**", "/swagger-ui/**", 
+        "/v3/api-docs/**"
+    };
+
+    http.authorizeHttpRequests(authorize -> authorize
+            // API路径需要认证
+            .requestMatchers("/api/**").authenticated()
+            // 白名单路径直接放行
+            .requestMatchers(permitAllUrls).permitAll()
+            // 其他请求需要登录（非匿名访问）
+            .anyRequest().authenticated()
+        )
+        // 其他配置...
+    ;
+    return http.build();
+}
 ```
 
 ### 完整配置示例
@@ -188,6 +319,12 @@ public class SecurityWebConfiguration {
 ```
 
 ## 密码校验器
+
+> [!TIP]
+>
+> 这个是为下面的UserDetailsService做铺垫的。
+
+密码校验器可以自己实现，通常Security为我们提供的就足够使用了，如果是一些老项目迁移等，可以自定义MD5密码校验器。
 
 ```java
 /**
@@ -354,7 +491,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 }
 ```
 
-## 当前用户登录信息
+### 当前用户登录信息
+
+> [!TIP]
+>
+> 下面是控制器中的方法摘自同步的项目中，项目模块是【step2】。
 
 用户的信息都保存在`SecurityContextHolder.getContext()`的上下文中。
 
@@ -401,164 +542,9 @@ public UserDetails getCurrentUserDetail() {
 }
 ```
 
-## URL资源认证配置
+### 深入UserDetailsService
 
-### 角色与权限配置
-
-> [!IMPORTANT]
->
-> 1. **角色与权限的区别**：
->    - `hasRole()`会自动添加"ROLE_"前缀
->    - `hasAuthority()`直接使用指定的权限字符串
-> 2. **匹配顺序**：
->    - Spring Security会按照配置的顺序进行匹配
->    - 更具体的路径应该放在前面，通用规则（如anyRequest）放在最后
-> 3. **方法选择建议**：
->    - `hasRole()`/`hasAnyRole()`：适合基于角色的访问控制
->    - `hasAuthority()`/`hasAnyAuthority()`：适合更细粒度的权限控制
->    - `authenticated()`：只需认证通过，不检查具体角色/权限
->    - `permitAll()`：完全开放访问
-> 4. **最佳实践**：
->    - 对于REST API，通常使用`authenticated()`配合方法级权限控制
->    - 静态资源应明确配置`permitAll()`
->    - 生产环境不建议使用`anyRequest().permitAll()`
-
-#### 1. 基于角色的URL访问控制
-
-##### 单角色配置
-
-配置`/api/**`路径下的所有接口需要`ADMIN`角色才能访问：
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize
-            // 注意：会自动添加"ROLE_"前缀，实际检查的是ROLE_ADMIN
-            .requestMatchers("/api/**").hasRole("ADMIN")
-        )
-        // 其他配置...
-    ;
-    return http.build();
-}
-```
-
-##### 多角色配置（满足任一角色即可访问）
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize
-            // 检查是否有ADMIN或USER角色（自动添加ROLE_前缀）
-            .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
-        )
-        // 其他配置...
-    ;
-    return http.build();
-}
-```
-
-#### 2. 基于权限的URL访问控制
-
-##### 需要所有指定权限
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize
-            // 需要同时拥有"all"和"read"权限
-            .requestMatchers("/api/**").hasAuthority("all")
-            .requestMatchers("/api/**").hasAuthority("read")
-        )
-        // 其他配置...
-    ;
-    return http.build();
-}
-```
-
-##### 满足任一权限即可
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize
-            // 拥有"all"或"read"任一权限即可访问
-            .requestMatchers("/api/**").hasAnyAuthority("all", "read")
-        )
-        // 其他配置...
-    ;
-    return http.build();
-}
-```
-
-### 综合配置策略
-
-#### 1. 基本配置模式
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize
-            // 特定路径需要认证
-            .requestMatchers("/api/**").authenticated()
-            // 其他请求全部放行
-            .anyRequest().permitAll()
-        )
-        // 其他配置...
-    ;
-    return http.build();
-}
-```
-
-#### 2. 多路径匹配配置
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    // 定义无需认证的白名单路径
-    String[] permitAllUrls = {
-        "/", "/doc.html/**",
-        "/webjars/**", "/images/**", 
-        "/.well-known/**", "/favicon.ico", 
-        "/error/**", "/swagger-ui/**", 
-        "/v3/api-docs/**"
-    };
-
-    http.authorizeHttpRequests(authorize -> authorize
-            // API路径需要认证
-            .requestMatchers("/api/**").authenticated()
-            // 白名单路径直接放行
-            .requestMatchers(permitAllUrls).permitAll()
-            // 其他请求需要登录（非匿名访问）
-            .anyRequest().authenticated()
-        )
-        // 其他配置...
-    ;
-    return http.build();
-}
-```
-
-### 基于方法的授权
-
-> [!NOTE]
->
-> 通过在任何 `@Configuration` 类上添加 `@EnableMethodSecurity` 注解。
->
-> Spring Boot Starter Security 默认情况下不会激活方法级别的授权。
-
-#### 提供的注解
-
-1. @PreAuthorize
-2. @PostAuthorize
-3. @PreFilter
-4. @PostFilter
-
-## 关于UserDetailsService的深入解析
-
-> [!IMPORTANT]
->
-> 在SpringSecurity6中版本是6.3.10，如果显式的为User设置角色，在示例的Security上下文中时获取不到roles相关信息的，只能获取到authorities信息。
->
-> 如果需要使用角色判断需要将角色的内容和权限内容一并放到authorities中。
+> [!IMPORTANT] 
 >
 > 在SpringSecurity6中不用显式的为角色添加`ROLE_`像这样的字符串，Security会为我们亲自加上，如果加上会有异常抛出：`ROLE_USER cannot start with ROLE_ (it is automatically added)...`
 
@@ -573,41 +559,23 @@ return User.builder()
         .build();
 ```
 
-如有上述需要可以尝试这样写。
-
-```java
-// 设置用户角色
-String[] roles = findUserRolesByUserId(userId);
-
-// 设置用户权限
-List<String> permissionsByUserId = findPermissionByUserId(userId);
-String[] permissions = permissionsByUserId.toArray(String[]::new);
-
-// 也可以转成下面的形式
-// List<String> permissions = permissionsByUserId.stream()
-//         .map(SimpleGrantedAuthority::new)
-//         .toList();
-
-String[] authorities = ArrayUtils.addAll(roles, permissions);
-
-// 设置用户权限
-return User.builder()
-        .username(userEntity.getUsername())
-        .password(userEntity.getPassword())
-        // 设置用户 authorities
-        .authorities(authorities)
-        .build();
-```
-
-### 简单阐述
-
 #### 1. UserDetailsService的核心作用
+
+> [!NOTE]
+>
+> 如果是前后端分离可以引入JWT，这个是前后端不分离的。
 
 `UserDetailsService`是Spring Security的核心接口，负责提供用户认证数据。它只有一个核心方法：
 
 ```java
 UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 ```
+
+> [!WARNING]
+>
+> 如果是页面方式登录(非前后端分离)，如果该用户的权限变化了，需要退出重新登录才会有最新的权限。
+>
+> 这时候就会出现一个问题，如果当前用户权限被降低了，管理员也修改了这个用户权限，但是信息还是之前的，除非用户退出权限才会刷新。
 
 当用户尝试登录时，Spring Security会自动调用这个方法来获取用户详情。
 
@@ -631,47 +599,6 @@ UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
    C --> D[PasswordEncoder比对密码]
    D --> E[认证成功/失败]
    ```
-
-#### 3. 完整的安全配置示例
-
-```java
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfig {
-
-    private final DbUserDetailService dbUserDetailService;
-    private final PasswordEncoder passwordEncoder;
-
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
-            )
-            .formLogin(form -> form
-                .loginProcessingUrl("/login")
-                .permitAll()
-            )
-            // 即使不显式设置也会自动生效
-            .userDetailsService(dbUserDetailService)
-            // 必须配置PasswordEncoder
-            .authenticationManager(authenticationManager(http));
-        
-        return http.build();
-    }
-
-    @Bean
-    AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(dbUserDetailService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .build();
-    }
-}
-```
 
 #### 4. 关键注意事项
 
@@ -699,42 +626,6 @@ public class SecurityConfig {
    - 存在`PasswordEncoder` bean
    - 没有显式配置`AuthenticationManager`
 
-#### 5. 扩展场景
-
-如果需要自定义认证逻辑（如增加验证码校验），可以：
-
-```java
-@Component
-@RequiredArgsConstructor
-public class CustomAuthProvider implements AuthenticationProvider {
-
-    private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
-
-    @Override
-    public Authentication authenticate(Authentication auth) {
-        // 自定义逻辑
-        UserDetails user = userDetailsService.loadUserByUsername(auth.getName());
-        // 手动密码比对
-        if (!passwordEncoder.matches(auth.getCredentials().toString(), user.getPassword())) {
-            throw new BadCredentialsException("密码错误");
-        }
-        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-    }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
-    }
-}
-```
-
-然后在配置中注册：
-
-```java
-http.authenticationProvider(customAuthProvider);
-```
-
 #### 总结对比表
 
 | 场景         | 需要手动处理                       | 自动处理                |
@@ -746,35 +637,78 @@ http.authenticationProvider(customAuthProvider);
 
 这样设计的好处是：开发者只需关注业务数据获取（用户信息查询），安全相关的校验逻辑由框架统一处理，既保证了安全性又减少了重复代码。
 
-### 获取角色与权限
+## 获取角色与权限
 
-#### 1. 角色信息处理
+### 1. 角色处理
 
 在`UserDetailsService`实现中获取并设置用户角色：
 
 ```java
-@Override
-public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    // 1. 查询用户基本信息
-    UserEntity userEntity = userMapper.selectByUsername(username);
-    if (userEntity == null) {
-        throw new UsernameNotFoundException("用户不存在");
+@DS("testJwt")
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class DbUserDetailService implements UserDetailsService {
+
+    private final UserMapper userMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 查询当前用户
+        UserEntity userEntity = userMapper.selectByUsername(username);
+
+        // 判断当前用户是否存在
+        if (userEntity == null) {
+            throw new UsernameNotFoundException("用户不存在");
+        }
+
+        Long userId = userEntity.getId();
+
+        // 设置用户角色
+        String[] roles = findUserRolesByUserId(userId);
+
+        // 设置用户权限
+        List<String> permissionsByUserId = findPermissionByUserId(userId);
+        String[] permissions = permissionsByUserId.toArray(String[]::new);
+
+        // 也可以转成下面的形式
+        // List<String> permissions = permissionsByUserId.stream()
+        //         .map(SimpleGrantedAuthority::new)
+        //         .toList();
+
+        String[] authorities = ArrayUtils.addAll(roles, permissions);
+
+        // 设置用户权限
+        return User.builder()
+                .username(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                // 设置用户 authorities
+                .authorities(authorities)
+                .roles(roles)
+                .build();
     }
 
-    // 2. 获取角色信息（自动添加ROLE_前缀）
-    String[] roles = findUserRolesByUserId(userEntity.getId());
-    
-    // 3. 获取权限信息
-    List<String> permissions = findPermissionsByUserId(userEntity.getId());
-    
-    return User.builder()
-            .username(userEntity.getUsername())
-            .password(userEntity.getPassword())
-            // 角色会自动添加ROLE_前缀
-            .roles(roles)  
-            // 直接作为权限字符串使用
-            .authorities(permissions.toArray(new String[0])) 
-            .build();
+    /**
+     * 根据用户id查找该用户的角色内容
+     *
+     * @param userId 用户id
+     * @return 当前用户的角色信息
+     */
+    public String[] findUserRolesByUserId(Long userId) {
+        List<RoleEntity> roleList = userMapper.selectRolesByUserId(userId);
+        return roleList.stream().map(RoleEntity::getRoleCode).toArray(String[]::new);
+    }
+
+    /**
+     * 根据用户id查找该用户的权限内容
+     *
+     * @param userId 用户id
+     * @return 当前用户的权限信息
+     */
+    public List<String> findPermissionByUserId(Long userId) {
+        List<PermissionEntity> permissionList = userMapper.selectPermissionByUserId(userId);
+        return permissionList.stream().map(PermissionEntity::getPermissionCode).toList();
+    }
 }
 ```
 
@@ -783,7 +717,7 @@ public UserDetails loadUserByUsername(String username) throws UsernameNotFoundEx
 - `roles()`方法会自动为角色添加`ROLE_`前缀（如`ADMIN`会变成`ROLE_ADMIN`）
 - 角色和权限在Spring Security中是不同概念，角色本质是带有特殊前缀的权限
 
-#### 2. 权限信息处理（两种方式）
+### 2. 权限处理（两种方式）
 
 **方式一：直接使用字符串**
 
@@ -816,7 +750,7 @@ return User.withUsername(username)
 | `SwitchUserGrantedAuthority` | 用户切换场景  | 包含原始用户信息 |
 | `JaasGrantedAuthority`       | JAAS集成      | 用于Java认证服务 |
 
-#### 3. Mapper配置优化
+### 3. Mapper示例
 
 **角色查询Mapper**：
 
@@ -841,58 +775,41 @@ return User.withUsername(username)
 </select>
 ```
 
-#### 4. 重要注意事项
+## 方法资源认证配置
 
-1. **角色与权限的存储建议**：
+通过在任何 `@Configuration` 类上添加 `@EnableMethodSecurity` 注解。
 
-   - 角色建议存储为`ADMIN`、`USER`等形式
-   - 权限建议存储为`user:read`、`order:delete`等具体操作
+Spring Boot Starter Security 默认情况下不会激活方法级别的授权。
 
-2. **性能优化**：
+**角色与权限的区别**：
 
-   ```java
-   // 使用一次查询获取所有权限信息（避免N+1查询）
-   @Select("SELECT p.permission_code FROM ... WHERE ur.user_id = #{userId}")
-   List<String> selectAllUserPermissions(@Param("userId") Long userId);
-   ```
+- `hasRole()`会自动添加"ROLE_"前缀
+- `hasAuthority()`直接使用指定的权限字符串
 
-3. **Spring Security的默认行为**：
+**匹配顺序**：
 
-   - 如果同时配置`roles()`和`authorities()`，后者会覆盖前者
-   - 推荐统一使用`authorities()`方法处理所有授权信息
+- Spring Security会按照配置的顺序进行匹配
+- 更具体的路径应该放在前面，通用规则（如anyRequest）放在最后
 
-4. **最佳实践示例**：
+**方法选择建议**：
 
-```java
-List<GrantedAuthority> authorities = new ArrayList<>();
-// 添加角色（手动添加ROLE_前缀）
-roles.forEach(role -> 
-    authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
-// 添加权限
-authorities.addAll(permissions.stream()
-    .map(SimpleGrantedAuthority::new)
-    .toList());
+- `hasRole()`/`hasAnyRole()`：适合基于角色的访问控制
+- `hasAuthority()`/`hasAnyAuthority()`：适合更细粒度的权限控制
+- `authenticated()`：只需认证通过，不检查具体角色/权限
+- `permitAll()`：完全开放访问
 
-return User.builder()
-    // ...
-    .authorities(authorities)
-    .build();
-```
+**提供的注解**
 
-#### 5. 完整流程示意图
+1. @PreAuthorize
+2. @PostAuthorize
+3. @PreFilter
+4. @PostFilter
 
-```mermaid
-graph TD
-    A[登录请求] --> B[调用UserDetailsService]
-    B --> C[查询用户基本信息]
-    C --> D[查询用户角色]
-    C --> E[查询用户权限]
-    D --> F[构建UserDetails对象]
-    E --> F
-    F --> G[返回认证结果]
-```
+**最佳实践**：
 
-## 注解使用
+- 对于REST API，通常使用`authenticated()`配合方法级权限控制
+- 静态资源应明确配置`permitAll()`
+- 生产环境不建议使用`anyRequest().permitAll()`
 
 ### 1. 基础使用说明
 
@@ -904,8 +821,6 @@ graph TD
 > - 类级别注解会被方法级别注解覆盖
 > - 默认需要启用注解支持：`@EnableMethodSecurity`
 
-如果需要使用某个注解，直接在方法加上即可，当然也可以加载类上面。
-
 如果类上面也加了注解，方法也加了，那么方法的会覆盖掉类上的。
 
 ```java
@@ -914,20 +829,11 @@ graph TD
 @Operation(summary = "分页查询系统角色表", description = "分页系统角色表")
 @GetMapping("{page}/{limit}")
 public Result<PageResult<RoleVo>> getRolePage(
-        @Parameter(name = "page", description = "当前页", required = true)
-        @PathVariable("page") Integer page,
-        @Parameter(name = "limit", description = "每页记录数", required = true)
-        @PathVariable("limit") Integer limit,
-        RoleDto dto) {
-    Page<RoleEntity> pageParams = new Page<>(page, limit);
-    PageResult<RoleVo> pageResult = roleService.getRolePage(pageParams, dto);
-    return Result.success(pageResult);
+    // ...
 }
 ```
 
 ### 2. 前置与后置授权对比
-
-在Spring Security 6中，`@PreAuthorize`和`@PostAuthorize`确实有不同的执行时机和行为，你的理解基本正确，我来详细说明一下：
 
 #### 1. @PreAuthorize
 
@@ -965,6 +871,8 @@ public Document getDocument(Long docId) {
 
 **如果需要关闭**
 
+如果不需要这种注解，可以按照下面的方式进行关闭。
+
 ```java
 @Configuration
 @EnableMethodSecurity(prePostEnabled = false)
@@ -973,26 +881,14 @@ class MethodSecurityConfig {
 }
 ```
 
-
-
 #### 关键区别总结
 
-| 特性             | @PreAuthorize        | @PostAuthorize                 |
-| ---------------- | -------------------- | ------------------------------ |
-| 执行时机         | 方法执行前           | 方法执行后                     |
-| 方法是否会被执行 | 不满足条件时不执行   | 总是执行                       |
-| 可访问的上下文   | 方法参数             | 方法参数和返回值(returnObject) |
-| 性能影响         | 更好(避免不必要执行) | 稍差(方法总会执行)             |
-| 主要用途         | 防止未授权访问       | 基于返回值的访问控制           |
+如果使用`PostAuthorize`注解，但是服务中没有标记事务注解，那么会将整个方法全部执行，即使没有权限也不会回滚。
 
-> [!CAUTION] 
->
-> 如果使用`PostAuthorize`注解，但是服务中没有标记事务注解，那么会将整个方法全部执行，即使没有权限也不会回滚。
->
-> **默认情况下，Spring 事务会对未捕获的 `RuntimeException` 进行回滚**，因此：
->
-> - 如果事务仍然活跃（未提交），则会回滚。
-> - 但如果事务已经提交（例如方法执行完毕且事务已提交），则**不会回滚**。
+**默认情况下，Spring 事务会对未捕获的 `RuntimeException` 进行回滚**，因此：
+
+- 如果事务仍然活跃（未提交），则会回滚。
+- 但如果事务已经提交（例如方法执行完毕且事务已提交），则**不会回滚**。
 
 1. **优先使用@PreAuthorize**：除非你需要基于返回值做判断，否则应该使用`@PreAuthorize`，因为它能更早地阻止未授权访问
 
@@ -1002,7 +898,15 @@ class MethodSecurityConfig {
 
 4. **性能敏感场景**：对于性能敏感或可能产生副作用的方法，避免使用`@PostAuthorize`
 
-**使用示例**
+| 特性             | @PreAuthorize        | @PostAuthorize                 |
+| ---------------- | -------------------- | ------------------------------ |
+| 执行时机         | 方法执行前           | 方法执行后                     |
+| 方法是否会被执行 | 不满足条件时不执行   | 总是执行                       |
+| 可访问的上下文   | 方法参数             | 方法参数和返回值(returnObject) |
+| 性能影响         | 更好(避免不必要执行) | 稍差(方法总会执行)             |
+| 主要用途         | 防止未授权访问       | 基于返回值的访问控制           |
+
+#### 使用示例
 
 ```java
 @Tag(name = "测试接口", description = "测试用的接口")
@@ -1111,7 +1015,7 @@ public Result<String> roleUser() {
 }
 ```
 
-### 4. 其他注解支持
+### 4. 其他注解
 
 #### JSR-250注解
 
@@ -1135,7 +1039,7 @@ public Result<String> roleUser() {
   @EnableMethodSecurity(securedEnabled = true)
   ```
 
-### 5. 最佳实践示例
+### 5. 示例
 
 ```java
 @Tag(name = "权限测试接口")
@@ -1173,57 +1077,36 @@ public class AuthTestController {
 }
 ```
 
-### 关键注意事项
-
-1. **事务边界问题**：
-
-   - `@PostAuthorize`注解的方法若包含写操作，需确保：
-
-     ```java
-     @Transactional
-     @PostAuthorize("...")
-     public void updateData() {
-         // 若授权失败，已执行的操作不会回滚
-     }
-     ```
-
-2. **权限命名规范**：
-
-   - 角色：`ROLE_ADMIN`（自动前缀）
-   - 权限：`module:action`（如`user:delete`）
-
-3. **性能考虑**：
-
-   - 避免在`@PostAuthorize`中执行耗时操作
-   - 对高频接口优先使用`@PreAuthorize`
-
-4. **测试覆盖**：
-
-   - 必须为每个安全注解编写测试用例
-   - 验证正向和反向场景
-
-5. **注解组合**：
-
-   ```java
-   @AdminOnly
-   @PostAuthorize("returnObject.status == 'PUBLIC'")
-   public Content getContent(Long id) {
-       // 需要管理员权限且只允许返回公开内容
-   }
-   ```
-
 ## 通过编程方式授权方法
+
+如果需要对权限做出自定义的需求，将传入参数作为判断权限条件，这会很有用，比如某些参数不可以传入，或者参数做权限校验等。
+
+首先创建一个Spring组件，包含自定义的授权逻辑：
 
 ```java
 @Component("auth")
 public class AuthorizationLogic {
 
+    /**
+     * 自定义授权决策方法
+     * @param name 要检查的名称
+     * @return 如果授权通过返回true，否则返回false
+     */
     public boolean decide(String name) {
-        System.out.println(name);
-        // 直接使用name的实现
+        // 示例逻辑：仅当name为"user"(不区分大小写)时授权通过
         return name.equalsIgnoreCase("user");
     }
-
+    
+    /**
+     * 更复杂的授权逻辑示例
+     * @param id 资源ID
+     * @param currentUsername 当前认证用户名
+     * @return 授权结果
+     */
+    public boolean checkResourceAccess(Long id, String currentUsername) {
+        // 这里可以添加数据库查询等复杂逻辑
+        return id != null && id > 0 && currentUsername != null;
+    }
 }
 ```
 
@@ -1239,6 +1122,75 @@ public Result<String> lowerUser(String name) {
 ```
 
 ## 使用自定义授权管理器
+
+在实际开发中对于SpringSecurity提供的两个权限校验注解`@PreAuthorize`和`@PostAuthorize`，需要对这两个进行覆盖或者改造，需要实现两个`AuthorizationManager<T>`。
+
+实现完成后需要显式的在配置中禁用原先的内容。
+
+### 1. 实现前置
+
+在方法中写入自己的校验逻辑。
+
+```java
+/**
+ * 处理方法调用后的授权检查
+ * check()方法接收的是MethodInvocationResult对象，包含已执行方法的结果
+ * 用于决定是否允许返回某个方法的结果(后置过滤)
+ * 这是Spring Security较新的"后置授权"功能
+ */
+@Component
+public class PostAuthorizationManager implements AuthorizationManager<MethodInvocationResult> {
+
+    @Override
+    public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocationResult invocation) {
+        return new AuthorizationDecision(true);
+    }
+}
+```
+
+### 2. 实现后置
+
+```java
+/**
+ * 处理方法调用前的授权检查
+ * check()方法接收的是MethodInvocation对象，包含即将执行的方法调用信息
+ * 用于决定是否允许执行某个方法
+ * 这是传统的"前置授权"模式
+ */
+@Component
+public class PreAuthorizationManager implements AuthorizationManager<MethodInvocation> {
+
+    @Override
+    public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation invocation) {
+        return new AuthorizationDecision(true);
+    }
+
+}
+```
+
+### 3. 禁用自带的
+
+需要加上注解`@EnableMethodSecurity(prePostEnabled = false)`。
+
+```java
+@Configuration
+@EnableMethodSecurity(prePostEnabled = false)
+public class AuthorizationManagerConfiguration {
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    Advisor preAuthorize(PreAuthorizationManager manager) {
+        return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(manager);
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    Advisor postAuthorize(PostAuthorizationManager manager) {
+        return AuthorizationManagerAfterMethodInterceptor.postAuthorize(manager);
+    }
+    
+}
+```
 
 ## 将方法与自定义切入点相匹配
 
