@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>step-2</artifactId>
-    <description>学习步骤1,不前后端分离的项目</description>
+    <description>学习步骤2,不前后端分离的项目</description>
     <packaging>jar</packaging>
 
     <name>step-2</name>

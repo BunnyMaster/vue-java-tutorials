@@ -7,6 +7,7 @@ import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,6 +38,7 @@ public class DbUserDetailService implements UserDetailsService {
         }
 
         Long userId = userEntity.getId();
+        String password = userEntity.getPassword();
 
         List<String> list = new ArrayList<>();
         // 设置用户角色
@@ -50,8 +52,12 @@ public class DbUserDetailService implements UserDetailsService {
                 .collect(Collectors.toSet());
 
         // 设置用户权限
-        userEntity.setAuthorities(authorities);
-        return userEntity;
+        return User.builder()
+                .username(username)
+                .password(password)
+                .authorities(authorities)
+                .roles(roles.toArray(String[]::new))
+                .build();
     }
 
     /**

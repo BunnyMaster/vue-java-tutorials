@@ -47,11 +47,3 @@ logging:
     root: info
     com.spring: debug
     org.springframework.security: debug
-
-jwtToken:
-  # 密钥
-  secret: aVeryLongAndSecureRandomStringWithAtLeast32Characters
-  # 主题
-  subject: SecurityBunny
-  # 过期事件 7天
-  expired: 604800

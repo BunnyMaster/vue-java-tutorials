@@ -7,7 +7,7 @@ import com.spring.step2.domain.vo.RoleVo;
 import com.spring.step2.domain.vo.result.PageResult;
 import com.spring.step2.domain.vo.result.Result;
 import com.spring.step2.domain.vo.result.ResultCodeEnum;
-import com.spring.step2.service.roles.RoleService;
+import com.spring.step2.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

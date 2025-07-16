@@ -16,6 +16,11 @@ public class WebController {
         return "loginPage";
     }
 
+    @GetMapping("logout")
+    public String logout() {
+        return "logoutPage";
+    }
+
     @GetMapping("/user")
     public String showUserPage() {
         return "userPage";

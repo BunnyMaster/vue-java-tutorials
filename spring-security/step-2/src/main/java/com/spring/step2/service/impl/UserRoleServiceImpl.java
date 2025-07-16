@@ -1,4 +1,4 @@
-package com.spring.step2.service.user.impl;
+package com.spring.step2.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -10,7 +10,7 @@ import com.spring.step2.domain.entity.UserRoleEntity;
 import com.spring.step2.domain.vo.UserRoleVo;
 import com.spring.step2.domain.vo.result.PageResult;
 import com.spring.step2.mapper.UserRoleMapper;
-import com.spring.step2.service.user.UserRoleService;
+import com.spring.step2.service.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

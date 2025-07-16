@@ -13,11 +13,18 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final ThreadLocalCleanupInterceptor threadLocalCleanupInterceptor;
 
+    /**
+     * 因为实现了 ThreadLocalCleanupInterceptor
+     * 要做就做到底，就在这里随便用了下
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(threadLocalCleanupInterceptor);
     }
 
+    /**
+     * 这里不涉及远程调用，只是复制时候懒得改了
+     */
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
