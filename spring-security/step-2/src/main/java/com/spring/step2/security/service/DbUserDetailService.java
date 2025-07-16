@@ -6,15 +6,17 @@ import com.spring.step2.domain.entity.RoleEntity;
 import com.spring.step2.domain.entity.UserEntity;
 import com.spring.step2.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @DS("testJwt")
 @Service
@@ -36,28 +38,20 @@ public class DbUserDetailService implements UserDetailsService {
 
         Long userId = userEntity.getId();
 
+        List<String> list = new ArrayList<>();
         // 设置用户角色
-        String[] roles = findUserRolesByUserId(userId).toArray(String[]::new);
+        List<String> roles = findUserRolesByUserId(userId);
+        // 设置用户权限
+        List<String> permissions = findPermissionByUserId(userId);
+        list.addAll(roles);
+        list.addAll(permissions);
+
+        Set<SimpleGrantedAuthority> authorities = list.stream().map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
 
         // 设置用户权限
-        List<String> permissionsByUserId = findPermissionByUserId(userId);
-        String[] permissions = permissionsByUserId.toArray(String[]::new);
-
-        // 也可以转成下面的形式
-        // List<String> permissions = permissionsByUserId.stream()
-        //         .map(SimpleGrantedAuthority::new)
-        //         .toList();
-
-        String[] authorities = ArrayUtils.addAll(roles, permissions);
-
-        // 设置用户权限
-        return User.builder()
-                .username(userEntity.getUsername())
-                .password(userEntity.getPassword())
-                // 设置用户 authorities
-                .authorities(authorities)
-                .roles(roles)
-                .build();
+        userEntity.setAuthorities(authorities);
+        return userEntity;
     }
 
     /**

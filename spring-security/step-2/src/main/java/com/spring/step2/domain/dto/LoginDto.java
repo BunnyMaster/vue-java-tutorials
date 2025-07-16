@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Schema(name = "LoginRequest", title = "LoginRequest登录参数", description = "登录请求参数")
-public class LoginRequest {
+public class LoginDto {
+
+    @Schema(name = "type", description = "登录类型")
+    private String type = "default";
 
     @Schema(name = "username", title = "用户名")
     private String username;

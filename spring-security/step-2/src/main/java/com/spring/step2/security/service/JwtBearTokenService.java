@@ -83,4 +83,14 @@ public class JwtBearTokenService {
         return JwtTokenUtil.getMapByToken(token, secretKey);
     }
 
+    /**
+     * 判断当前Token是否国企
+     *
+     * @param token 令牌
+     * @return 是否国企
+     */
+    public boolean isTokenValid(String token) {
+        SecretKey secretKey = getSecretKey();
+        return JwtTokenUtil.isExpired(token, secretKey);
+    }
 }

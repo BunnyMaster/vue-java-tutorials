@@ -1,8 +1,8 @@
 package com.spring.step2.security.handler;
 
-import com.alibaba.fastjson2.JSON;
 import com.spring.step2.domain.vo.result.Result;
 import com.spring.step2.domain.vo.result.ResultCodeEnum;
+import com.spring.step2.utils.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +20,6 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
 
         // 未认证---未登录
         Result<Object> result = Result.error(authException.getMessage(), ResultCodeEnum.LOGIN_AUTH);
-
-        // 将错误的请求转成JSON
-        Object json = JSON.toJSON(result);
-
-        // 返回响应
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().println(json);
-        response.flushBuffer();
+        ResponseUtil.out(response, result);
     }
 }

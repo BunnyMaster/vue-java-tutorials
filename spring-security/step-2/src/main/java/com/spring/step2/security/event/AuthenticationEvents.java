@@ -23,29 +23,32 @@ public class AuthenticationEvents {
      */
     @EventListener
     public void onFailure(AuthorizationDeniedEvent<MethodInvocation> failure) {
-        // getSource 和 getObject意思一样，一种是传入泛型自动转换一种是要手动转换
-        Object source = failure.getSource();
+        try {
+            // getSource 和 getObject意思一样，一种是传入泛型自动转换一种是要手动转换
+            Object source = failure.getSource();
 
-        // 直接获取泛型对象
-        MethodInvocation methodInvocation = failure.getObject();
-        Method method = methodInvocation.getMethod();
-        Object[] args = methodInvocation.getArguments();
+            // 直接获取泛型对象
+            MethodInvocation methodInvocation = failure.getObject();
+            Method method = methodInvocation.getMethod();
+            Object[] args = methodInvocation.getArguments();
 
-        log.warn("方法调用被拒绝: {}.{}, 参数: {}",
-                method.getDeclaringClass().getSimpleName(),
-                method.getName(),
-                Arrays.toString(args));
+            log.warn("方法调用被拒绝: {}.{}, 参数: {}",
+                    method.getDeclaringClass().getSimpleName(),
+                    method.getName(),
+                    Arrays.toString(args));
 
-        // 这里面的信息，和接口 /api/security/current-user 内容一样
-        Authentication authentication = failure.getAuthentication().get();
+            // 这里面的信息，和接口 /api/security/current-user 内容一样
+            Authentication authentication = failure.getAuthentication().get();
 
-        AuthorizationDecision authorizationDecision = failure.getAuthorizationDecision();
-        // ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('ADMIN')]
-        System.out.println(authorizationDecision);
+            AuthorizationDecision authorizationDecision = failure.getAuthorizationDecision();
+            // ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('ADMIN')]
+            System.out.println(authorizationDecision);
 
-        log.warn("授权失败 - 用户: {}, 权限: {}", authentication.getName(), authorizationDecision);
+            log.warn("授权失败 - 用户: {}, 权限: {}", authentication.getName(), authorizationDecision);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
     }
-
 
     /**
      * 监听授权的内容

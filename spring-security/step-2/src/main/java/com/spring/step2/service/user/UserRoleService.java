@@ -1,4 +1,4 @@
-package com.spring.step2.service;
+package com.spring.step2.service.user;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
