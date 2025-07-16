@@ -1,0 +1,42 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border: none;
+}
+
+.card-header {
+    background-color: #4e73df;
+    color: white;
+    border-radius: 10px 10px 0 0 !important;
+    padding: 15px 20px;
+    font-weight: 600;
+}
+
+.table th {
+    background-color: #f8f9fc;
+    color: #5a5c69;
+    font-weight: 600;
+}
+
+.btn-action {
+    padding: 5px 10px;
+    font-size: 0.875rem;
+}
+
+.search-btn-group .btn {
+    margin-right: 5px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #5a5c69;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(78, 115, 223, 0.05);
+}
