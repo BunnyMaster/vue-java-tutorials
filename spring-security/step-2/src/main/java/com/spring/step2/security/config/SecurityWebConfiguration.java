@@ -5,6 +5,7 @@ import com.spring.step2.security.handler.SecurityAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SecurityWebConfiguration {
+
+    private final AuthenticationProvider jwtAuthenticationProvider;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -54,6 +57,7 @@ public class SecurityWebConfiguration {
                     // 没有权限访问
                     exception.accessDeniedHandler(new SecurityAccessDeniedHandler());
                 })
+                .authenticationProvider(jwtAuthenticationProvider)
         ;
 
         return http.build();

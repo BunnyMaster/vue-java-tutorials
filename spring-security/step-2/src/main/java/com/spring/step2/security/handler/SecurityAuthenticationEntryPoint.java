@@ -27,5 +27,6 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
         // 返回响应
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().println(json);
+        response.flushBuffer();
     }
 }

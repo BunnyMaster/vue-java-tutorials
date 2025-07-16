@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Slf4j
 public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
-    
+
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.error("SecurityAccessDeniedHandler:{}", accessDeniedException.getLocalizedMessage());
@@ -28,5 +28,6 @@ public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
         // 返回响应
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().println(json);
+        response.flushBuffer();
     }
 }
