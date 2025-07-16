@@ -1,5 +1,5 @@
 server:
-  port: 8772
+  port: 8773
 
 spring:
   application:
@@ -47,7 +47,7 @@ logging:
     root: info
     com.spring: debug
     org.springframework.security: debug
-    
+
 jwtToken:
   # 密钥
   secret: aVeryLongAndSecureRandomStringWithAtLeast32Characters

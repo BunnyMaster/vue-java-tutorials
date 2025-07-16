@@ -1,5 +1,9 @@
 # Spring Security 6 入门指南
 
+> [!TIP]
+>
+> 打包：mvn clean package -DskipTests
+
 整个数据库的表构建差不多是这样的，也是简化的，作为一个小demo讲解。
 
 ![image-20250714202213150](./images/image-20250714202213150.png)
@@ -1520,4 +1524,3 @@ Bunny
 # 解析的用户权限
 [permission::read, role::read]
 ```
-
