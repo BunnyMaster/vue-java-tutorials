@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,
                                     @NotNull HttpServletResponse response,
-                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
+                                    @NotNull FilterChain filterChain) throws ServletException, IOException, AuthenticSecurityException {
         final String authHeader = request.getHeader("Authorization");
 
         // 如果当前请求不包含验证Token直接返回
@@ -47,6 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 检查当前Token是否过期
         if (jwtBearTokenService.isTokenValid(jwtToken)) {
+            // TODO 抛出异常 Security 未处理
             throw new AuthenticSecurityException(ResultCodeEnum.AUTHENTICATION_EXPIRED);
         }
 

@@ -1362,6 +1362,16 @@ public class AuthenticationEvents {
 
 ## 实现JWT的认证
 
+### 过滤器的介绍
+
+过滤器添加分为：`addFilterBefore`、`addFilterAt`、`addFilter`、`addFilterAfter`。
+
+这里不推荐使用`addFilter`，指定顺序不明确，如需指定顺序使用其余三个。如果不指定顺序会报下面的错。
+
+```properties
+The Filter class com.spring.step3.security.filter.JwtAuthenticationFilter does not have a registered order and cannot be added without a specified order. Consider using addFilterBefore or addFilterAfter instead.
+```
+
 ### 生成JWT令牌
 
 > [!TIP]
@@ -1524,3 +1534,4 @@ Bunny
 # 解析的用户权限
 [permission::read, role::read]
 ```
+

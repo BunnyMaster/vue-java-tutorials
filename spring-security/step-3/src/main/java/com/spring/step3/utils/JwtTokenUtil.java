@@ -205,8 +205,8 @@ public class JwtTokenUtil {
 
             return expiration != null && expiration.before(new Date());
         } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
-            return true;
+            // TODO 抛出异常 Security 未处理
+            throw new AuthenticSecurityException(ResultCodeEnum.TOKEN_PARSING_FAILED);
         }
     }
 }
