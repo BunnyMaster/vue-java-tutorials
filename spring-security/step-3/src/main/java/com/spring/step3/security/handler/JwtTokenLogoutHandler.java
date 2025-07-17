@@ -2,7 +2,7 @@ package com.spring.step3.security.handler;
 
 import com.spring.step3.domain.vo.result.Result;
 import com.spring.step3.domain.vo.result.ResultCodeEnum;
-import com.spring.step3.security.service.JwtBearTokenService;
+import com.spring.step3.security.service.JwtTokenService;
 import com.spring.step3.utils.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,14 +21,16 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class JwtTokenLogoutHandler implements LogoutHandler {
 
-    private final JwtBearTokenService jwtBearTokenService;
+    private final JwtTokenService jwtTokenService;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        // 在这里可以设置不同的请求头标识符，常见的：Authorization、Token等
         String authorizationToken = request.getHeader("Authorization");
+
         if (StringUtils.hasText(authorizationToken)) {
             // 如果当前用户信息存在redis中可以通过这个进行退出
-            String username = jwtBearTokenService.getUsernameFromToken(authorizationToken);
+            String username = jwtTokenService.getUsernameFromToken(authorizationToken);
             log.info("username : {}", username);
         }
 

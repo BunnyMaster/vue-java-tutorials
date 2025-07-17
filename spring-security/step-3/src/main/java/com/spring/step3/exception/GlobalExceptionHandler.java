@@ -36,7 +36,14 @@ public class GlobalExceptionHandler {
     public Result<Object> exceptionHandler(RuntimeException exception) {
         String message = exception.getMessage();
         message = StringUtils.hasText(message) ? message : "服务器异常";
-        exception.printStackTrace();
+        log.error("发生业务异常: {}", exception.getMessage(), exception);
+
+        // 💡IDEA：如果需要特殊情况的日志可以参考下面的代码
+        // =========================================
+        // StringWriter sw = new StringWriter();
+        // e.printStackTrace(new PrintWriter(sw));
+        // logger.error(sw.toString());
+        // =========================================
 
         // 解析异常
         String jsonParseError = "JSON parse error (.*)";

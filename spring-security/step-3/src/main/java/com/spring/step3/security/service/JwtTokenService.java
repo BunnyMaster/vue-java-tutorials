@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(prefix = "jwt-token")
-public class JwtBearTokenService {
+public class JwtTokenService {
 
     @Value("${jwtToken.secret}")
     public String secret;
@@ -89,7 +89,7 @@ public class JwtBearTokenService {
      * @param token 令牌
      * @return 是否国企
      */
-    public boolean isTokenValid(String token) {
+    public boolean isExpired(String token) {
         SecretKey secretKey = getSecretKey();
         return JwtTokenUtil.isExpired(token, secretKey);
     }

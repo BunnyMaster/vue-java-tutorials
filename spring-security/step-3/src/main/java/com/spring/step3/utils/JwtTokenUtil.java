@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -95,15 +98,23 @@ public class JwtTokenUtil {
      *
      * @param userId   用户ID
      * @param username 用户名
-     * @param day      过期时间
+     * @param second   过期时间
      * @return token值
      */
     public static String createToken(Long userId, String username,
                                      List<String> roles, List<String> permissions,
-                                     String subject, SecretKey key, Long day) {
+                                     String subject, SecretKey key, Long second) {
+        // 传进来的是秒，转成未来过期时间
+        LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(second);
+        Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        // 转成过期时间
+        String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+
         return Jwts.builder()
                 .subject(subject)
-                .expiration(new Date(System.currentTimeMillis() + day))
+                .expiration(date)
+                .claim("expiredTime", format)
                 .claim("userId", userId)
                 .claim("username", username)
                 .claim("roles", roles)
@@ -197,6 +208,7 @@ public class JwtTokenUtil {
      *
      * @param token token
      * @return 是否过期
+     * @throws RuntimeException ⚠️解析失败和过期都属于异常类型
      */
     public static boolean isExpired(String token, SecretKey key) {
         try {
@@ -204,9 +216,10 @@ public class JwtTokenUtil {
             Date expiration = claimsJws.getPayload().getExpiration();
 
             return expiration != null && expiration.before(new Date());
-        } catch (Exception exception) {
-            // TODO 抛出异常 Security 未处理
-            throw new AuthenticSecurityException(ResultCodeEnum.TOKEN_PARSING_FAILED);
+        } catch (RuntimeException exception) {
+            // ResultCodeEnum codeEnum = ResultCodeEnum.AUTHENTICATION_EXPIRED;
+            // throw new IllegalArgumentException(codeEnum.getMessage(), exception);
+            return true;
         }
     }
 }

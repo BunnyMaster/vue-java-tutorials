@@ -9,7 +9,7 @@ import com.spring.step3.domain.vo.LoginVo;
 import com.spring.step3.domain.vo.result.ResultCodeEnum;
 import com.spring.step3.mapper.UserMapper;
 import com.spring.step3.security.service.DbUserDetailService;
-import com.spring.step3.security.service.JwtBearTokenService;
+import com.spring.step3.security.service.JwtTokenService;
 import com.spring.step3.service.user.LoginService;
 import com.spring.step3.service.user.strategy.DefaultLoginStrategy;
 import com.spring.step3.service.user.strategy.LoginContext;
@@ -30,7 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LoginServiceImpl extends ServiceImpl<UserMapper, UserEntity> implements LoginService {
 
-    private final JwtBearTokenService jwtBearTokenService;
+    private final JwtTokenService jwtTokenService;
     private final DbUserDetailService dbUserDetailService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -73,10 +73,10 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, UserEntity> implem
 
         List<String> roles = dbUserDetailService.findUserRolesByUserId(userId);
         List<String> permission = dbUserDetailService.findPermissionByUserId(userId);
-        String token = jwtBearTokenService.createToken(userId, user.getUsername(), roles, permission);
+        String token = jwtTokenService.createToken(userId, user.getUsername(), roles, permission);
 
         // 过期时间
-        Long expiresInSeconds = jwtBearTokenService.expired;
+        Long expiresInSeconds = jwtTokenService.expired;
         long expirationMillis = System.currentTimeMillis() + (expiresInSeconds * 1000);
         Date date = new Date(expirationMillis);
 
