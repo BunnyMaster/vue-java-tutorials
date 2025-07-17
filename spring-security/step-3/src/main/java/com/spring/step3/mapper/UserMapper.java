@@ -26,7 +26,7 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<UserEntity> {
 
     /**
-     * * 分页查询用户基本信息表内容
+     * 分页查询用户基本信息表内容
      *
      * @param pageParams 用户基本信息表分页参数
      * @param dto        用户基本信息表查询表单
