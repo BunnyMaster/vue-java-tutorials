@@ -28,7 +28,7 @@ import java.util.List;
 public class EmailTemplateServiceImpl extends ServiceImpl<EmailTemplateMapper, EmailTemplateEntity> implements EmailTemplateService {
 
     /**
-     * * 邮件模板表 服务实现类
+     * 邮件模板表 服务实现类
      *
      * @param pageParams 邮件模板表分页查询page对象
      * @param dto        邮件模板表分页查询对象

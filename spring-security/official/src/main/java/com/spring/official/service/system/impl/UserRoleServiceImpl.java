@@ -28,7 +28,7 @@ import java.util.List;
 public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRoleEntity> implements UserRoleService {
 
     /**
-     * * 系统用户角色关系表 服务实现类
+     * 系统用户角色关系表 服务实现类
      *
      * @param pageParams 系统用户角色关系表分页查询page对象
      * @param dto        系统用户角色关系表分页查询对象

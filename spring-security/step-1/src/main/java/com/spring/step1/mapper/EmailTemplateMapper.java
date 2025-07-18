@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface EmailTemplateMapper extends BaseMapper<EmailTemplateEntity> {
 
     /**
-     * * 分页查询邮件模板表内容
+     * 分页查询邮件模板表内容
      *
      * @param pageParams 邮件模板表分页参数
      * @param dto        邮件模板表查询表单

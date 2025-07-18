@@ -33,7 +33,7 @@ import java.util.List;
 public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRoleEntity> implements UserRoleService {
 
     /**
-     * * 用户角色关联表 服务实现类
+     * 用户角色关联表 服务实现类
      *
      * @param pageParams 用户角色关联表分页查询page对象
      * @param dto        用户角色关联表分页查询对象

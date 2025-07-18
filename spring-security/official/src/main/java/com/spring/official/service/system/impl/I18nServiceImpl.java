@@ -28,7 +28,7 @@ import java.util.List;
 public class I18nServiceImpl extends ServiceImpl<I18nMapper, I18nEntity> implements I18nService {
 
     /**
-     * * 多语言表 服务实现类
+     * 多语言表 服务实现类
      *
      * @param pageParams 多语言表分页查询page对象
      * @param dto        多语言表分页查询对象

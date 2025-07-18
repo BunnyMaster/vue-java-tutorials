@@ -28,7 +28,7 @@ import java.util.List;
 public class MessageTypeServiceImpl extends ServiceImpl<MessageTypeMapper, MessageTypeEntity> implements MessageTypeService {
 
     /**
-     * * 系统消息类型 服务实现类
+     * 系统消息类型 服务实现类
      *
      * @param pageParams 系统消息类型分页查询page对象
      * @param dto        系统消息类型分页查询对象

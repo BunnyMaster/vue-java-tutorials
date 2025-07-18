@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface FilesMapper extends BaseMapper<FilesEntity> {
 
     /**
-     * * 分页查询文件记录内容
+     * 分页查询文件记录内容
      *
      * @param pageParams 文件记录分页参数
      * @param dto        文件记录查询表单

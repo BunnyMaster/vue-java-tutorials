@@ -28,7 +28,7 @@ import java.util.List;
 public class RouterServiceImpl extends ServiceImpl<RouterMapper, RouterEntity> implements RouterService {
 
     /**
-     * * 系统菜单表 服务实现类
+     * 系统菜单表 服务实现类
      *
      * @param pageParams 系统菜单表分页查询page对象
      * @param dto        系统菜单表分页查询对象

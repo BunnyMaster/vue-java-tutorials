@@ -28,7 +28,7 @@ import java.util.List;
 public class MessageReceivedServiceImpl extends ServiceImpl<MessageReceivedMapper, MessageReceivedEntity> implements MessageReceivedService {
 
     /**
-     * *  服务实现类
+     *  服务实现类
      *
      * @param pageParams 分页查询page对象
      * @param dto        分页查询对象

@@ -28,7 +28,7 @@ import java.util.List;
 public class EmailUsersServiceImpl extends ServiceImpl<EmailUsersMapper, EmailUsersEntity> implements EmailUsersService {
 
     /**
-     * * 邮箱发送表 服务实现类
+     * 邮箱发送表 服务实现类
      *
      * @param pageParams 邮箱发送表分页查询page对象
      * @param dto        邮箱发送表分页查询对象

@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface RouterMapper extends BaseMapper<RouterEntity> {
 
     /**
-     * * 分页查询系统菜单表内容
+     * 分页查询系统菜单表内容
      *
      * @param pageParams 系统菜单表分页参数
      * @param dto        系统菜单表查询表单

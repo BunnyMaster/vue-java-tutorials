@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface UserMapper extends BaseMapper<UserEntity> {
 
     /**
-     * * 分页查询用户信息内容
+     * 分页查询用户信息内容
      *
      * @param pageParams 用户信息分页参数
      * @param dto        用户信息查询表单

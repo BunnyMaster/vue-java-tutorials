@@ -36,7 +36,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * * 用户基本信息表 服务实现类
+     * 用户基本信息表 服务实现类
      *
      * @param pageParams 用户基本信息表分页查询page对象
      * @param dto        用户基本信息表分页查询对象

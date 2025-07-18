@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface UserDeptMapper extends BaseMapper<UserDeptEntity> {
 
     /**
-     * * 分页查询部门用户关系表内容
+     * 分页查询部门用户关系表内容
      *
      * @param pageParams 部门用户关系表分页参数
      * @param dto        部门用户关系表查询表单

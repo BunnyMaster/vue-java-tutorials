@@ -33,7 +33,7 @@ import java.util.List;
 public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper, RolePermissionEntity> implements RolePermissionService {
 
     /**
-     * * 角色权限关联表 服务实现类
+     * 角色权限关联表 服务实现类
      *
      * @param pageParams 角色权限关联表分页查询page对象
      * @param dto        角色权限关联表分页查询对象

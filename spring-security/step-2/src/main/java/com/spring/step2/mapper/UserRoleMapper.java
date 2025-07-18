@@ -23,7 +23,7 @@ import java.util.List;
 public interface UserRoleMapper extends BaseMapper<UserRoleEntity> {
 
     /**
-     * * 分页查询用户角色关联表内容
+     * 分页查询用户角色关联表内容
      *
      * @param pageParams 用户角色关联表分页参数
      * @param dto        用户角色关联表查询表单

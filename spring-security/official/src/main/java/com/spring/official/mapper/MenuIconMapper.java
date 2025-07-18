@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface MenuIconMapper extends BaseMapper<MenuIconEntity> {
 
     /**
-     * * 分页查询图标code不能重复内容
+     * 分页查询图标code不能重复内容
      *
      * @param pageParams 图标code不能重复分页参数
      * @param dto        图标code不能重复查询表单

@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface MessageMapper extends BaseMapper<MessageEntity> {
 
     /**
-     * * 分页查询系统消息内容
+     * 分页查询系统消息内容
      *
      * @param pageParams 系统消息分页参数
      * @param dto        系统消息查询表单

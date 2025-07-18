@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface FilesPartDetailMapper extends BaseMapper<FilesPartDetailEntity> {
 
     /**
-     * * 分页查询文件分片信息表，仅在手动分片上传时使用内容
+     * 分页查询文件分片信息表，仅在手动分片上传时使用内容
      *
      * @param pageParams 文件分片信息表，仅在手动分片上传时使用分页参数
      * @param dto        文件分片信息表，仅在手动分片上传时使用查询表单

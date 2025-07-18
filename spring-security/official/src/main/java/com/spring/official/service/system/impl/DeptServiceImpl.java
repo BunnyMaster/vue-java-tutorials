@@ -28,7 +28,7 @@ import java.util.List;
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, DeptEntity> implements DeptService {
 
     /**
-     * * 部门表 服务实现类
+     * 部门表 服务实现类
      *
      * @param pageParams 部门表分页查询page对象
      * @param dto        部门表分页查询对象

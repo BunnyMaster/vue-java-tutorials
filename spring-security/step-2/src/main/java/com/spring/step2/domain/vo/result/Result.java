@@ -16,7 +16,7 @@ public class Result<T> {
     private T data;
 
     /**
-     * * 自定义返回体
+     * 自定义返回体
      *
      * @param data 返回体
      * @return Result<T>
@@ -28,7 +28,7 @@ public class Result<T> {
     }
 
     /**
-     * * 自定义返回体，使用ResultCodeEnum构建
+     * 自定义返回体，使用ResultCodeEnum构建
      *
      * @param body     返回体
      * @param codeEnum 返回状态码
@@ -42,7 +42,7 @@ public class Result<T> {
     }
 
     /**
-     * * 自定义返回体
+     * 自定义返回体
      *
      * @param body    返回体
      * @param code    返回状态码
@@ -58,7 +58,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作成功
+     * 操作成功
      *
      * @return Result<T>
      */
@@ -67,7 +67,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作成功
+     * 操作成功
      *
      * @param data baseCategory1List
      */
@@ -76,7 +76,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作成功-状态码
+     * 操作成功-状态码
      *
      * @param codeEnum 状态码
      */
@@ -85,7 +85,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作成功-自定义返回数据和状态码
+     * 操作成功-自定义返回数据和状态码
      *
      * @param data     返回体
      * @param codeEnum 状态码
@@ -95,7 +95,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作失败-自定义返回数据和状态码
+     * 操作失败-自定义返回数据和状态码
      *
      * @param data    返回体
      * @param message 错误信息
@@ -105,7 +105,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作失败-自定义返回数据和状态码
+     * 操作失败-自定义返回数据和状态码
      *
      * @param data    返回体
      * @param code    状态码
@@ -116,14 +116,14 @@ public class Result<T> {
     }
 
     /**
-     * * 操作失败
+     * 操作失败
      */
     public static <T> Result<T> error() {
         return Result.build(null);
     }
 
     /**
-     * * 操作失败-自定义返回数据
+     * 操作失败-自定义返回数据
      *
      * @param data 返回体
      */
@@ -132,7 +132,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作失败-状态码
+     * 操作失败-状态码
      *
      * @param codeEnum 状态码
      */
@@ -141,7 +141,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作失败-自定义返回数据和状态码
+     * 操作失败-自定义返回数据和状态码
      *
      * @param data     返回体
      * @param codeEnum 状态码
@@ -151,7 +151,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作失败-自定义返回数据和状态码
+     * 操作失败-自定义返回数据和状态码
      *
      * @param data    返回体
      * @param code    状态码
@@ -162,7 +162,7 @@ public class Result<T> {
     }
 
     /**
-     * * 操作失败-自定义返回数据和状态码
+     * 操作失败-自定义返回数据和状态码
      *
      * @param data    返回体
      * @param message 错误信息

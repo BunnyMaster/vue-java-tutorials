@@ -28,7 +28,7 @@ import java.util.List;
 public class MenuIconServiceImpl extends ServiceImpl<MenuIconMapper, MenuIconEntity> implements MenuIconService {
 
     /**
-     * * 图标code不能重复 服务实现类
+     * 图标code不能重复 服务实现类
      *
      * @param pageParams 图标code不能重复分页查询page对象
      * @param dto        图标code不能重复分页查询对象

@@ -28,7 +28,7 @@ import java.util.List;
 public class FilesServiceImpl extends ServiceImpl<FilesMapper, FilesEntity> implements FilesService {
 
     /**
-     * * 文件记录 服务实现类
+     * 文件记录 服务实现类
      *
      * @param pageParams 文件记录分页查询page对象
      * @param dto        文件记录分页查询对象

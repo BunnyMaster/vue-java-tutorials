@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface PermissionMapper extends BaseMapper<PermissionEntity> {
 
     /**
-     * * 分页查询系统权限表内容
+     * 分页查询系统权限表内容
      *
      * @param pageParams 系统权限表分页参数
      * @param dto        系统权限表查询表单

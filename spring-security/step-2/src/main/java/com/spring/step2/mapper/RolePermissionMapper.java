@@ -24,7 +24,7 @@ import java.util.List;
 public interface RolePermissionMapper extends BaseMapper<RolePermissionEntity> {
 
     /**
-     * * 分页查询角色权限关联表内容
+     * 分页查询角色权限关联表内容
      *
      * @param pageParams 角色权限关联表分页参数
      * @param dto        角色权限关联表查询表单

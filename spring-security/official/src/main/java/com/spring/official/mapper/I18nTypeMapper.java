@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface I18nTypeMapper extends BaseMapper<I18nTypeEntity> {
 
     /**
-     * * 分页查询多语言类型表内容
+     * 分页查询多语言类型表内容
      *
      * @param pageParams 多语言类型表分页参数
      * @param dto        多语言类型表查询表单

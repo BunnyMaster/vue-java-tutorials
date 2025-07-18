@@ -28,7 +28,7 @@ import java.util.List;
 public class UserDeptServiceImpl extends ServiceImpl<UserDeptMapper, UserDeptEntity> implements UserDeptService {
 
     /**
-     * * 部门用户关系表 服务实现类
+     * 部门用户关系表 服务实现类
      *
      * @param pageParams 部门用户关系表分页查询page对象
      * @param dto        部门用户关系表分页查询对象

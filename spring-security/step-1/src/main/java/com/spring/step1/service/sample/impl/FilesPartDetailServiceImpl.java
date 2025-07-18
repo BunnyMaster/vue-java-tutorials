@@ -28,7 +28,7 @@ import java.util.List;
 public class FilesPartDetailServiceImpl extends ServiceImpl<FilesPartDetailMapper, FilesPartDetailEntity> implements FilesPartDetailService {
 
     /**
-     * * 文件分片信息表，仅在手动分片上传时使用 服务实现类
+     * 文件分片信息表，仅在手动分片上传时使用 服务实现类
      *
      * @param pageParams 文件分片信息表，仅在手动分片上传时使用分页查询page对象
      * @param dto        文件分片信息表，仅在手动分片上传时使用分页查询对象

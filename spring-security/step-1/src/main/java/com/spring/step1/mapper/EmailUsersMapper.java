@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface EmailUsersMapper extends BaseMapper<EmailUsersEntity> {
 
     /**
-     * * 分页查询邮箱发送表内容
+     * 分页查询邮箱发送表内容
      *
      * @param pageParams 邮箱发送表分页参数
      * @param dto        邮箱发送表查询表单

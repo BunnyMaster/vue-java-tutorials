@@ -28,7 +28,7 @@ import java.util.List;
 public class UserLoginServiceImpl extends ServiceImpl<UserLoginMapper, UserLoginEntity> implements UserLoginService {
 
     /**
-     * * 用户登录日志 服务实现类
+     * 用户登录日志 服务实现类
      *
      * @param pageParams 用户登录日志分页查询page对象
      * @param dto        用户登录日志分页查询对象

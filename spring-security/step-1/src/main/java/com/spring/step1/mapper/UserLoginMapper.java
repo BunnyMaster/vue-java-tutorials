@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface UserLoginMapper extends BaseMapper<UserLoginEntity> {
 
     /**
-     * * 分页查询用户登录日志内容
+     * 分页查询用户登录日志内容
      *
      * @param pageParams 用户登录日志分页参数
      * @param dto        用户登录日志查询表单

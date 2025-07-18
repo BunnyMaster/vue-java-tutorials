@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface UserRoleMapper extends BaseMapper<UserRoleEntity> {
 
     /**
-     * * 分页查询系统用户角色关系表内容
+     * 分页查询系统用户角色关系表内容
      *
      * @param pageParams 系统用户角色关系表分页参数
      * @param dto        系统用户角色关系表查询表单

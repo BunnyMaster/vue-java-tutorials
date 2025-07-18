@@ -32,7 +32,7 @@ import java.util.List;
 public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, PermissionEntity> implements PermissionService {
 
     /**
-     * * 系统权限表 服务实现类
+     * 系统权限表 服务实现类
      *
      * @param pageParams 系统权限表分页查询page对象
      * @param dto        系统权限表分页查询对象

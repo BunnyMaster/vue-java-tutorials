@@ -33,7 +33,7 @@ import java.util.List;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleEntity> implements RoleService {
 
     /**
-     * * 系统角色表 服务实现类
+     * 系统角色表 服务实现类
      *
      * @param pageParams 系统角色表分页查询page对象
      * @param dto        系统角色表分页查询对象

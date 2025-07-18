@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface DeptMapper extends BaseMapper<DeptEntity> {
 
     /**
-     * * 分页查询部门表内容
+     * 分页查询部门表内容
      *
      * @param pageParams 部门表分页参数
      * @param dto        部门表查询表单
