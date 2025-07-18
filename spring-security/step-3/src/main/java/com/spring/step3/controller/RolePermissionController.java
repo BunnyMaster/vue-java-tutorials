@@ -13,6 +13,7 @@ import com.spring.step3.service.roles.RolePermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,7 @@ public class RolePermissionController {
 
     private final RolePermissionService rolePermissionService;
 
+    @PermitAll
     @Operation(summary = "分页查询角色权限关联表", description = "分页角色权限关联表")
     @GetMapping("{page}/{limit}")
     public Result<PageResult<RolePermissionVo>> getRolePermissionPage(
@@ -49,12 +51,14 @@ public class RolePermissionController {
     }
 
     @GetMapping("permissions")
+    @PermitAll
     @Operation(summary = "根据角色id获取权限内容", description = "根据角色id获取权限内容")
     public Result<List<RolePermissionVo>> getRolePermissionById(Long permissionId) {
         List<RolePermissionVo> voList = rolePermissionService.getRolePermissionById(permissionId);
         return Result.success(voList);
     }
 
+    @PermitAll
     @Operation(summary = "添加角色权限关联表", description = "添加角色权限关联表")
     @PostMapping()
     public Result<String> addRolePermission(@Valid @RequestBody RolePermissionDto dto) {
@@ -62,6 +66,7 @@ public class RolePermissionController {
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
     }
 
+    @PermitAll
     @Operation(summary = "为角色分配权限", description = "根据角色id分配权限")
     @PostMapping("assign-permission")
     public Result<String> assignRolePermission(@Valid @RequestBody AssignRolePermissionDto dto) {
@@ -69,6 +74,7 @@ public class RolePermissionController {
         return Result.success();
     }
 
+    @PermitAll
     @Operation(summary = "更新角色权限关联表", description = "更新角色权限关联表")
     @PutMapping()
     public Result<String> updateRolePermission(@Valid @RequestBody RolePermissionDto dto) {
@@ -76,6 +82,7 @@ public class RolePermissionController {
         return Result.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
+    @PermitAll
     @Operation(summary = "删除角色权限关联表", description = "删除角色权限关联表")
     @DeleteMapping()
     public Result<String> deleteRolePermission(@RequestBody List<Long> ids) {

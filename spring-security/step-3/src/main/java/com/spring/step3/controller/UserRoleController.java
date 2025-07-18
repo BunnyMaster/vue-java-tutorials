@@ -12,6 +12,7 @@ import com.spring.step3.service.user.UserRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ public class UserRoleController {
 
     private final UserRoleService userRoleService;
 
+    @PermitAll
     @Operation(summary = "分页查询用户角色关联表", description = "分页用户角色关联表")
     @GetMapping("{page}/{limit}")
     public Result<PageResult<UserRoleVo>> getUserRolePage(
@@ -47,6 +49,7 @@ public class UserRoleController {
         return Result.success(pageResult);
     }
 
+    @PermitAll
     @Operation(summary = "根据用户id获取当前用户角色列表", description = "根据用户id获取当前用户角色列表")
     @GetMapping("roles")
     public Result<List<UserRoleVo>> getRoleListByUserId(Long userId) {
@@ -54,6 +57,7 @@ public class UserRoleController {
         return Result.success(voList);
     }
 
+    @PermitAll
     @Operation(summary = "添加用户角色关联表", description = "添加用户角色关联表")
     @PostMapping()
     public Result<String> addUserRole(@Valid @RequestBody UserRoleDto dto) {
@@ -61,6 +65,7 @@ public class UserRoleController {
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
     }
 
+    @PermitAll
     @Operation(summary = "为用户分配角色id", description = "根据用户id分配用户角色")
     @PostMapping("assign-role")
     public Result<String> assignUserRole(@Valid @RequestBody AssignUserRoleDto dto) {
@@ -68,6 +73,7 @@ public class UserRoleController {
         return Result.success();
     }
 
+    @PermitAll
     @Operation(summary = "更新用户角色关联表", description = "更新用户角色关联表")
     @PutMapping()
     public Result<String> updateUserRole(@Valid @RequestBody UserRoleDto dto) {
@@ -75,6 +81,7 @@ public class UserRoleController {
         return Result.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
+    @PermitAll
     @Operation(summary = "删除用户角色关联表", description = "删除用户角色关联表")
     @DeleteMapping()
     public Result<String> deleteUserRole(@RequestBody List<Long> ids) {

@@ -18,7 +18,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(jsr250Enabled = true)
+@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityWebConfiguration {
 
@@ -56,7 +56,7 @@ public class SecurityWebConfiguration {
                                 // 但是在 Spring过滤器中，如果要放行不需要认证请求，但是需要认证的接口必需要携带token。
                                 // 做法是在这里定义要认证的接口，如果要做成动态可以放到数据库。
                                 // =======================================================================
-                                .requestMatchers(securedPaths.toArray(String[]::new)).authenticated()
+                                // .requestMatchers(securedPaths.toArray(String[]::new)).authenticated()
                                 // 其余请求都放行
                                 .anyRequest().permitAll()
                 )

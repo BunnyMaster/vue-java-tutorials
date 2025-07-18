@@ -39,84 +39,95 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,
                                     @NotNull HttpServletResponse response,
-                                    @NotNull FilterChain filterChain) throws ServletException, IOException, AuthenticSecurityException {
-        // 先校验不需要认证的接口
-        RequestMatcher[] requestNoAuthMatchers = SecurityWebConfiguration.noAuthPaths.stream()
-                .map(AntPathRequestMatcher::new)
-                .toArray(RequestMatcher[]::new);
-        OrRequestMatcher noAuthRequestMatcher = new OrRequestMatcher(requestNoAuthMatchers);
-        if (noAuthRequestMatcher.matches(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // 获取需要认证的接口
-        RequestMatcher[] requestSecureMatchers = SecurityWebConfiguration.securedPaths.stream()
-                .map(AntPathRequestMatcher::new)
-                .toArray(RequestMatcher[]::new);
-        OrRequestMatcher secureRequestMatcher = new OrRequestMatcher(requestSecureMatchers);
-
-        // 公开接口直接放行
-        if (!secureRequestMatcher.matches(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        final String authHeader = request.getHeader("Authorization");
-        // 如果当前请求不包含验证Token直接返回
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            throw new AuthenticSecurityException(ResultCodeEnum.LOGIN_AUTH);
-        }
-
-        // 当前请求的Token
-        final String jwtToken = authHeader.substring(7);
-
+                                    @NotNull FilterChain filterChain)
+            throws ServletException, IOException {
         try {
-            // 检查当前Token是否过期
-            if (jwtTokenService.isExpired(jwtToken)) {
-                // 💡如果过期不需要进行判断和验证，需要直接放行可以像下面这样写
-                // ===================================================
-                // filterChain.doFilter(request, response);
-                // return;
-                // ===================================================
-                throw new AuthenticSecurityException(ResultCodeEnum.AUTHENTICATION_EXPIRED);
+            // 检查白名单路径
+            if (isNoAuthPath(request)) {
+                filterChain.doFilter(request, response);
+                return;
             }
 
-            // 解析当前Token中的用户名
-            String username = jwtTokenService.getUsernameFromToken(jwtToken);
-            Long userId = jwtTokenService.getUserIdFromToken(jwtToken);
-
-            // 当前用户名存在，并且 Security上下文为空，设置认证相关信息
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // 调用用户信息进行登录
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // 设置认证用户信息
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-                BaseContext.setUsername(username);
-                BaseContext.setUserId(userId);
+            // 检查是否需要认证的路径
+            if (!isSecurePath(request)) {
+                filterChain.doFilter(request, response);
+                return;
             }
+
+            // 验证Token
+            validateAndSetAuthentication(request, response, filterChain);
 
             filterChain.doFilter(request, response);
-        }
-        // ⚠️IMPORTANT:
-        // ==========================================================================
-        // 在 catch 块中，securityAuthenticationEntryPoint.commence() 已经处理了错误响应
-        // 所以应该 直接返回，避免继续执行后续逻辑。
-        // ==========================================================================
-        catch (RuntimeException exception) {
+        } catch (AuthenticSecurityException e) {
+            // 直接处理认证异常，不再调用filterChain.doFilter()
             securityAuthenticationEntryPoint.commence(
                     request,
                     response,
-                    new MyAuthenticationException(exception.getMessage(), exception)
+                    new MyAuthenticationException(e.getMessage(), e)
             );
+        } catch (RuntimeException e) {
+            securityAuthenticationEntryPoint.commence(
+                    request,
+                    response,
+                    new MyAuthenticationException("Authentication failed", e)
+            );
+        }
+    }
+
+    /**
+     * 是否是不用验证的路径
+     */
+    private boolean isNoAuthPath(HttpServletRequest request) {
+        RequestMatcher[] matchers = SecurityWebConfiguration.noAuthPaths.stream()
+                .map(AntPathRequestMatcher::new)
+                .toArray(RequestMatcher[]::new);
+        return new OrRequestMatcher(matchers).matches(request);
+    }
+
+    /**
+     * 是否是要验证的路径
+     */
+    private boolean isSecurePath(HttpServletRequest request) {
+        RequestMatcher[] matchers = SecurityWebConfiguration.securedPaths.stream()
+                .map(AntPathRequestMatcher::new)
+                .toArray(RequestMatcher[]::new);
+        return new OrRequestMatcher(matchers).matches(request);
+    }
+
+    /**
+     * 验证并设置身份验证
+     */
+    private void validateAndSetAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authHeader = request.getHeader("Authorization");
+
+        // Token验证
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+            // throw new AuthenticSecurityException(ResultCodeEnum.LOGIN_AUTH);
+        }
+
+        String jwtToken = authHeader.substring(7);
+
+        if (jwtTokenService.isExpired(jwtToken)) {
+            throw new AuthenticSecurityException(ResultCodeEnum.AUTHENTICATION_EXPIRED);
+        }
+
+        // 设置认证信息
+        String username = jwtTokenService.getUsernameFromToken(jwtToken);
+        Long userId = jwtTokenService.getUserIdFromToken(jwtToken);
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            BaseContext.setUsername(username);
+            BaseContext.setUserId(userId);
         }
     }
 }

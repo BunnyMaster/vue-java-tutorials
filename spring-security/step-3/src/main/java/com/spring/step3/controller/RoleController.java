@@ -35,6 +35,7 @@ public class RoleController {
 
     private final RoleService roleService;
 
+    @PermitAll
     @Operation(summary = "分页查询系统角色表", description = "分页系统角色表")
     @GetMapping("{page}/{limit}")
     public Result<PageResult<RoleVo>> getRolePage(
@@ -56,6 +57,7 @@ public class RoleController {
         return Result.success(roleVoList);
     }
 
+    @PermitAll
     @Operation(summary = "添加系统角色表", description = "添加系统角色表")
     @PostMapping()
     public Result<String> addRole(@Valid @RequestBody RoleDto dto) {
@@ -63,6 +65,7 @@ public class RoleController {
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
     }
 
+    @PermitAll
     @Operation(summary = "更新系统角色表", description = "更新系统角色表")
     @PutMapping()
     public Result<String> updateRole(@Valid @RequestBody RoleDto dto) {
@@ -70,6 +73,7 @@ public class RoleController {
         return Result.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
+    @PermitAll
     @Operation(summary = "删除系统角色表", description = "删除系统角色表")
     @DeleteMapping()
     public Result<String> deleteRole(@RequestBody List<Long> ids) {

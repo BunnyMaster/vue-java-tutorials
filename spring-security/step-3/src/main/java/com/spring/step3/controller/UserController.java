@@ -11,6 +11,7 @@ import com.spring.step3.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @PermitAll
     @Operation(summary = "分页查询用户基本信息表", description = "分页用户基本信息表")
     @GetMapping("{page}/{limit}")
     public Result<PageResult<UserVo>> getUserPage(
@@ -46,6 +48,7 @@ public class UserController {
         return Result.success(pageResult, ResultCodeEnum.LOAD_FINISHED);
     }
 
+    @PermitAll
     @Operation(summary = "添加用户基本信息表", description = "添加用户基本信息表")
     @PostMapping()
     public Result<String> addUser(@Valid @RequestBody UserDto dto) {
@@ -53,6 +56,7 @@ public class UserController {
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
     }
 
+    @PermitAll
     @Operation(summary = "更新用户基本信息表", description = "更新用户基本信息表")
     @PutMapping()
     public Result<String> updateUser(@Valid @RequestBody UserDto dto) {
@@ -60,6 +64,7 @@ public class UserController {
         return Result.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
+    @PermitAll
     @Operation(summary = "删除用户基本信息表", description = "删除用户基本信息表")
     @DeleteMapping()
     public Result<String> deleteUser(@RequestBody List<Long> ids) {
