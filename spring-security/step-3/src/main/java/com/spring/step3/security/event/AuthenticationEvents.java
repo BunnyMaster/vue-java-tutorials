@@ -1,5 +1,11 @@
 package com.spring.step3.security.event;
 
+import com.alibaba.fastjson2.JSON;
+import com.spring.step3.config.context.BaseContext;
+import com.spring.step3.domain.entity.AuthLogEntity;
+import com.spring.step3.service.log.AuthLogService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.context.event.EventListener;
@@ -8,13 +14,17 @@ import org.springframework.security.authorization.event.AuthorizationDeniedEvent
 import org.springframework.security.authorization.event.AuthorizationGrantedEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class AuthenticationEvents {
+
+    private final AuthLogService authLogService;
 
     /**
      * 监听拒绝授权内容
@@ -24,29 +34,48 @@ public class AuthenticationEvents {
     @EventListener
     public void onFailure(AuthorizationDeniedEvent<MethodInvocation> failure) {
         try {
-            // getSource 和 getObject意思一样，一种是传入泛型自动转换一种是要手动转换
-            Object source = failure.getSource();
-
-            // 直接获取泛型对象
+            // 当前执行的方法
             MethodInvocation methodInvocation = failure.getObject();
+            // 方法名称
             Method method = methodInvocation.getMethod();
+            // 方法参数
             Object[] args = methodInvocation.getArguments();
 
-            log.warn("方法调用被拒绝: {}.{}, 参数: {}",
-                    method.getDeclaringClass().getSimpleName(),
-                    method.getName(),
-                    Arrays.toString(args));
-
-            // 这里面的信息，和接口 /api/security/current-user 内容一样
+            // 用户身份
             Authentication authentication = failure.getAuthentication().get();
+            // 用户名
+            String username = authentication.getName();
+            // 决策结果
+            AuthorizationDecision decision = failure.getAuthorizationDecision();
 
-            AuthorizationDecision authorizationDecision = failure.getAuthorizationDecision();
-            // ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('ADMIN')]
-            System.out.println(authorizationDecision);
+            // 获取请求上下文信息
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
-            log.warn("授权失败 - 用户: {}, 权限: {}", authentication.getName(), authorizationDecision);
+            AuthLogEntity authLog = new AuthLogEntity();
+            if (attributes != null) {
+                HttpServletRequest request = attributes.getRequest();
+                authLog.setRequestIp(request.getRemoteAddr());
+                authLog.setRequestMethod(request.getMethod());
+                authLog.setRequestUri(request.getRequestURI());
+            }
+
+            // 构建日志实体
+            authLog.setEventType("DENIED");
+            authLog.setUsername(username);
+            // 需要实现获取用户ID的方法
+            authLog.setUserId(BaseContext.getUserId());
+            authLog.setClassName(method.getDeclaringClass().getName());
+            authLog.setMethodName(method.getName());
+            authLog.setMethodParams(JSON.toJSONString(args));
+            authLog.setRequiredAuthority(decision.toString());
+            authLog.setUserAuthorities(JSON.toJSONString(authentication.getAuthorities()));
+            authLog.setCreateUser(BaseContext.getUserId());
+
+            // 保存到数据库
+            authLogService.save(authLog);
+
         } catch (Exception e) {
-            log.info(e.getMessage());
+            log.error("记录授权失败日志异常", e);
         }
     }
 

@@ -27,6 +27,7 @@ import java.util.List;
  * @since 2025-07-11 22:36:53
  */
 @Tag(name = "用户基本信息表", description = "用户基本信息表相关接口")
+@PermitAll
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -48,7 +49,6 @@ public class UserController {
         return Result.success(pageResult, ResultCodeEnum.LOAD_FINISHED);
     }
 
-    @PermitAll
     @Operation(summary = "添加用户基本信息表", description = "添加用户基本信息表")
     @PostMapping()
     public Result<String> addUser(@Valid @RequestBody UserDto dto) {
@@ -56,7 +56,6 @@ public class UserController {
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
     }
 
-    @PermitAll
     @Operation(summary = "更新用户基本信息表", description = "更新用户基本信息表")
     @PutMapping()
     public Result<String> updateUser(@Valid @RequestBody UserDto dto) {
@@ -64,7 +63,6 @@ public class UserController {
         return Result.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
-    @PermitAll
     @Operation(summary = "删除用户基本信息表", description = "删除用户基本信息表")
     @DeleteMapping()
     public Result<String> deleteUser(@RequestBody List<Long> ids) {

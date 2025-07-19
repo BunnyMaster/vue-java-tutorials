@@ -1,0 +1,13 @@
+security-path:
+  secured-paths:
+    - "/api/**"
+  no-auth-paths:
+    - "/*/login"
+    # - "/api/security/**"
+    - "/api/permission/**"
+    - "/api/role/**"
+    - "/api/role-permission/**"
+    - "/api/user/**"
+    - "/api/user-role/**"
+  admin-authorities:
+    - "ADMIN"

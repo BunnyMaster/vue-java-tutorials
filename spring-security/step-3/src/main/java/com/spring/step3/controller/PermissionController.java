@@ -12,7 +12,6 @@ import com.spring.step3.service.roles.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,6 @@ public class PermissionController {
 
     private final PermissionService permissionService;
 
-    @PermitAll
     @Operation(summary = "分页查询系统权限表", description = "分页系统权限表")
     @GetMapping("{page}/{limit}")
     public Result<PageResult<PermissionVo>> getPermissionPage(
@@ -49,7 +47,6 @@ public class PermissionController {
         return Result.success(pageResult);
     }
 
-    @PermitAll
     @Operation(summary = "所有的权限列表", description = "获取所有的权限列表")
     @GetMapping("all")
     public Result<List<PermissionVo>> getAllPermission() {
@@ -57,7 +54,6 @@ public class PermissionController {
         return Result.success(voList);
     }
 
-    @PermitAll
     @Operation(summary = "添加系统权限表", description = "添加系统权限表")
     @PostMapping()
     public Result<String> addPermission(@Valid @RequestBody PermissionDto dto) {
@@ -65,7 +61,6 @@ public class PermissionController {
         return Result.success(ResultCodeEnum.ADD_SUCCESS);
     }
 
-    @PermitAll
     @Operation(summary = "更新系统权限表", description = "更新系统权限表")
     @PutMapping()
     public Result<String> updatePermission(@Valid @RequestBody PermissionDto dto) {
@@ -73,7 +68,6 @@ public class PermissionController {
         return Result.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
-    @PermitAll
     @Operation(summary = "删除系统权限表", description = "删除系统权限表")
     @DeleteMapping()
     public Result<String> deletePermission(@RequestBody List<Long> ids) {

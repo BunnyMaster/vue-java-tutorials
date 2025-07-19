@@ -20,7 +20,7 @@ public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
         log.error("SecurityAccessDeniedHandler:{}", accessDeniedException.getLocalizedMessage());
 
         // 无权访问接口
-        Result<Object> result = Result.error(accessDeniedException.getMessage(), ResultCodeEnum.LOGIN_AUTH);
+        Result<Object> result = Result.error(accessDeniedException.getMessage(), ResultCodeEnum.FAIL_NO_ACCESS_DENIED);
         ResponseUtil.out(response, result);
     }
 }

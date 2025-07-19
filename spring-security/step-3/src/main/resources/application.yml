@@ -6,6 +6,8 @@ spring:
     name: spring-security
   profiles:
     active: dev
+    include:
+      - security
   devtools:
     livereload:
       port: 0

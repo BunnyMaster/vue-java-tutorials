@@ -1137,19 +1137,88 @@ public Result<String> lowerUser(String name) {
 
 在方法中写入自己的校验逻辑。
 
+`MethodInvocation`类型是执行方法之前相当于是一个反射，可以获取到当前方法上的注解、方法名称、当前类等。
+
 ```java
-/**
- * 处理方法调用后的授权检查
- * check()方法接收的是MethodInvocationResult对象，包含已执行方法的结果
- * 用于决定是否允许返回某个方法的结果(后置过滤)
- * 这是Spring Security较新的"后置授权"功能
- */
 @Component
-public class PostAuthorizationManager implements AuthorizationManager<MethodInvocationResult> {
+@RequiredArgsConstructor
+public class PreAuthorizationManager implements AuthorizationManager<MethodInvocation> {
+
+    private final SecurityConfigProperties securityConfigProperties;
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocationResult invocation) {
-        return new AuthorizationDecision(true);
+    public AuthorizationDecision check(Supplier<Authentication> authenticationSupplier, MethodInvocation methodInvocation) {
+        Authentication authentication = authenticationSupplier.get();
+
+        // 如果方法有 @PreAuthorize 注解，会先到这里
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return new AuthorizationDecision(false);
+        }
+
+        // 检查权限
+        boolean granted = hasPermission(authentication, methodInvocation);
+        return new AuthorizationDecision(granted);
+    }
+
+    private boolean hasPermission(Authentication authentication, MethodInvocation methodInvocation) {
+        PreAuthorize preAuthorize = AnnotationUtils.findAnnotation(methodInvocation.getMethod(), PreAuthorize.class);
+        if (preAuthorize == null) {
+            return true; // 没有注解默认放行
+        }
+
+        String expression = preAuthorize.value();
+        // 解析表达式中的权限要求
+        List<String> requiredAuthorities = extractAuthoritiesFromExpression(expression);
+
+        // 获取配置的admin权限
+        List<String> adminAuthorities = securityConfigProperties.getAdminAuthorities();
+
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(auth ->
+                        adminAuthorities.contains(auth) ||
+                                requiredAuthorities.contains(auth)
+                );
+    }
+
+    private List<String> extractAuthoritiesFromExpression(String expression) {
+        List<String> authorities = new ArrayList<>();
+
+        // 处理 hasAuthority('permission') 格式
+        Pattern hasAuthorityPattern = Pattern.compile("hasAuthority\\('([^']+)'\\)");
+        Matcher hasAuthorityMatcher = hasAuthorityPattern.matcher(expression);
+        while (hasAuthorityMatcher.find()) {
+            authorities.add(hasAuthorityMatcher.group(1));
+        }
+
+        // 处理 hasRole('ROLE_XXX') 格式 (Spring Security 会自动添加 ROLE_ 前缀)
+        Pattern hasRolePattern = Pattern.compile("hasRole\\('([^']+)'\\)");
+        Matcher hasRoleMatcher = hasRolePattern.matcher(expression);
+        while (hasRoleMatcher.find()) {
+            authorities.add(hasRoleMatcher.group(1));
+        }
+
+        // 处理 hasAnyAuthority('perm1','perm2') 格式
+        Pattern hasAnyAuthorityPattern = Pattern.compile("hasAnyAuthority\\(([^)]+)\\)");
+        Matcher hasAnyAuthorityMatcher = hasAnyAuthorityPattern.matcher(expression);
+        while (hasAnyAuthorityMatcher.find()) {
+            String[] perms = hasAnyAuthorityMatcher.group(1).split(",");
+            for (String perm : perms) {
+                authorities.add(perm.trim().replaceAll("'", ""));
+            }
+        }
+
+        // 处理 hasAnyRole('role1','role2') 格式
+        Pattern hasAnyRolePattern = Pattern.compile("hasAnyRole\\(([^)]+)\\)");
+        Matcher hasAnyRoleMatcher = hasAnyRolePattern.matcher(expression);
+        while (hasAnyRoleMatcher.find()) {
+            String[] roles = hasAnyRoleMatcher.group(1).split(",");
+            for (String role : roles) {
+                authorities.add(role.trim().replaceAll("'", ""));
+            }
+        }
+
+        return authorities;
     }
 }
 ```
@@ -1158,23 +1227,63 @@ public class PostAuthorizationManager implements AuthorizationManager<MethodInvo
 
 ```java
 /**
- * 处理方法调用前的授权检查
- * check()方法接收的是MethodInvocation对象，包含即将执行的方法调用信息
- * 用于决定是否允许执行某个方法
- * 这是传统的"前置授权"模式
+ * 处理方法调用后的授权检查
+ * check()方法接收的是MethodInvocationResult对象，包含已执行方法的结果
+ * 用于决定是否允许返回某个方法的结果(后置过滤)
+ * 这是Spring Security较新的"后置授权"功能
  */
 @Component
-public class PreAuthorizationManager implements AuthorizationManager<MethodInvocation> {
+@RequiredArgsConstructor
+public class PostAuthorizationManager implements AuthorizationManager<MethodInvocationResult> {
+
+    private final SecurityConfigProperties securityConfigProperties;
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation invocation) {
-        return new AuthorizationDecision(true);
+    public AuthorizationDecision check(Supplier<Authentication> authenticationSupplier, MethodInvocationResult methodInvocationResult) {
+        Authentication authentication = authenticationSupplier.get();
+
+        // 如果方法有 @PreAuthorize 注解，会先到这里
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return new AuthorizationDecision(false);
+        }
+
+        // 检查权限
+        boolean granted = hasPermission(authentication, methodInvocationResult);
+        return new AuthorizationDecision(granted);
     }
 
+    private boolean hasPermission(Authentication authentication, MethodInvocationResult methodInvocationResult) {
+        // 获取当前校验方法的返回值
+        if (methodInvocationResult.getResult() instanceof Result<?> result) {
+            // 拿到当前返回值中权限内容
+            List<String> auths = result.getAuths();
+
+            // 允许全局访问的 角色或权限
+            List<String> adminAuthorities = securityConfigProperties.adminAuthorities;
+
+            // 判断返回值中返回方法全新啊是否和用户权限匹配
+            return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                    .anyMatch(auth ->
+                            // 允许放行的角色或权限 和 匹配到的角色或权限
+                            adminAuthorities.contains(auth) || auths.contains(auth)
+                    );
+        }
+
+        // ❗这里可以设置自己的返回状态
+        // ======================================
+        // 默认返回 TRUE 是因为有可能当前方法不需要验证
+        // 所以才设置默认返回为 TURE
+        // ======================================
+        return true;
+    }
 }
 ```
 
 #### 3. 禁用自带的
+
+> [!IMPORTANT]
+>
+> 这是一个非常关键的一步，如果需要实现自定义，必须要禁用原来的，替换之前的；否则不会生效。
 
 需要加上注解`@EnableMethodSecurity(prePostEnabled = false)`。
 
@@ -1533,5 +1642,373 @@ Bunny
 [ADMIN, USER]
 # 解析的用户权限
 [permission::read, role::read]
+```
+
+### 创建过滤器
+
+```java
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtTokenService jwtTokenService;
+    private final DbUserDetailService userDetailsService;
+    private final SecurityAuthenticationEntryPoint securityAuthenticationEntryPoint;
+
+    @Override
+    protected void doFilterInternal(@NotNull HttpServletRequest request,
+                                    @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            // 检查白名单路径
+            if (isNoAuthPath(request)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 检查是否需要认证的路径
+            if (!isSecurePath(request)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 验证 Token
+            if (validToken(request, response, filterChain)) return;
+
+            filterChain.doFilter(request, response);
+        } catch (AuthenticSecurityException e) {
+            // 直接处理认证异常，不再调用filterChain.doFilter()
+            securityAuthenticationEntryPoint.commence(
+                    request,
+                    response,
+                    new MyAuthenticationException(e.getMessage(), e)
+            );
+        } catch (RuntimeException e) {
+            securityAuthenticationEntryPoint.commence(
+                    request,
+                    response,
+                    new MyAuthenticationException("Authentication failed", e)
+            );
+        }
+    }
+
+    private boolean validToken(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws IOException, ServletException {
+        // 验证Token
+        String authHeader = request.getHeader("Authorization");
+
+        // Token验证
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return true;
+            // throw new AuthenticSecurityException(ResultCodeEnum.LOGIN_AUTH);
+        }
+
+        String jwtToken = authHeader.substring(7);
+
+        if (jwtTokenService.isExpired(jwtToken)) {
+            throw new AuthenticSecurityException(ResultCodeEnum.AUTHENTICATION_EXPIRED);
+        }
+
+        // 设置认证信息
+        String username = jwtTokenService.getUsernameFromToken(jwtToken);
+        Long userId = jwtTokenService.getUserIdFromToken(jwtToken);
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            BaseContext.setUsername(username);
+            BaseContext.setUserId(userId);
+        }
+        return false;
+    }
+
+    /**
+     * 是否是不用验证的路径
+     */
+    private boolean isNoAuthPath(HttpServletRequest request) {
+        RequestMatcher[] matchers = SecurityWebConfiguration.noAuthPaths.stream()
+                .map(AntPathRequestMatcher::new)
+                .toArray(RequestMatcher[]::new);
+        return new OrRequestMatcher(matchers).matches(request);
+    }
+
+    /**
+     * 是否是要验证的路径
+     */
+    private boolean isSecurePath(HttpServletRequest request) {
+        RequestMatcher[] matchers = SecurityWebConfiguration.securedPaths.stream()
+                .map(AntPathRequestMatcher::new)
+                .toArray(RequestMatcher[]::new);
+        return new OrRequestMatcher(matchers).matches(request);
+    }
+}
+```
+
+### 添加过滤器
+
+添加过滤器为之前认证。
+
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
+@RequiredArgsConstructor
+public class SecurityWebConfiguration {
+    
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                // ...
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
+
+        return http.build();
+    }
+}
+```
+
+## 常见问题
+
+### 1. 返回两次
+
+如果请求接口时候发现接口返回两次问题，往往是过滤器链写的有问题，比如使用过滤器链后面没有return。
+
+比如下面写法就会导致返回两次情况。
+
+#### 问题复现
+
+```java
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(@NotNull HttpServletRequest request,
+                                    @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            // 检查白名单路径
+            // 略.
+
+            // 检查是否需要认证的路径
+            // 略.
+
+            // ⚠⚠⚠ 这里没有 return
+            checkToken(request, response, filterChain);
+
+            filterChain.doFilter(request, response);
+        } catch (AuthenticSecurityException e) {
+            // ...
+        } 
+    }
+
+    private void checkToken(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws IOException, ServletException {
+            // 验证Token
+            // 设置认证信息，但是没有返回 ...
+        }
+    }
+
+    /**
+     * 是否是不用验证的路径
+     */
+    private boolean isNoAuthPath(HttpServletRequest request) {
+       // ...
+    }
+
+    /**
+     * 是否是要验证的路径
+     */
+    private boolean isSecurePath(HttpServletRequest request) {
+        // ...
+    }
+}
+```
+
+#### 解决方案
+
+z只需要将`checkToken`返回Boolean值，之后判断再return。
+
+```java
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(@NotNull HttpServletRequest request,
+                                    @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            // 检查白名单路径
+            // 略.
+
+            // 检查是否需要认证的路径
+            // 略.
+
+            // ⚠⚠⚠ 这里判断是否为ture
+            if (checkToken(request, response, filterChain)) return;
+
+            filterChain.doFilter(request, response);
+        } catch (AuthenticSecurityException e) {
+            // ...
+        } 
+    }
+
+    private boolean checkToken(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws IOException, ServletException {
+            // 验证Token
+            // 设置认证信息，但是没有返回 ...
+        	return ture Or false;
+        }
+    }
+
+    /**
+     * 是否是不用验证的路径
+     */
+    private boolean isNoAuthPath(HttpServletRequest request) {
+       // ...
+    }
+
+    /**
+     * 是否是要验证的路径
+     */
+    private boolean isSecurePath(HttpServletRequest request) {
+        // ...
+    }
+}
+```
+
+### 2. requestMatchers和@PermitAll权重
+
+> [!NOTE]
+>
+> 可参考文档：[在类或接口级别声明注解](https://docs.spring.io/spring-security/reference/6.3/servlet/authorization/method-security.html#class-or-interface-annotations)
+>
+> 官方文档中也提到方法授权和请求授权比较：[请求级授权与方法级授权的比较](https://docs.spring.io/spring-security/reference/6.3/servlet/authorization/method-security.html#request-vs-method)
+
+假如你在requestMatchers上配置了`/api/**`(只要是此接口下都要认证登录)，之后你在`/api/abc`上加上了注解`@PermitAll`或者`@PreAuthorize("permitAll()")`，那么接口`/api/abc`并不会按照你所期望的结果运行(不用登录也可访问)。
+
+因为Security会先校验你的requestMatchers，之后再去方法上验证。大多数开发者直觉上认为，方法注解权重高于requestMatchers，实际上，会校验requestMatchers上的路径之后再去方法。
+
+那么类似`permitAll`这种注解应该怎么用，比如你在控制器上加上了注解`@PreAuthorize("hasAuthority('USER')")`，方法上的`@PreAuthorize("hasAuthority('ADMIN')")`会覆盖掉类上的，同理，如果在方法上加上`@PermitAll`也会覆盖掉类上的。
+
+在官方文档中，并没用直接阐述requestMatchers高于`@PermitAll`只是大多数人觉得，`@PermitAll`高于requestMatchers实际不然；
+
+```java
+@RequestMapping("/api/security/programmatically")
+@PreAuthorize("hasAuthority('USER')")
+public class SecurityProgrammaticallyController {
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "拥有 USER 的角色可以访问", description = "当前用户拥有 USER 角色可以访问这个接口")
+    @GetMapping("upper-user")
+    public Result<String> upperUser() {
+        String data = "是区分大小写的";
+        return Result.success(data);
+    }
+
+}
+```
+
+官方文档只提到了方法注解会覆盖掉类上注解，同时不可以在方法上加上多个注解比如像下面这样。
+
+```java
+@RequestMapping("/api/security/programmatically")
+@PreAuthorize("hasAuthority('USER')")
+public class SecurityProgrammaticallyController {
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "拥有 USER 的角色可以访问", description = "当前用户拥有 USER 角色可以访问这个接口")
+    @GetMapping("upper-user")
+    public Result<String> upperUser() {
+        String data = "是区分大小写的";
+        return Result.success(data);
+    }
+
+}
+```
+
+如果要使用`@PermitAll`需要显式的开启。
+
+```java
+@EnableMethodSecurity(jsr250Enabled = true) // 启用了 JSR-250
+```
+
+### 3. 忽略接口无法获取用户信息
+
+> [!NOTE]
+>
+> 可以参考文档：[使用 SpEL 表达授权](https://docs.spring.io/spring-security/reference/6.3/servlet/authorization/method-security.html#authorization-expressions)
+
+假如说现在需求是`/api/**`的接口路径是都需要认证的，但是我们想忽略掉部分路径，比如：`/api/a/**`、`/api/b`，那么访问忽略的接口是无法获取到当前用户信息的。因为是不走校验的。
+
+SpringSecurity官方解释的是，这样校验会更快。
+
+```java
+permitAll - The method requires no authorization to be invoked; note that in this case, the Authentication is never retrieved from the session
+
+denyAll - The method is not allowed under any circumstances; note that in this case, the Authentication is never retrieved from the session
+```
+
+### 4. 同时使用@PreAuthorize和@PermitAll达不到预期
+
+- 如果当前用户无权限或者未登录：
+
+  - 访问当前控制器必须要有`USER`权限，但是访问`upperUser`方法时无需登录或认证，这时`@PermitAll`不会起到作用，相反会拒绝请求。
+
+  - 即使显式的开启了jsr250Enabled也无效。
+
+    ```java
+    @EnableMethodSecurity(jsr250Enabled = true) // 启用了 JSR-250
+    ```
+
+```java
+@RestController
+@RequestMapping("/api/security/programmatically")
+@PreAuthorize("hasAuthority('USER')")
+public class SecurityProgrammaticallyController {
+
+    @PermitAll
+    @Operation(summary = "拥有 USER 的角色可以访问", description = "当前用户拥有 USER 角色可以访问这个接口")
+    @GetMapping("upper-user")
+    public Result<String> upperUser() {
+        String data = "是区分大小写的";
+        return Result.success(data);
+    }
+
+}
+```
+
+解决方法是，使用`@PreAuthorize("permitAll()")`
+
+```java
+@RestController
+@RequestMapping("/api/security/programmatically")
+@PreAuthorize("hasAuthority('USER')")
+public class SecurityProgrammaticallyController {
+
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "拥有 USER 的角色可以访问", description = "当前用户拥有 USER 角色可以访问这个接口")
+    @GetMapping("upper-user")
+    public Result<String> upperUser() {
+        String data = "是区分大小写的";
+        return Result.success(data);
+    }
+
+}
 ```
 

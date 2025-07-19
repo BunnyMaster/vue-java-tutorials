@@ -4,8 +4,8 @@ import com.spring.step3.config.context.BaseContext;
 import com.spring.step3.domain.vo.result.ResultCodeEnum;
 import com.spring.step3.exception.AuthenticSecurityException;
 import com.spring.step3.exception.MyAuthenticationException;
-import com.spring.step3.security.config.SecurityWebConfiguration;
 import com.spring.step3.security.handler.SecurityAuthenticationEntryPoint;
+import com.spring.step3.security.properties.SecurityConfigProperties;
 import com.spring.step3.security.service.DbUserDetailService;
 import com.spring.step3.security.service.JwtTokenService;
 import jakarta.servlet.FilterChain;
@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenService jwtTokenService;
     private final DbUserDetailService userDetailsService;
     private final SecurityAuthenticationEntryPoint securityAuthenticationEntryPoint;
+    private final SecurityConfigProperties pathsProperties;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,
@@ -54,8 +55,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 验证Token
-            validateAndSetAuthentication(request, response, filterChain);
+            // 验证 Token
+            if (validToken(request, response, filterChain)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             filterChain.doFilter(request, response);
         } catch (AuthenticSecurityException e) {
@@ -74,36 +78,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    /**
-     * 是否是不用验证的路径
-     */
-    private boolean isNoAuthPath(HttpServletRequest request) {
-        RequestMatcher[] matchers = SecurityWebConfiguration.noAuthPaths.stream()
-                .map(AntPathRequestMatcher::new)
-                .toArray(RequestMatcher[]::new);
-        return new OrRequestMatcher(matchers).matches(request);
-    }
-
-    /**
-     * 是否是要验证的路径
-     */
-    private boolean isSecurePath(HttpServletRequest request) {
-        RequestMatcher[] matchers = SecurityWebConfiguration.securedPaths.stream()
-                .map(AntPathRequestMatcher::new)
-                .toArray(RequestMatcher[]::new);
-        return new OrRequestMatcher(matchers).matches(request);
-    }
-
-    /**
-     * 验证并设置身份验证
-     */
-    private void validateAndSetAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    private boolean validToken(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws IOException, ServletException {
+        // 验证Token
         String authHeader = request.getHeader("Authorization");
 
         // Token验证
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
+            return true;
             // throw new AuthenticSecurityException(ResultCodeEnum.LOGIN_AUTH);
         }
 
@@ -129,5 +110,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             BaseContext.setUsername(username);
             BaseContext.setUserId(userId);
         }
+        return false;
+    }
+
+    /**
+     * 是否是不用验证的路径
+     */
+    private boolean isNoAuthPath(HttpServletRequest request) {
+        RequestMatcher[] matchers = pathsProperties.noAuthPaths.stream()
+                .map(AntPathRequestMatcher::new)
+                .toArray(RequestMatcher[]::new);
+        return new OrRequestMatcher(matchers).matches(request);
+    }
+
+    /**
+     * 是否是要验证的路径
+     */
+    private boolean isSecurePath(HttpServletRequest request) {
+        RequestMatcher[] matchers = pathsProperties.securedPaths.stream()
+                .map(AntPathRequestMatcher::new)
+                .toArray(RequestMatcher[]::new);
+        return new OrRequestMatcher(matchers).matches(request);
     }
 }

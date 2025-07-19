@@ -1,14 +1,21 @@
 package com.spring.step3.security.manger;
 
+import com.spring.step3.security.properties.SecurityConfigProperties;
+import lombok.RequiredArgsConstructor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 处理方法调用前的授权检查
@@ -17,40 +24,11 @@ import java.util.function.Supplier;
  * 这是传统的"前置授权"模式
  */
 @Component
+@RequiredArgsConstructor
 public class PreAuthorizationManager implements AuthorizationManager<MethodInvocation> {
 
-    /**
-     * 这里两个实现方法按照Security官方要求进行实现
-     * <h4>类说明：</h4>
-     * 下面的实现是对方法执行前进行权限校验的判断
-     * <pre>
-     *     <code>AuthorizationManager &ltMethodInvocation></code>
-     * </pre>
-     * 下面的这个是对方法执行后对权限的判断
-     * <pre>
-     *     <code>AuthorizationManager &ltMethodInvocationResult></code>
-     * </pre>
-     *
-     * <h4>注意事项：</h4>
-     * 将上述两个方法按照自定义的方式进行实现后，还需要禁用默认的。
-     * <pre>
-     * &#064;Configuration
-     * &#064;EnableMethodSecurity(prePostEnabled = false)
-     * class MethodSecurityConfig {
-     *     &#064;Bean
-     *     &#064;Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-     *    Advisor preAuthorize(MyAuthorizationManager manager) {
-     * 		return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(manager);
-     *    }
-     *
-     *    &#064;Bean
-     *    &#064;Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-     *    Advisor postAuthorize(MyAuthorizationManager manager) {
-     * 		return AuthorizationManagerAfterMethodInterceptor.postAuthorize(manager);
-     *    }
-     * }
-     * </pre>
-     */
+    private final SecurityConfigProperties securityConfigProperties;
+
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authenticationSupplier, MethodInvocation methodInvocation) {
         Authentication authentication = authenticationSupplier.get();
@@ -66,18 +44,63 @@ public class PreAuthorizationManager implements AuthorizationManager<MethodInvoc
     }
 
     private boolean hasPermission(Authentication authentication, MethodInvocation methodInvocation) {
-        // 1. 获取方法上的权限注解（如果有）
-        // 例如：@PreAuthorize("hasRole('ADMIN')") 或其他自定义注解
+        PreAuthorize preAuthorize = AnnotationUtils.findAnnotation(methodInvocation.getMethod(), PreAuthorize.class);
+        if (preAuthorize == null) {
+            return true; // 没有注解默认放行
+        }
 
-        // 2. 获取用户权限
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        String expression = preAuthorize.value();
+        // 解析表达式中的权限要求
+        List<String> requiredAuthorities = extractAuthoritiesFromExpression(expression);
 
-        // 3. 实现你的权限逻辑
-        // 这里简单示例：检查方法名是否包含在权限中
-        String methodName = methodInvocation.getMethod().getName();
-        return authorities.stream()
+        // 获取配置的admin权限
+        List<String> adminAuthorities = securityConfigProperties.getAdminAuthorities();
+
+        return authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                // ❗这里是忽略了大小写匹配的 admin 权限，如果包含 admin 无论大小写都可以放行
-                .anyMatch(auth -> auth.equalsIgnoreCase("admin") || auth.equals(methodName));
+                .anyMatch(auth ->
+                        adminAuthorities.contains(auth) ||
+                                requiredAuthorities.contains(auth)
+                );
+    }
+
+    private List<String> extractAuthoritiesFromExpression(String expression) {
+        List<String> authorities = new ArrayList<>();
+
+        // 处理 hasAuthority('permission') 格式
+        Pattern hasAuthorityPattern = Pattern.compile("hasAuthority\\('([^']+)'\\)");
+        Matcher hasAuthorityMatcher = hasAuthorityPattern.matcher(expression);
+        while (hasAuthorityMatcher.find()) {
+            authorities.add(hasAuthorityMatcher.group(1));
+        }
+
+        // 处理 hasRole('ROLE_XXX') 格式 (Spring Security 会自动添加 ROLE_ 前缀)
+        Pattern hasRolePattern = Pattern.compile("hasRole\\('([^']+)'\\)");
+        Matcher hasRoleMatcher = hasRolePattern.matcher(expression);
+        while (hasRoleMatcher.find()) {
+            authorities.add(hasRoleMatcher.group(1));
+        }
+
+        // 处理 hasAnyAuthority('perm1','perm2') 格式
+        Pattern hasAnyAuthorityPattern = Pattern.compile("hasAnyAuthority\\(([^)]+)\\)");
+        Matcher hasAnyAuthorityMatcher = hasAnyAuthorityPattern.matcher(expression);
+        while (hasAnyAuthorityMatcher.find()) {
+            String[] perms = hasAnyAuthorityMatcher.group(1).split(",");
+            for (String perm : perms) {
+                authorities.add(perm.trim().replaceAll("'", ""));
+            }
+        }
+
+        // 处理 hasAnyRole('role1','role2') 格式
+        Pattern hasAnyRolePattern = Pattern.compile("hasAnyRole\\(([^)]+)\\)");
+        Matcher hasAnyRoleMatcher = hasAnyRolePattern.matcher(expression);
+        while (hasAnyRoleMatcher.find()) {
+            String[] roles = hasAnyRoleMatcher.group(1).split(",");
+            for (String role : roles) {
+                authorities.add(role.trim().replaceAll("'", ""));
+            }
+        }
+
+        return authorities;
     }
 }

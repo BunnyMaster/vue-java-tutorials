@@ -1,6 +1,8 @@
 package com.spring.step3.security.manger;
 
 import com.spring.step3.domain.vo.result.Result;
+import com.spring.step3.security.properties.SecurityConfigProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.authorization.method.MethodInvocationResult;
@@ -18,40 +20,11 @@ import java.util.function.Supplier;
  * 这是Spring Security较新的"后置授权"功能
  */
 @Component
+@RequiredArgsConstructor
 public class PostAuthorizationManager implements AuthorizationManager<MethodInvocationResult> {
 
-    /**
-     * 这里两个实现方法按照Security官方要求进行实现
-     * <h4>类说明：</h4>
-     * 下面的实现是对方法执行前进行权限校验的判断
-     * <pre>
-     *     <code>AuthorizationManager &ltMethodInvocation></code>
-     * </pre>
-     * 下面的这个是对方法执行后对权限的判断
-     * <pre>
-     *     <code>AuthorizationManager &ltMethodInvocationResult></code>
-     * </pre>
-     *
-     * <h4>注意事项：</h4>
-     * 将上述两个方法按照自定义的方式进行实现后，还需要禁用默认的。
-     * <pre>
-     * &#064;Configuration
-     * &#064;EnableMethodSecurity(prePostEnabled = false)
-     * class MethodSecurityConfig {
-     *     &#064;Bean
-     *     &#064;Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-     *    Advisor preAuthorize(MyAuthorizationManager manager) {
-     * 		return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(manager);
-     *    }
-     *
-     *    &#064;Bean
-     *    &#064;Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-     *    Advisor postAuthorize(MyAuthorizationManager manager) {
-     * 		return AuthorizationManagerAfterMethodInterceptor.postAuthorize(manager);
-     *    }
-     * }
-     * </pre>
-     */
+    private final SecurityConfigProperties securityConfigProperties;
+
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authenticationSupplier, MethodInvocationResult methodInvocationResult) {
         Authentication authentication = authenticationSupplier.get();
@@ -67,17 +40,19 @@ public class PostAuthorizationManager implements AuthorizationManager<MethodInvo
     }
 
     private boolean hasPermission(Authentication authentication, MethodInvocationResult methodInvocationResult) {
-        // 1. 获取当前校验方法的返回值
+        // 获取当前校验方法的返回值
         if (methodInvocationResult.getResult() instanceof Result<?> result) {
             // 拿到当前返回值中权限内容
             List<String> auths = result.getAuths();
 
+            // 允许全局访问的 角色或权限
+            List<String> adminAuthorities = securityConfigProperties.adminAuthorities;
+
             // 判断返回值中返回方法全新啊是否和用户权限匹配
             return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                     .anyMatch(auth ->
-                            // ❗这里是忽略了大小写匹配的 admin 权限，如果包含 admin 无论大小写都可以放行
-                            auth.equalsIgnoreCase("admin")
-                                    || auths.contains(auth)
+                            // 允许放行的角色或权限 和 匹配到的角色或权限
+                            adminAuthorities.contains(auth) || auths.contains(auth)
                     );
         }
 
