@@ -1,9 +1,9 @@
 package com.spring.step3.security.config;
 
+import com.spring.step3.security.config.properties.SecurityConfigProperties;
 import com.spring.step3.security.filter.JwtAuthenticationFilter;
 import com.spring.step3.security.handler.SecurityAccessDeniedHandler;
 import com.spring.step3.security.handler.SecurityAuthenticationEntryPoint;
-import com.spring.step3.security.properties.SecurityConfigProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

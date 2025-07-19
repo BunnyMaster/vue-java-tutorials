@@ -1,4 +1,4 @@
-package com.spring.step3.security.properties;
+package com.spring.step3.security.config.properties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

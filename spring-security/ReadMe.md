@@ -1127,13 +1127,54 @@ public Result<String> lowerUser(String name) {
 }
 ```
 
-### 使用自定义授权管理器
+### 使用自定义授权管理器实现自定义权限校验
 
 在实际开发中对于SpringSecurity提供的两个权限校验注解`@PreAuthorize`和`@PostAuthorize`，需要对这两个进行覆盖或者改造，需要实现两个`AuthorizationManager<T>`。
 
 实现完成后需要显式的在配置中禁用原先的内容。
 
+#### 前置条件
+
+为了做一个较为通用看起来比较规范，写了一个配置类，可以在Spring配置文件中进行配置。
+
+```java
+@Getter
+@Setter
+@Configuration
+@ConfigurationProperties(prefix = "security-path")
+@Schema(name = "SecurityPathsProperties对象", description = "路径忽略和认证")
+public class SecurityConfigProperties {
+
+    @Schema(name = "noAuthPaths", description = "不用认证的路径")
+    public List<String> noAuthPaths;
+
+    @Schema(name = "securedPaths", description = "需要认证的路径")
+    public List<String> securedPaths;
+
+    @Schema(name = "允许的角色或权限", description = "允许的角色或权限")
+    public List<String> adminAuthorities;
+
+}
+```
+
+之后在配置文件中指定哪些可以放行的角色或权限。
+
+```yaml
+security-path:
+  # 配置放行的角色或权限
+  admin-authorities:
+    - "ADMIN"
+```
+
 #### 1. 实现前置
+
+**方式一：正则表达式**
+
+> [!WARNING]
+>
+> 这种实现方式是要判断传入的内容是否和预期一致，这里使用了正则，但并不是很优雅。
+>
+> 有些违背了Spring设计哲学。
 
 在方法中写入自己的校验逻辑。
 
@@ -1219,6 +1260,90 @@ public class PreAuthorizationManager implements AuthorizationManager<MethodInvoc
         }
 
         return authorities;
+    }
+}
+```
+
+**方式二：自带的**
+
+需要重新设置配置：
+
+```java
+@Configuration
+@EnableMethodSecurity(prePostEnabled = false)
+public class AuthorizationManagerConfiguration {
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
+        DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+        // // 可选配置---移除 ROLE_ 前缀
+        // handler.setDefaultRolePrefix("");
+        return handler;
+    }
+
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    Advisor preAuthorize(PreAuthorizationManager manager) {
+        return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(manager);
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    Advisor postAuthorize(PostAuthorizationManager manager) {
+        return AuthorizationManagerAfterMethodInterceptor.postAuthorize(manager);
+    }
+
+}
+```
+
+实现
+
+```java
+@Component
+@RequiredArgsConstructor
+public class PreAuthorizationManager implements AuthorizationManager<MethodInvocation> {
+
+    private final SecurityConfigProperties securityConfigProperties;
+    private final MethodSecurityExpressionHandler expressionHandler;
+
+    @Override
+    public AuthorizationDecision check(Supplier<Authentication> authenticationSupplier, MethodInvocation methodInvocation) {
+
+        // 获取方法上的@PreAuthorize注解
+        PreAuthorize preAuthorize = AnnotationUtils.findAnnotation(methodInvocation.getMethod(), PreAuthorize.class);
+
+        if (preAuthorize == null) {
+            // 没有注解默认放行
+            return new AuthorizationDecision(true);
+        }
+
+        // 使用Spring的表达式解析器
+        EvaluationContext ctx = expressionHandler.createEvaluationContext(authenticationSupplier.get(), methodInvocation);
+
+        try {
+            // 解析表达式并获取结果
+            Expression expression = expressionHandler.getExpressionParser().parseExpression(preAuthorize.value());
+
+            boolean granted = Boolean.TRUE.equals(expression.getValue(ctx, Boolean.class));
+
+            // 如果表达式不通过，检查是否是admin
+            if (!granted) {
+                granted = isAdmin(authenticationSupplier.get());
+            }
+
+            return new AuthorizationDecision(granted);
+        } catch (EvaluationException | ParseException e) {
+            return new AuthorizationDecision(false);
+        }
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return securityConfigProperties.getAdminAuthorities().stream()
+                .anyMatch(auth -> authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .anyMatch(ga -> ga.equals(auth)));
     }
 }
 ```

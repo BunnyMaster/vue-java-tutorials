@@ -1,4 +1,4 @@
-package com.spring.step3.security.annotation.programmatically;
+package com.spring.step3.security.annotation;
 
 import org.springframework.stereotype.Component;
 

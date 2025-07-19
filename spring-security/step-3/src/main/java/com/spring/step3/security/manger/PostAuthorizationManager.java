@@ -1,7 +1,7 @@
-package com.spring.step3.security.manger;
+package com.spring.step3.security.manger.demo1;
 
 import com.spring.step3.domain.vo.result.Result;
-import com.spring.step3.security.properties.SecurityConfigProperties;
+import com.spring.step3.security.config.properties.SecurityConfigProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;

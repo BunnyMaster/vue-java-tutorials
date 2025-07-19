@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/security/pre")
 public class SecurityPreAuthorizationController {
 
-    @PreAuthorize("hasPermission('role::read')")
+    @PreAuthorize("hasAuthority('role::read')")
     @Operation(summary = "拥有 role:read 的角色可以访问", description = "当前用户拥有 role:read 角色可以访问这个接口")
     @GetMapping("role-user")
     public Result<String> roleUser() {
@@ -28,7 +28,7 @@ public class SecurityPreAuthorizationController {
         return Result.success(data);
     }
 
-    @PreAuthorize("'admin'")
+    @PreAuthorize("hasAnyRole('admin') || hasAuthority('USER')")
     @Operation(summary = "拥有 admin 的角色可以访问", description = "当前用户拥有 admin 角色可以访问这个接口")
     @GetMapping("lower-admin")
     public Result<String> lowerAdmin() {
