@@ -1083,7 +1083,42 @@ public class AuthTestController {
 
 ## 其余授权方式
 
+### 前置条件
+
+为了做一个较为通用看起来比较规范，写了一个配置类，可以在Spring配置文件中进行配置。
+
+```java
+@Getter
+@Setter
+@Configuration
+@ConfigurationProperties(prefix = "security-path")
+@Schema(name = "SecurityPathsProperties对象", description = "路径忽略和认证")
+public class SecurityConfigProperties {
+
+    @Schema(name = "noAuthPaths", description = "不用认证的路径")
+    public List<String> noAuthPaths;
+
+    @Schema(name = "securedPaths", description = "需要认证的路径")
+    public List<String> securedPaths;
+
+    @Schema(name = "允许的角色或权限", description = "允许的角色或权限")
+    public List<String> adminAuthorities;
+
+}
+```
+
+之后在配置文件中指定哪些可以放行的角色或权限。
+
+```yaml
+security-path:
+  # 配置放行的角色或权限
+  admin-authorities:
+    - "ADMIN"
+```
+
 ### 通过编程方式授权方法
+
+#### 简单使用
 
 如果需要对权限做出自定义的需求，将传入参数作为判断权限条件，这会很有用，比如某些参数不可以传入，或者参数做权限校验等。
 
@@ -1127,44 +1162,65 @@ public Result<String> lowerUser(String name) {
 }
 ```
 
+#### 进阶使用
+
+> [!NOTE]
+>
+> 参考文档：[使用自定义的 `@Bean` 而不是对 `DefaultMethodSecurityExpressionHandler` 进行子类化](https://docs.spring.io/spring-security/reference/6.3/servlet/authorization/method-security.html#_use_a_custom_bean_instead_of_subclassing_defaultmethodsecurityexpressionhandler)
+
+在上面可以大致了解到如何使用自定义的方式进行扩展，好处是可以简单易用。
+
+可以对比下下面章节**【使用自定义授权管理器实现自定义权限校验】**实现哪个更符合你期望预期。
+
+```java
+@Component("auth")
+@RequiredArgsConstructor
+public class AuthorizationLogic {
+
+    private final SecurityConfigProperties securityConfigProperties;
+
+    /**
+     * 基本权限检查
+     */
+    public boolean decide(String requiredAuthority) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+
+        // 检查用户是否有指定权限或是admin
+        return hasAuthority(authentication, requiredAuthority) || isAdmin(authentication);
+    }
+
+    /**
+     * 检查是否是管理员
+     */
+    public boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null && isAdmin(authentication);
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return securityConfigProperties.getAdminAuthorities().stream()
+                .anyMatch(auth -> authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .anyMatch(ga -> ga.equals(auth)));
+    }
+
+    private boolean hasAuthority(Authentication authentication, String authority) {
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(auth -> auth.equals(authority));
+    }
+}
+```
+
 ### 使用自定义授权管理器实现自定义权限校验
 
 在实际开发中对于SpringSecurity提供的两个权限校验注解`@PreAuthorize`和`@PostAuthorize`，需要对这两个进行覆盖或者改造，需要实现两个`AuthorizationManager<T>`。
 
 实现完成后需要显式的在配置中禁用原先的内容。
-
-#### 前置条件
-
-为了做一个较为通用看起来比较规范，写了一个配置类，可以在Spring配置文件中进行配置。
-
-```java
-@Getter
-@Setter
-@Configuration
-@ConfigurationProperties(prefix = "security-path")
-@Schema(name = "SecurityPathsProperties对象", description = "路径忽略和认证")
-public class SecurityConfigProperties {
-
-    @Schema(name = "noAuthPaths", description = "不用认证的路径")
-    public List<String> noAuthPaths;
-
-    @Schema(name = "securedPaths", description = "需要认证的路径")
-    public List<String> securedPaths;
-
-    @Schema(name = "允许的角色或权限", description = "允许的角色或权限")
-    public List<String> adminAuthorities;
-
-}
-```
-
-之后在配置文件中指定哪些可以放行的角色或权限。
-
-```yaml
-security-path:
-  # 配置放行的角色或权限
-  admin-authorities:
-    - "ADMIN"
-```
 
 #### 1. 实现前置
 

@@ -3,7 +3,6 @@ package com.spring.step3.controller.test;
 import com.spring.step3.domain.vo.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.PermitAll;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @PreAuthorize("hasAuthority('USER')")
 public class SecurityProgrammaticallyController {
 
-    // @PreAuthorize("permitAll()")
-    @PermitAll
+    @PreAuthorize("permitAll()")
     @Operation(summary = "拥有 USER 的角色可以访问", description = "当前用户拥有 USER 角色可以访问这个接口")
     @GetMapping("upper-user")
     public Result<String> upperUser() {
