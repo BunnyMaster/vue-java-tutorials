@@ -11,7 +11,7 @@
  Target Server Version : 80036 (8.0.36)
  File Encoding         : 65001
 
- Date: 31/07/2025 12:15:31
+ Date: 31/07/2025 12:17:18
 */
 
 SET NAMES utf8mb4;
@@ -53,12 +53,6 @@ CREATE TABLE `sys_auth_log`  (
 -- ----------------------------
 -- Records of sys_auth_log
 -- ----------------------------
-INSERT INTO `sys_auth_log` VALUES (1946585197881520129, 'DENIED', 'anonymousUser', NULL, '0:0:0:0:0:0:0:1', 'GET', '/api/security/programmatically/upper-user', 'com.spring.step3.controller.test.SecurityProgrammaticallyController', 'upperUser', '[]', 'ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority(\'USER\')]', '[{\"authority\":\"ROLE_ANONYMOUS\"}]', NULL, NULL, '2025-07-19 22:57:32', '2025-07-19 22:57:32', 0, NULL, 0);
-INSERT INTO `sys_auth_log` VALUES (1946593784326467585, 'DENIED', 'anonymousUser', NULL, '0:0:0:0:0:0:0:1', 'GET', '/api/security/pre/upper-user', 'com.spring.step3.controller.test.SecurityPreAuthorizationController', 'upperUser', '[]', 'ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority(\'USER\')]', '[{\"authority\":\"ROLE_ANONYMOUS\"}]', NULL, NULL, '2025-07-19 23:31:39', '2025-07-19 23:31:39', 0, NULL, 0);
-INSERT INTO `sys_auth_log` VALUES (1946594071032311810, 'DENIED', 'anonymousUser', NULL, '0:0:0:0:0:0:0:1', 'GET', '/api/security/pre/upper-user', 'com.spring.step3.controller.test.SecurityPreAuthorizationController', 'upperUser', '[]', 'ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority(\'USER\')]', '[{\"authority\":\"ROLE_ANONYMOUS\"}]', NULL, NULL, '2025-07-19 23:32:47', '2025-07-19 23:32:47', 0, NULL, 0);
-INSERT INTO `sys_auth_log` VALUES (1946594404949241857, 'DENIED', 'Bunny', 1944384432521744386, '0:0:0:0:0:0:0:1', 'GET', '/api/security/pre/upper-admin', 'com.spring.step3.controller.test.SecurityPreAuthorizationController', 'upperAdmin', '[]', 'ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority(\'ADMIN\')]', '[{\"authority\":\"role::read\"},{\"authority\":\"USER\"}]', NULL, NULL, '2025-07-19 23:34:07', '2025-07-19 23:34:07', 1944384432521744386, 1944384432521744386, 0);
-INSERT INTO `sys_auth_log` VALUES (1946594594087186434, 'DENIED', 'Bunny', 1944384432521744386, '0:0:0:0:0:0:0:1', 'GET', '/api/security/pre/lower-admin', 'com.spring.step3.controller.test.SecurityPreAuthorizationController', 'lowerAdmin', '[]', 'ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAnyRole(\'admin\')]', '[{\"authority\":\"role::read\"},{\"authority\":\"USER\"}]', NULL, NULL, '2025-07-19 23:34:52', '2025-07-19 23:34:52', 1944384432521744386, 1944384432521744386, 0);
-INSERT INTO `sys_auth_log` VALUES (1946596447059324930, 'DENIED', 'Bunny', 1944384432521744386, '0:0:0:0:0:0:0:1', 'GET', '/api/security/pre/upper-admin', 'com.spring.step3.controller.test.SecurityPreAuthorizationController', 'upperAdmin', '[]', 'ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority(\'ADMIN\')]', '[{\"authority\":\"role::read\"},{\"authority\":\"USER\"}]', NULL, NULL, '2025-07-19 23:42:14', '2025-07-19 23:42:14', 1944384432521744386, 1944384432521744386, 0);
 
 -- ----------------------------
 -- Table structure for t_permission
@@ -168,8 +162,6 @@ CREATE TABLE `t_user`  (
 -- ----------------------------
 INSERT INTO `t_user` VALUES (1, 'Keith Simmons', 'kB2gNzEhjB', 'keiths606@gmail.com', '2022-04-26 11:41:44', '2025-07-11 22:31:15', 1, 1, 1);
 INSERT INTO `t_user` VALUES (2, 'Song Zitao', 'Winx0CSiQS', 'zitao70@icloud.com', '2018-02-09 10:46:28', '2025-07-13 21:55:28', 2, NULL, 0);
-INSERT INTO `t_user` VALUES (3, 'Yamamoto Yuito', '39BL3m1qFc', 'yuitoy7@hotmail.com', '2003-10-31 07:54:59', '2025-07-11 22:31:12', 3, 3, 1);
-INSERT INTO `t_user` VALUES (4, 'Kono Sakura', 'AYf3BItFjF', 'sakura112@outlook.com', '2001-02-07 02:07:19', '2025-07-11 22:31:20', 4, 4, 0);
 INSERT INTO `t_user` VALUES (1944384432521744386, 'Bunny', '$2a$10$BJakELpOIWoYfkv.m/hLQuAsZ1d0Dq00ehS6Usyi2za5MEke/iHSe', '131@qq.com', '2025-07-13 21:12:28', '2025-07-17 10:55:34', 1944384432521744386, 1944384432521744386, 0);
 
 -- ----------------------------
@@ -198,7 +190,6 @@ CREATE TABLE `t_user_role`  (
 -- ----------------------------
 INSERT INTO `t_user_role` VALUES (1944635731486814209, 1, 2, '2025-07-14 13:51:03', '2025-07-14 13:51:03', 0, NULL, 0);
 INSERT INTO `t_user_role` VALUES (1944635731486814210, 1944398167533621250, 2, '2025-07-14 13:51:03', '2025-07-14 13:51:03', 0, NULL, 0);
-INSERT INTO `t_user_role` VALUES (1944636481671639041, 1, 4, '2025-07-14 13:54:01', '2025-07-14 13:54:01', 0, NULL, 0);
 INSERT INTO `t_user_role` VALUES (1946163076642508801, 1944391051196370945, 1944384432521744386, '2025-07-18 19:00:10', '2025-07-18 19:00:10', 0, NULL, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
