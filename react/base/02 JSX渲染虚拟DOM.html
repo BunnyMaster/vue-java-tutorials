@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02 JSX渲染虚拟DOM</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+    // 使用 React.createElement 创建虚拟DOM
+    // const VDOM = React.createElement('h1', { id: 'title' }, 'Recogise Niece')
+
+    const VDOM = (
+        <div>
+            <h1>Recogise Niece</h1>
+            <p>嘻嘻嘻</p>
+        </div>
+    )
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(VDOM)
+</script>
+
+</html>
