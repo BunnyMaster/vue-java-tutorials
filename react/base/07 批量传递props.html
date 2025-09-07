@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>06 类式组件</title>
+    <title>07 批量传递props</title>
 </head>
 
 <body>
@@ -38,19 +38,29 @@
         }
 
         render() {
+            const { name, age, gender } = this.props
+
             return (
                 <div>
                     <HelloMessage name="Tom" isOk={true} />
-                    <HelloMessage name="Jerry" isOk={false} />
 
-                    <h3 onClick={this.onChangeIsReact}>isReact：{this.state.isReact ? '是' : '否'}</h3>
+                    <ul>
+                        <li>名称：{name}</li>
+                        <li>年龄：{age}</li>
+                        <li>性别：{gender}</li>
+                    </ul>
                 </div>
             )
         }
     }
 
+    const person = {
+        name: 'Tom',
+        age: 18,
+        gender: '男'
+    }
     const root = ReactDOM.createRoot(document.getElementById('root'))
-    root.render(<App />) 
+    root.render(<App {...person} />)
 </script>
 
 </html>
