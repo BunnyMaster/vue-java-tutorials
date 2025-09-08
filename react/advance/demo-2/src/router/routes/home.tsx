@@ -1,6 +1,7 @@
 import App from '@/App';
 import Counter from '@/pages/demo/1-counter-page';
 import FormPage from '@/pages/demo/2-form-page';
+import CommentList from '@/pages/demo/3-comment-list';
 import ErrorPage from '@/pages/error/error-pages';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -12,6 +13,7 @@ const demo = createBrowserRouter([
     children: [
       { id: 'Conter', path: 'conter', element: <Counter /> },
       { id: 'Form', path: 'form', element: <FormPage /> },
+      { id: 'CommentList', path: 'comment-list', element: <CommentList /> },
     ],
   },
 ]);

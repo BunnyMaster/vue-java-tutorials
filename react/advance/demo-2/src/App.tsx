@@ -8,6 +8,7 @@ function App() {
   const list = [
     { name: '计数器', path: '/demo/conter' },
     { name: '修改form', path: '/demo/form' },
+    { name: '评论列表', path: '/demo/comment-list' },
   ];
 
   const handleGoHome = () => {
