@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 回调ref中调用次数的问题</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+    class App extends React.Component {
+        constructor(props) {
+            super(props)
+        }
+
+        state = { isHot: true }
+
+        /**
+         * 显示输入框内容
+         */
+        showData = () => {
+            const val = this.input1.value
+
+            alert(val)
+
+            console.log(val)
+        }
+
+        changeWeather = () => {
+            this.setState({ isHot: !this.state.isHot })
+        }
+
+        render() {
+            const { isHot } = this.state
+
+            return (
+                <div>
+                    // 内联函数会执行两次
+                    <h2>{isHot ? '炎热' : '凉爽'}</h2>
+                    <button onClick={this.changeWeather}>切换Hot</button>
+
+                    <input ref={v => this.input1 = v} type="text" />
+                </div>
+            )
+        }
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App />)
+</script>
+
+</html>
