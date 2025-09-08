@@ -9,7 +9,7 @@ function Counter() {
   };
 
   return (
-    <div className="counter-container">
+    <div className="counter-container rounded-2xl p-8 shadow-lg max-w-md mx-auto">
       <div className="counter-card">
         <h2 className="counter-title">计数器</h2>
         <button
@@ -23,5 +23,5 @@ function Counter() {
     </div>
   );
 }
-
+ 
 export default Counter;

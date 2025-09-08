@@ -1,1 +1,27 @@
-@import "tailwindcss";
+/* src/styles/index.css */
+
+@import 'tailwindcss';
+/* @tailwind base;
+@tailwind components; */
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8fafc;
+}
+
+/* 按钮基础样式 */
+button {
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+/* 链接样式 */
+a {
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
