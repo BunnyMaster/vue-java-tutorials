@@ -11,39 +11,41 @@ import MainAppSolt from "@/pages/day2/5-son-solt";
 import MainAppContext from "@/pages/day2/6-context";
 import MainAppUseEffect from "@/pages/day2/7-use-effect";
 import ErrorPage from "@/pages/error/error-pages";
-import { createBrowserRouter } from "react-router-dom";
+import {createBrowserRouter} from "react-router-dom";
+import MainAppUseEffectSideEffect from "@/pages/day2/8-use-effect-side-effect";
 
 const day = createBrowserRouter([
-  {
-    id: "Day1",
-    path: "/day1",
-    element: <Day1 />,
-    errorElement: <ErrorPage />,
-    children: [
-      { id: "计数器", path: "conter", element: <Counter /> },
-      { id: "修改Form", path: "form", element: <FormPage /> },
-      { id: "评论列表", path: "comment-list", element: <CommentList /> },
-    ],
-  },
-  {
-    id: "Day2",
-    path: "/day2",
-    element: <Day2 />,
-    errorElement: <ErrorPage />,
-    children: [
-      { id: "UseState", path: "use-state", element: <UseStateDemo /> },
-      { id: "UseRef", path: "use-ref", element: <UseRefDemo /> },
-      { id: "发布评论", path: "publish-comment", element: <PublishComment /> },
-      { id: "父传子-函数", path: "son-fun", element: <MainAppFunc /> },
-      { id: "父传子-插槽", path: "son-solt", element: <MainAppSolt /> },
-      { id: "父传子-上下文", path: "son-context", element: <MainAppContext /> },
-      {
-        id: "useEffect入门",
-        path: "use-effect-1",
-        element: <MainAppUseEffect />,
-      },
-    ],
-  },
+    {
+        id: "Day1",
+        path: "/day1",
+        element: <Day1/>,
+        errorElement: <ErrorPage/>,
+        children: [
+            {id: "计数器", path: "conter", element: <Counter/>},
+            {id: "修改Form", path: "form", element: <FormPage/>},
+            {id: "评论列表", path: "comment-list", element: <CommentList/>},
+        ],
+    },
+    {
+        id: "Day2",
+        path: "/day2",
+        element: <Day2/>,
+        errorElement: <ErrorPage/>,
+        children: [
+            {id: "UseState", path: "use-state", element: <UseStateDemo/>},
+            {id: "UseRef", path: "use-ref", element: <UseRefDemo/>},
+            {id: "发布评论", path: "publish-comment", element: <PublishComment/>},
+            {id: "父传子-函数", path: "son-fun", element: <MainAppFunc/>},
+            {id: "父传子-插槽", path: "son-solt", element: <MainAppSolt/>},
+            {id: "父传子-上下文", path: "son-context", element: <MainAppContext/>},
+            {
+                id: "useEffect入门",
+                path: "use-effect-1",
+                element: <MainAppUseEffect/>,
+            },
+            {id: "useEffect副作用", path: "use-effect-2", element: <MainAppUseEffectSideEffect/>}
+        ],
+    },
 ]);
 
 export default day;
