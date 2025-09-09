@@ -6,7 +6,7 @@ import Day2 from "@/pages/day2";
 import UseStateDemo from "@/pages/day2/1-useState";
 import UseRefDemo from "@/pages/day2/2-useRef";
 import PublishComment from "@/pages/day2/3-publish-comment";
-import MainAppFunc from "@/pages/day2/4-son-1";
+import MainAppFunc from "@/pages/day2/4-son-func";
 import MainAppSolt from "@/pages/day2/5-son-solt";
 import ErrorPage from "@/pages/error/error-pages";
 import { createBrowserRouter } from "react-router-dom";
