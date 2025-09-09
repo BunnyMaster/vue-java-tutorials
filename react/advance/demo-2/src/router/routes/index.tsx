@@ -1,11 +1,12 @@
-import ErrorPage from '@/pages/error/error-pages';
-import home from './home';
-
+import ErrorPage from "@/pages/error/error-pages";
+import day from "./day";
+import home from "./home";
 
 const routes = [
   ...home.routes,
+  ...day.routes,
   {
-    path: '/error',
+    path: "/error",
     element: <ErrorPage />,
     errorElement: <ErrorPage />,
   },
