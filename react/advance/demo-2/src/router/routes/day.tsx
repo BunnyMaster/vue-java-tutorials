@@ -4,6 +4,7 @@ import FormPage from "@/pages/day1/2-form-page";
 import CommentList from "@/pages/day1/3-comment-list";
 import Day2 from "@/pages/day2";
 import UseStateDemo from "@/pages/day2/1-useState";
+import UseRefDemo from "@/pages/day2/2-useRef";
 import ErrorPage from "@/pages/error/error-pages";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -26,7 +27,7 @@ const day = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { id: "UseStateDemo", path: "use-state", element: <UseStateDemo /> },
-      // { id: "Form", path: "form", element: <FormPage /> },
+      { id: "UseRefDemo", path: "use-ref", element: <UseRefDemo /> },
     ],
   },
 ]);

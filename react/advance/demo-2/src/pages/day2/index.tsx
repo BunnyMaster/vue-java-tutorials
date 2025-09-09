@@ -5,7 +5,7 @@ const Day2 = () => {
 
   const list = [
     { name: "受控组件", path: "/day2/use-state" },
-    // { name: "修改form", path: "/day2/form" },
+    { name: "Ref使用", path: "/day2/use-ref" },
   ];
 
   const handleGoHome = () => {
