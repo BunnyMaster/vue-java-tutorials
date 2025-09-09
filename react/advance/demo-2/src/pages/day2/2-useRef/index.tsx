@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef } from 'react';
 
 function UseRefDemo() {
   const inputRef = useRef(null);
@@ -11,10 +11,12 @@ function UseRefDemo() {
     <div className="rounded-2xl p-8 shadow-lg max-w-md mx-auto bg-gradient-to-br from-green-50 to-teal-100">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Ref的使用</h2>
 
-      <div className="mb-8">
-        <div className="text-center mb-4">
-          <input type="text" ref={inputRef} />
-        </div>
+      <div className="mb-4 text-center">
+        <p className="text-fuchsia-600">打开控制台</p>
+        <input
+          type="text"
+          ref={inputRef}
+        />
       </div>
 
       <div className="flex justify-center">
