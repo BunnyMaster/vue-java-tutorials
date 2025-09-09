@@ -1,31 +1,43 @@
-import App from '@/App';
-import Counter from '@/pages/demo/1-counter-page';
-import FormPage from '@/pages/demo/2-form-page';
-import CommentList from '@/pages/demo/3-comment-list';
-import ErrorPage from '@/pages/error/error-pages';
-import { createBrowserRouter } from 'react-router-dom';
+import App from "@/App";
+import Day1 from "@/pages/day1";
+import Counter from "@/pages/day1/1-counter-page";
+import FormPage from "@/pages/day1/2-form-page";
+import CommentList from "@/pages/day1/3-comment-list";
+import UseStateDemo from "@/pages/day2/1-useState";
+import ErrorPage from "@/pages/error/error-pages";
+import { createBrowserRouter } from "react-router-dom";
 
-const demo = createBrowserRouter([
+const day = createBrowserRouter([
   {
-    id: 'Demo',
-    path: '/demo',
+    id: "Day1",
+    path: "/day1",
+    element: <Day1 />,
     errorElement: <ErrorPage />,
     children: [
-      { id: 'Conter', path: 'conter', element: <Counter /> },
-      { id: 'Form', path: 'form', element: <FormPage /> },
-      { id: 'CommentList', path: 'comment-list', element: <CommentList /> },
+      { id: "Conter", path: "conter", element: <Counter /> },
+      { id: "Form", path: "form", element: <FormPage /> },
+      { id: "CommentList", path: "comment-list", element: <CommentList /> },
+    ],
+  },
+  {
+    id: "Day2",
+    path: "/day2",
+    errorElement: <ErrorPage />,
+    children: [
+      { id: "UseStateDemo", path: "use-state", element: <UseStateDemo /> },
+      // { id: "Form", path: "form", element: <FormPage /> },
     ],
   },
 ]);
 
 const home = createBrowserRouter([
   {
-    id: 'Home',
-    path: '/',
+    id: "Home",
+    path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
-    children: [...demo.routes],
   },
+  ...day.routes,
 ]);
 
 export default home;
