@@ -8,6 +8,7 @@ import UseRefDemo from "@/pages/day2/2-useRef";
 import PublishComment from "@/pages/day2/3-publish-comment";
 import MainAppFunc from "@/pages/day2/4-son-func";
 import MainAppSolt from "@/pages/day2/5-son-solt";
+import MainAppContext from "@/pages/day2/6-context";
 import ErrorPage from "@/pages/error/error-pages";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -34,6 +35,7 @@ const day = createBrowserRouter([
       { id: "发布评论", path: "publish-comment", element: <PublishComment /> },
       { id: "父传子-函数", path: "son-fun", element: <MainAppFunc /> },
       { id: "父传子-插槽", path: "son-solt", element: <MainAppSolt /> },
+      { id: "父传子-上下文", path: "son-context", element: <MainAppContext /> },
     ],
   },
 ]);
