@@ -4,16 +4,17 @@ import FormPage from "@/pages/day1/2-form-page";
 import CommentList from "@/pages/day1/3-comment-list";
 import Day2 from "@/pages/day2";
 import UseStateDemo from "@/pages/day2/1-useState";
+import MainAppCustomerHook from "@/pages/day2/10-customer-hook-1";
 import UseRefDemo from "@/pages/day2/2-useRef";
 import PublishComment from "@/pages/day2/3-publish-comment";
 import MainAppFunc from "@/pages/day2/4-son-func";
 import MainAppSolt from "@/pages/day2/5-son-solt";
 import MainAppContext from "@/pages/day2/6-context";
 import MainAppUseEffect from "@/pages/day2/7-use-effect";
-import ErrorPage from "@/pages/error/error-pages";
-import { createBrowserRouter } from "react-router-dom";
 import MainAppUseEffectSideEffect from "@/pages/day2/8-use-effect-side-effect";
 import MainAppEffectClearEffect from "@/pages/day2/9-use-effect-clear-side-effect";
+import ErrorPage from "@/pages/error/error-pages";
+import { createBrowserRouter } from "react-router-dom";
 
 const day = createBrowserRouter([
   {
@@ -53,6 +54,11 @@ const day = createBrowserRouter([
         id: "useEffect副作用清楚",
         path: "use-effect-3",
         element: <MainAppEffectClearEffect />,
+      },
+      {
+        id: "自定义Hook",
+        path: "use-custom-hook",
+        element: <MainAppCustomerHook />,
       },
     ],
   },
