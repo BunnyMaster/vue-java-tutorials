@@ -5,6 +5,7 @@ import CommentList from '@/pages/day1/3-comment-list';
 import Day2 from '@/pages/day2';
 import UseStateDemo from '@/pages/day2/1-useState';
 import UseRefDemo from '@/pages/day2/2-useRef';
+import PublishComment from '@/pages/day2/3-publish-comment';
 import ErrorPage from '@/pages/error/error-pages';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -28,6 +29,7 @@ const day = createBrowserRouter([
     children: [
       { id: 'UseState', path: 'use-state', element: <UseStateDemo /> },
       { id: 'UseRef', path: 'use-ref', element: <UseRefDemo /> },
+      { id: '发布评论', path: 'publish-comment', element: <PublishComment /> },
     ],
   },
 ]);
