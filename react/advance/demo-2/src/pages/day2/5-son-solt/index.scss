@@ -1,0 +1,46 @@
+.main-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.son-container {
+  background-color: white;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+  text-align: center;
+}
+
+.son-title {
+  color: #666;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.son-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
