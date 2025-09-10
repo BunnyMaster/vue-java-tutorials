@@ -16,6 +16,7 @@ import MainAppEffectClearEffect from "@/pages/day2/9-use-effect-clear-side-effec
 import Day3 from "@/pages/day3";
 import ReduxInduction from "@/pages/day3/1-redux-induction";
 import ReduxActionDemo from "@/pages/day3/2-redux-action";
+import ReduxAsyncDemo from "@/pages/day3/3-redux-async";
 import ErrorPage from "@/pages/error/error-pages";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -72,6 +73,7 @@ const day = createBrowserRouter([
     children: [
       { id: "Redux入门", path: "redux-1", element: <ReduxInduction /> },
       { id: "Redux-Action", path: "redux-2", element: <ReduxActionDemo /> },
+      { id: "Redux-Async", path: "redux-3", element: <ReduxAsyncDemo /> },
     ],
   },
 ]);
