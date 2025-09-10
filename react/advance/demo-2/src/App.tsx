@@ -6,6 +6,7 @@ function App() {
   const list = [
     { name: "Day1", path: "/day1" },
     { name: "Day2", path: "/day2" },
+    { name: "Day3", path: "/day3" },
   ];
 
   return (

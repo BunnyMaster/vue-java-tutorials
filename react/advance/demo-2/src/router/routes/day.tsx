@@ -13,6 +13,8 @@ import MainAppContext from "@/pages/day2/6-context";
 import MainAppUseEffect from "@/pages/day2/7-use-effect";
 import MainAppUseEffectSideEffect from "@/pages/day2/8-use-effect-side-effect";
 import MainAppEffectClearEffect from "@/pages/day2/9-use-effect-clear-side-effect";
+import Day3 from "@/pages/day3";
+import ReduxInduction from "@/pages/day3/1-redux-induction";
 import ErrorPage from "@/pages/error/error-pages";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -60,6 +62,14 @@ const day = createBrowserRouter([
         path: "use-custom-hook",
         element: <MainAppCustomerHook />,
       },
+    ],
+  },
+  {
+    id: "Day3",
+    path: "day3",
+    element: <Day3 />,
+    children: [
+      { id: "Redux入门", path: "redux-1", element: <ReduxInduction /> },
     ],
   },
 ]);

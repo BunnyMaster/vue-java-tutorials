@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate, type RouteObject } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 interface TutorialListProps {
   list: RouteInfo[];
@@ -8,7 +8,7 @@ export interface RouteInfo {
   path: string;
   id?: number | string;
   children?: RouteInfo[];
-  name?: string; 
+  name?: string;
 }
 
 function TutorialList({ list }: TutorialListProps) {
@@ -19,11 +19,11 @@ function TutorialList({ list }: TutorialListProps) {
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-2xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">练习列表</h1>
+            <h1 className="text-3xl font-bold text-gray-800">列表</h1>
 
             {/* 回到首页 */}
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition duration-300"
             >
               首页
@@ -51,26 +51,5 @@ function TutorialList({ list }: TutorialListProps) {
     </div>
   );
 }
-
-export const findRoutes = (routes: RouteObject[], id: number | string) => {
-  const routeList = routes.find((route) => route.id === id);
-  if (!routeList) return [];
-
-  const children = routeList.children;
-  if (!children) return [];
-
-  function findChildren(childrenRoutes: RouteObject[]): RouteInfo[] {
-    if (!childrenRoutes || childrenRoutes.length === 0) return [];
-
-    return childrenRoutes.map((route) => ({
-      id: route.id,
-      name: route.id,
-      path: route.path || '',
-      children: route.children ? findChildren(route.children) : undefined,
-    }));
-  }
-
-  return findChildren(children as RouteObject[]);
-};
 
 export default TutorialList;

@@ -1,12 +1,13 @@
-import TutorialList, { findRoutes } from '@/components/tutorial-list';
-import day from '@/router/routes/day';
-import { useEffect, useState } from 'react';
+import TutorialList from "@/components/tutorial-list";
+import day from "@/router/routes/day";
+import findRoutes from "@/utils/findRoutes";
+import { useEffect, useState } from "react";
 
 const Day1 = () => {
   const [list, setList] = useState<any>([]);
 
   useEffect(() => {
-    const list = findRoutes(day.routes, 'Day1');
+    const list = findRoutes(day.routes, "Day1");
     setList(list);
   }, []);
 
