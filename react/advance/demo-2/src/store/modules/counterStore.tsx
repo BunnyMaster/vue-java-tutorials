@@ -11,16 +11,17 @@ const counterStore = createSlice({
     decrease(state) {
       state.count--;
     },
+
+    addToNum(state, action) {
+      state.count += action.payload;
+    },
   },
 });
 
-// 解构 action 的函数
-const { increase, decrease } = counterStore.actions;
+// 解构 action 的函数，并按需导出
+export const { increase, decrease, addToNum } = counterStore.actions;
 
 // 获取reducer
 const counterReducer = counterStore.reducer;
-
-// 按需导出
-export { decrease, increase };
 
 export default counterReducer;

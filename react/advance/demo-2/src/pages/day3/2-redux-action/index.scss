@@ -1,0 +1,82 @@
+.redux-action-demo {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+
+  .counter-card {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    min-width: 700px;
+    text-align: center;
+    color: white;
+
+    .card-title {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .counter-display {
+      margin: 1.5rem 0;
+
+      .counter-value {
+        font-size: 3rem;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1.5rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+      }
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0;
+
+      .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        &.btn-primary {
+          background: rgba(255, 255, 255, 0.9);
+          color: #667eea;
+
+          &:hover {
+            background: white;
+          }
+        }
+
+        &.btn-secondary {
+          background: rgba(255, 255, 255, 0.2);
+          color: white;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.3);
+          }
+        }
+      }
+    }
+  }
+}
