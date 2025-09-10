@@ -12,6 +12,20 @@ function ReduxAsyncDemo() {
     dispatch(fetchChannelList() as any);
   }, [dispatch]);
 
+  if (channelList.length === 0) {
+    return (
+      <div className="redux-async-demo">
+        <h3 className="title">Redux异步</h3>
+        <ul className="channel-list loading">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <div className="loading-text">频道列表加载中...</div>
+          </div>
+        </ul>
+      </div>
+    );
+  }
+
   return (
     <div className="redux-async-demo">
       <h3 className="title">Redux异步</h3>
