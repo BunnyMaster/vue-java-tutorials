@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, decreaseCartItem, increaseCartItem } from '../../store/modules/takeaway';
 import Count from '../Count';
@@ -13,14 +14,28 @@ const Cart = () => {
   // 计算总价
   const totalPrice = cartList.reduce((a, c) => a + c.price * c.count, 0);
 
+  const [visible, setVisible] = useState(false);
+
   return (
     <div className="cartContainer">
       {/* 遮罩层 添加visible类名可以显示出来 */}
-      <div className={classNames('cartOverlay')} />
+      <div
+        className={classNames('cartOverlay', visible && 'visible')}
+        onClick={() => setVisible(false)}
+      />
       <div className="cart">
         {/* fill 添加fill类名可以切换购物车状态*/}
         {/* 购物车数量 */}
-        <div className={classNames('icon', cartList.length > 0 && 'fill')}>{cartList.length > 0 && <div className="cartCornerMark">{cartList.length}</div>}</div>
+        <div
+          onClick={() => {
+            if (cartList.length > 0) {
+              setVisible(true);
+            }
+          }}
+          className={classNames('icon', cartList.length > 0 && 'fill')}
+        >
+          {cartList.length > 0 && <div className="cartCornerMark">{cartList.length}</div>}
+        </div>
         {/* 购物车价格 */}
         <div className="main">
           <div className="price">
@@ -35,7 +50,7 @@ const Cart = () => {
         {cartList.length > 0 ? <div className="goToPreview">去结算</div> : <div className="minFee">¥20起送</div>}
       </div>
       {/* 添加 visible 类名 div会显示出来 */}
-      <div className={classNames('cartPanel', cartList.length > 0 && 'visible')}>
+      <div className={classNames('cartPanel', visible && 'visible')}>
         <div className="header">
           <span className="text">购物车</span>
           <span
