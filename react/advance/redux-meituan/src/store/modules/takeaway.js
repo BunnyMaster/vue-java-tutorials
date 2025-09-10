@@ -9,6 +9,9 @@ const foodsStore = createSlice({
 
     // 菜单激活下表
     activeIndex: 0,
+
+    // 购物车列表
+    cartList: [],
   },
   reducers: {
     /**
@@ -30,10 +33,22 @@ const foodsStore = createSlice({
     changeActiveIndex(state, action) {
       state.activeIndex = action.payload;
     },
+
+    addCartItem(state, action) {
+      const { id } = action.payload;
+      const item = state.cartList.find((item) => item.id === id);
+
+      if (item) {
+        item.count++;
+      } else {
+        action.payload.count = 1;
+        state.cartList.push(action.payload);
+      }
+    },
   },
 });
 
-const { setFoodList, changeActiveIndex } = foodsStore.actions;
+const { setFoodList, changeActiveIndex, addCartItem } = foodsStore.actions;
 
 /**
  * 异步获取外卖商品列表的 thunk 函数
@@ -52,5 +67,5 @@ const fetchFoodList = () => {
 
 const foodsReducer = foodsStore.reducer;
 
-export { changeActiveIndex, fetchFoodList };
+export { addCartItem, changeActiveIndex, fetchFoodList };
 export default foodsReducer;

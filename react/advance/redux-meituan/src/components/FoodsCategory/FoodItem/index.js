@@ -1,23 +1,20 @@
-import './index.scss'
+import { useDispatch } from 'react-redux';
+import { addCartItem } from '../../../store/modules/takeaway';
+import './index.scss';
 
-const Foods = ({
-  id,
-  picture,
-  name,
-  unit,
-  description,
-  food_tag_list,
-  month_saled,
-  like_ratio_desc,
-  price,
-  tag,
-  count
-}) => {
+const Foods = ({ id, picture, name, unit, description, food_tag_list, month_saled, like_ratio_desc, price, tag, count }) => {
+  const dispatch = useDispatch();
+
+  const data = { id, picture, name, unit, description, food_tag_list, month_saled, like_ratio_desc, price, tag, count };
 
   return (
     <dd className="cate-goods">
       <div className="goods-img-wrap">
-        <img src={picture} alt="" className="goods-img" />
+        <img
+          src={picture}
+          alt=""
+          className="goods-img"
+        />
       </div>
       <div className="goods-info">
         <div className="goods-desc">
@@ -38,12 +35,17 @@ const Foods = ({
             {price}
           </div>
           <div className="goods-count">
-            <span className="plus"></span>
+            <span
+              className="plus"
+              onClick={() => dispatch(addCartItem(data))}
+            >
+              +
+            </span>
           </div>
         </div>
       </div>
     </dd>
-  )
-}
+  );
+};
 
-export default Foods
+export default Foods;
