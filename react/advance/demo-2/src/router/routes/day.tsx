@@ -40,7 +40,12 @@ const day = createBrowserRouter([
     element: <Day2 />,
     errorElement: <ErrorPage />,
     children: [
-      { id: "UseState", path: "use-state", element: <UseStateDemo /> },
+      {
+        id: "UseState",
+        // 设置默认路由
+        index: true,
+        element: <UseStateDemo />,
+      },
       { id: "UseRef", path: "use-ref", element: <UseRefDemo /> },
       { id: "发布评论", path: "publish-comment", element: <PublishComment /> },
       { id: "父传子-函数", path: "son-fun", element: <MainAppFunc /> },
