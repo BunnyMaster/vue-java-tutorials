@@ -35,6 +35,9 @@ function RouterDemo1() {
         className="nav-button"
         onClick={() => {
           navigate("/router-detail-search-params", {
+            // 是否替换当前
+            replace: false,
+            // 状态
             state: {
               id: 1001,
               name: "bunny",

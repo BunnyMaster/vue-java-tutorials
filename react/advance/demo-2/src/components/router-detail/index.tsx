@@ -1,6 +1,7 @@
 import {
   Link,
   useLocation,
+  useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
@@ -11,14 +12,26 @@ function RouterDemo1Detail() {
   const [searParams] = useSearchParams();
   const params = useParams();
 
+  const navigator = useNavigate();
+
   return (
     <div className="router-detail">
       <div className="detail-container">
         <h3>路由详情页</h3>
 
-        <Link to="/" className="back-link">
-          ← 返回首页
-        </Link>
+        <div className="flex justify-around">
+          <button className="back-link" onClick={() => navigator(-1)}>
+            ← 返回上级
+          </button>
+
+          <button className="back-link" onClick={() => navigator(1)}>
+            前进
+          </button>
+
+          <Link to="/" className="back-link">
+            ← 返回首页
+          </Link>
+        </div>
 
         <div className="param-section">
           <h4>查询参数 (useSearchParams)</h4>
