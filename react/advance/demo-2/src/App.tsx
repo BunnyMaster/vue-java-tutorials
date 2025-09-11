@@ -17,7 +17,6 @@ function App() {
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800">日期</h1>
           </div>
-
           <ul className="space-y-4">
             {list.map((item) => (
               <li key={item.name}>
