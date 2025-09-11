@@ -17,6 +17,8 @@ import Day3 from "@/pages/day3";
 import ReduxInduction from "@/pages/day3/1-redux-induction";
 import ReduxActionDemo from "@/pages/day3/2-redux-action";
 import ReduxAsyncDemo from "@/pages/day3/3-redux-async";
+import Day4 from "@/pages/day4";
+import RouterDemo1 from "@/pages/day4/1-router";
 import ErrorPage from "@/pages/error/error-pages";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -74,6 +76,15 @@ const day = createBrowserRouter([
       { id: "Redux入门", path: "redux-1", element: <ReduxInduction /> },
       { id: "Redux-Action", path: "redux-2", element: <ReduxActionDemo /> },
       { id: "Redux-Async", path: "redux-3", element: <ReduxAsyncDemo /> },
+    ],
+  },
+  {
+    id: "Day4",
+    path: "day4",
+    element: <Day4 />,
+    children: [
+      { id: "路由-1", path: "router-1", element: <RouterDemo1 /> },
+      // { id: "路由", path: "router", element: <RouterDemo1 /> },
     ],
   },
 ]);

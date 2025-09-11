@@ -7,6 +7,7 @@ function App() {
     { name: "Day1", path: "/day1" },
     { name: "Day2", path: "/day2" },
     { name: "Day3", path: "/day3" },
+    { name: "Day4", path: "/day4" },
   ];
 
   return (
