@@ -1,7 +1,8 @@
-import App from "@/App";
-import RouterDemo1Detail from "@/components/router-detail";
-import ErrorPage from "@/pages/error/error-pages";
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
+const App = lazy(() => import("@/App"));
+const RouterDemo1Detail = lazy(() => import("@/components/router-detail"));
+const ErrorPage = lazy(() => import("@/pages/error/error-pages"));
 
 const home = createBrowserRouter([
   {
