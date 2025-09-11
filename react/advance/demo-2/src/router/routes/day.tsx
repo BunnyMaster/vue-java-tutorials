@@ -1,3 +1,4 @@
+import NotFound from "@/components/not-found";
 import Day1 from "@/pages/day1";
 import Counter from "@/pages/day1/1-counter-page";
 import FormPage from "@/pages/day1/2-form-page";
@@ -89,6 +90,7 @@ const day = createBrowserRouter([
     element: <Day4 />,
     children: [{ id: "路由-1", path: "router-1", element: <RouterDemo1 /> }],
   },
+  { path: "*", element: <NotFound /> },
 ]);
 
 export default day;
