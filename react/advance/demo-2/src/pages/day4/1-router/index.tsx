@@ -30,6 +30,31 @@ function RouterDemo1() {
       >
         详情-params
       </button>
+
+      <button
+        className="nav-button"
+        onClick={() => {
+          navigate("/router-detail-search-params", {
+            state: {
+              id: 1001,
+              name: "bunny",
+            },
+          });
+        }}
+      >
+        详情-编程-state
+      </button>
+
+      <Link
+        to="/router-detail-search-params"
+        state={{
+          id: 1001,
+          name: "bunny",
+        }}
+        className="nav-link"
+      >
+        详情-路由-state
+      </Link>
     </div>
   );
 }

@@ -86,6 +86,8 @@ const day = createBrowserRouter([
   },
   {
     id: "Day4",
+    // 严格模式，区分大小写
+    // caseSensitive: true,
     path: "day4",
     element: <Day4 />,
     children: [{ id: "路由-1", path: "router-1", element: <RouterDemo1 /> }],

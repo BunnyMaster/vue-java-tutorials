@@ -1,7 +1,13 @@
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import "./index.scss";
 
 function RouterDemo1Detail() {
+  const { state } = useLocation();
   const [searParams] = useSearchParams();
   const params = useParams();
 
@@ -31,6 +37,19 @@ function RouterDemo1Detail() {
           <div className="param-item">
             <span className="param-label">Name:</span>
             <span className="param-value">{params.name || "无"}</span>
+          </div>
+        </div>
+
+        <div className="param-section">
+          <h4>state参数 (useLocation)</h4>
+
+          <div className="param-item">
+            <span className="param-label">ID:</span>
+            <span className="param-value">{state.id || "无"}</span>
+          </div>
+          <div className="param-item">
+            <span className="param-label">Name:</span>
+            <span className="param-value">{state.name || "无"}</span>
           </div>
         </div>
       </div>
