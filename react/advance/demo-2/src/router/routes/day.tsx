@@ -20,6 +20,7 @@ import ReduxActionDemo from "@/pages/day3/2-redux-action";
 import ReduxAsyncDemo from "@/pages/day3/3-redux-async";
 import Day4 from "@/pages/day4";
 import RouterDemo1 from "@/pages/day4/1-router";
+import RouterDemoHook from "@/pages/day4/2-router-hook";
 import ErrorPage from "@/pages/error/error-pages";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -90,7 +91,10 @@ const day = createBrowserRouter([
     // caseSensitive: true,
     path: "day4",
     element: <Day4 />,
-    children: [{ id: "路由-1", path: "router-1", element: <RouterDemo1 /> }],
+    children: [
+      { id: "路由-1", path: "router-1", element: <RouterDemo1 /> },
+      { id: "路由钩子", path: "router-hook", element: <RouterDemoHook /> },
+    ],
   },
   { path: "*", element: <NotFound /> },
 ]);
