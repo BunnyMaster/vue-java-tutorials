@@ -82,10 +82,7 @@ const day = createBrowserRouter([
     id: "Day4",
     path: "day4",
     element: <Day4 />,
-    children: [
-      { id: "路由-1", path: "router-1", element: <RouterDemo1 /> },
-      // { id: "路由", path: "router", element: <RouterDemo1 /> },
-    ],
+    children: [{ id: "路由-1", path: "router-1", element: <RouterDemo1 /> }],
   },
 ]);
 
