@@ -78,3 +78,9 @@ docker stop mongodb
 docker rm mongodb
 ```
 
+## 常用链接速查
+
+| 名称            | 地址                                         | 备注 |
+| --------------- | -------------------------------------------- | ---- |
+| MondoDB Compass | https://www.mongodb.com/try/download/compass |      |
+
