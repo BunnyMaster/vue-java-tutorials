@@ -239,8 +239,6 @@ MSET user:1000:name "John" user:1000:age 30 user:1000:email "john@example.com"
 > 4. **字段过期**：Redis 不支持单个字段的过期时间，只能对整个 Hash 键设置过期
 > 5. **使用场景**：适合存储对象类数据（用户信息、商品详情、配置信息等）
 
-#### 🎯 命令概述
-
 | 命令        | 说明               | 使用场景     |
 | :---------- | :----------------- | :----------- |
 | **HSET**    | 设置 Hash 字段值   | 单个字段操作 |
@@ -311,8 +309,6 @@ HSETNX user:2 gender 1    -- 如果gender字段不存在则设置
 HSETNX user:2 name "Tom"  -- 如果name已存在，不执行
 ```
 
----
-
 #### 🚀 实用技巧
 
 **用户信息存储**
@@ -350,3 +346,341 @@ HINCRBY stats:page:home users 1
 HSETNX stats:page:home first_visit "2024-01-15"
 ```
 
+### List 常用命令
+
+> [!TIP]
+>
+> 📌 **提示**：List 类型非常适合实现消息队列、最新消息列表、任务队列等场景，BLPOP/BRPOP 提供了可靠的阻塞式消费机制。
+>
+> 1. **性能考虑**：LPUSH/RPUSH 操作时间复杂度为 O(1)，非常高效
+> 2. **阻塞超时**：BLPOP/BRPOP 超时时间为秒级，0表示无限等待
+> 3. **空列表处理**：列表为空时，LPOP/RPOP 返回 nil
+> 4. **索引范围**：LRANGE 支持负数索引，-1 表示最后一个元素
+> 5. **内存管理**：列表元素过多时考虑分片或使用其他数据结构
+
+| 命令       | 说明                         | 使用场景         |
+| :--------- | :--------------------------- | :--------------- |
+| **LPUSH**  | 向列表左侧插入一个或多个元素 | 队列、栈操作     |
+| **LPOP**   | 移除并返回列表左侧第一个元素 | 消费队列消息     |
+| **RPUSH**  | 向列表右侧插入一个或多个元素 | 队列操作         |
+| **RPOP**   | 移除并返回列表右侧第一个元素 | 消费队列消息     |
+| **LRANGE** | 返回指定索引范围内的所有元素 | 查看列表内容     |
+| **BLPOP**  | 阻塞式左侧弹出，无元素时等待 | 消息队列阻塞消费 |
+| **BRPOP**  | 阻塞式右侧弹出，无元素时等待 | 消息队列阻塞消费 |
+
+---
+
+#### 💻 命令示例与用法
+
+**基本列表操作**
+
+```sql
+-- 向左插入多个元素（存储顺序：3 → 2 → 1）
+LPUSH students 1 2 3
+
+-- 从左侧弹出元素（返回：3）
+LPOP students
+
+-- 向右插入多个元素（存储顺序：4 → 5 → 6）
+RPUSH users 4 5 6
+
+-- 从右侧弹出元素（返回：6）
+RPOP users
+
+-- 查看列表范围元素（0到-1表示所有元素）
+LRANGE students 0 -1
+```
+
+**阻塞式操作**
+
+```sql
+-- 阻塞等待100秒，从user2左侧弹出元素
+BLPOP user2 100
+
+-- 在另一个客户端执行：向user2插入元素
+LPUSH user2 111
+```
+
+**队列和栈应用**
+
+```sql
+-- 队列实现（先进先出 FIFO）
+RPUSH task_queue "task1" "task2" "task3"  -- 入队
+LPOP task_queue                          -- 出队（返回："task1"）
+
+-- 栈实现（后进先出 LIFO）
+LPUSH message_stack "msg1" "msg2" "msg3"  -- 压栈
+LPOP message_stack                       -- 弹栈（返回："msg3"）
+```
+
+#### 🚀 实用技巧
+
+**消息队列系统**
+
+```sql
+-- 生产者：推送任务到队列
+LPUSH email_queue "user1@example.com" "订单确认"
+LPUSH email_queue "user2@example.com" "欢迎邮件"
+
+-- 消费者：处理队列任务
+BLPOP email_queue 30  -- 阻塞30秒等待任务
+```
+
+**最新消息列表**
+
+```sql
+-- 存储最新10条消息
+LPUSH recent_messages "消息1" "消息2" "消息3" "消息4" "消息5"
+LTRIM recent_messages 0 9  -- 只保留前10条
+```
+
+**阻塞式任务处理**
+
+```sql
+-- 工作进程等待任务
+BLPOP task_queue 0  -- 无限期等待任务
+
+-- 主进程分配任务
+LPUSH task_queue "process_data"
+LPUSH task_queue "generate_report"
+```
+
+### Set 常用命令
+
+> [!TIP] 
+>
+> 📌 **提示**：Set 类型非常适合需要唯一性保证的场景，如标签系统、好友关系、唯一访客统计等，集合运算功能强大且实用。
+>
+> 1. **自动去重**：Set 中元素唯一，重复添加会自动去重
+> 2. **无序性**：Set 中的元素是无序的，SMEMBERS 返回顺序不固定
+> 3. **性能优秀**：SADD、SREM、SISMEMBER 操作都是 O(1) 时间复杂度
+> 4. **内存占用**：大量元素时考虑使用 HyperLogLog 进行基数统计
+> 5. **集合运算**：SINTER、SDIFF、SUNION 在大集合上可能较慢
+
+| 命令          | 说明                                    | 使用场景     |
+| :------------ | :-------------------------------------- | :----------- |
+| **SADD**      | 向 Set 中添加一个或多个元素（自动去重） | 添加唯一元素 |
+| **SREM**      | 从 Set 中移除指定元素                   | 删除元素     |
+| **SCARD**     | 返回 Set 中元素个数                     | 统计元素数量 |
+| **SISMEMBER** | 判断元素是否存在于 Set 中               | 成员检查     |
+| **SMEMBERS**  | 获取 Set 中所有元素                     | 查看所有成员 |
+| **SINTER**    | 求两个或多个 Set 的交集                 | 共同好友等   |
+| **SDIFF**     | 求两个 Set 的差集                       | 差异分析     |
+| **SUNION**    | 求两个或多个 Set 的并集                 | 合并去重     |
+
+---
+
+#### 💻 命令示例与用法
+
+**基本 Set 操作**
+
+```sql
+-- 向集合添加元素（自动去重，实际存储：a, b, c）
+SADD s1 a b c a b c
+
+-- 获取所有元素
+SMEMBERS s1          -- 返回: 1) "a" 2) "b" 3) "c"
+
+-- 删除指定元素
+SREM s1 a            -- 移除元素"a"
+
+-- 判断元素是否存在
+SISMEMBER s1 a       -- 返回: 0 (不存在)
+SISMEMBER s1 b       -- 返回: 1 (存在)
+
+-- 查看元素个数
+SCARD s1             -- 返回: 2 (剩余b和c)
+```
+
+🎯 **社交好友案例**
+
+```sql
+-- 设置张三的好友列表
+SADD "张三" "李四" "王五" "赵六"
+
+-- 设置李四的好友列表  
+SADD "李四" "王五" "麻子" "二狗"
+
+-- 查看张三有几个好友
+SCARD "张三"          -- 返回: 3
+
+-- 查看张三和李四的共同好友
+SINTER "张三" "李四"  -- 返回: 1) "王五"
+
+-- 查看是张三好友但不是李四好友的人
+SDIFF "张三" "李四"   -- 返回: 1) "李四" 2) "赵六"
+
+-- 查看张三和李四的所有好友（去重）
+SUNION "张三" "李四"  -- 返回: 1) "李四" 2) "王五" 3) "赵六" 4) "麻子" 5) "二狗"
+
+-- 判断好友关系
+SISMEMBER "张三" "李四"  -- 返回: 1 (李四是张三好友)
+SISMEMBER "李四" "张三"  -- 返回: 0 (张三不是李四好友)
+
+-- 移除好友关系
+SREM "张三" "李四"      -- 从张三好友列表中移除李四
+```
+
+#### 🚀 实用技巧
+
+**标签系统**
+
+```sql
+-- 文章标签
+SADD "article:1001:tags" "redis" "database" "nosql"
+SADD "article:1002:tags" "redis" "tutorial" "beginner"
+
+-- 查找同时包含redis和database的文章
+SINTER "article:1001:tags" "article:1002:tags"  -- 返回共同标签
+```
+
+**用户兴趣匹配**
+
+```sql
+-- 用户兴趣标签
+SADD "user:1000:interests" "music" "sports" "reading"
+SADD "user:1001:interests" "music" "movies" "travel"
+
+-- 查找共同兴趣
+SINTER "user:1000:interests" "user:1001:interests"  -- 返回: 1) "music"
+```
+
+**唯一值统计**
+
+```sql
+-- 网站唯一访客统计
+SADD "daily:visitors:2024-01-15" "192.168.1.1" "192.168.1.2" "192.168.1.1"
+SCARD "daily:visitors:2024-01-15"  -- 返回: 2 (自动去重)
+```
+
+### Sorted Set 常用命令
+
+> [!TIP]
+>
+> 📌 **提示**：Sorted Set 是Redis中最强大的数据结构之一，非常适合排行榜、评分系统、范围查询等场景，结合WITHSCORES参数可以同时获取分数信息。
+>
+> 1. **分数精度**：分数是64位浮点数，支持小数运算
+> 2. **排名规则**：分数相同按字典序排序
+> 3. **性能考虑**：ZRANGEBYSCORE 在大数据集上可能较慢
+> 4. **内存占用**：比普通Set占用更多内存，因为要存储分数
+> 5. **REV前缀**：在所有命令前加REV即可获得倒序版本
+
+| 命令              | 说明                             | 使用场景         |
+| :---------------- | :------------------------------- | :--------------- |
+| **ZADD**          | 添加或更新元素及其分数           | 排行榜、评分系统 |
+| **ZREM**          | 删除指定元素                     | 移除数据         |
+| **ZSCORE**        | 获取元素的分数值                 | 查看具体分数     |
+| **ZRANK**         | 获取元素正序排名（从0开始）      | 查看排名位置     |
+| **ZREVRANK**      | 获取元素倒序排名                 | 查看倒序排名     |
+| **ZCARD**         | 获取有序集合元素个数             | 统计总数         |
+| **ZCOUNT**        | 统计指定分数范围内的元素个数     | 分数段统计       |
+| **ZINCRBY**       | 元素分数自增指定步长             | 分数调整         |
+| **ZRANGE**        | 获取指定排名范围内的元素（正序） | 查看排名段       |
+| **ZREVRANGE**     | 获取指定排名范围内的元素（倒序） | 查看倒序排名段   |
+| **ZRANGEBYSCORE** | 获取指定分数范围内的元素         | 分数段查询       |
+| **ZDIFF**         | 求差集                           | 集合运算         |
+| **ZINTER**        | 求交集                           | 集合运算         |
+| **ZUNION**        | 求并集                           | 集合运算         |
+
+#### 💻 命令示例与用法
+
+**基本操作**
+
+```sql
+-- 添加学生成绩（分数→元素）
+ZADD students 76 Miles 78 Jerry 82 Rose 85 Jack 89 Lucy 92 Amy 95 Tom
+
+-- 删除指定学生
+ZREM students Tom
+
+-- 获取学生分数
+ZSCORE students Amy    -- 返回: "92"
+
+-- 获取正序排名（从0开始）
+ZRANK students Rose    -- 返回: 2 (第3名)
+
+-- 获取倒序排名
+ZREVRANK students Rose -- 返回: 3 (倒数第4名)
+
+-- 查看元素总数
+ZCARD students         -- 返回: 6
+```
+
+**分数统计与调整**
+
+```sql
+-- 统计80分以下的学生人数
+ZCOUNT students 0 80   -- 返回: 2 (Miles和Jerry)
+
+-- 为Amy加2分
+ZINCRBY students 2 Amy -- 返回: "94" (新分数)
+
+-- 为Jerry减3分
+ZINCRBY students -3 Jerry -- 返回: "75" (新分数)
+```
+
+**排名查询**
+
+```sql
+-- 查询前三名（正序：分数从低到高）
+ZRANGE students 0 2 WITHSCORES
+-- 返回: 1) "Jerry" 2) "75" 3) "Miles" 4) "76" 5) "Rose" 6) "82"
+
+-- 查询前三名（倒序：分数从高到低）
+ZREVRANGE students 0 2 WITHSCORES
+-- 返回: 1) "Amy" 2) "94" 3) "Lucy" 4) "89" 5) "Jack" 6) "85"
+
+-- 查询80分以下的所有学生
+ZRANGEBYSCORE students 0 80 WITHSCORES
+-- 返回: 1) "Jerry" 2) "75" 3) "Miles" 4) "76"
+```
+
+**集合运算**
+
+```sql
+-- 创建第二个有序集合
+ZADD class2 80 Jerry 85 Rose 90 Bob 88 Lisa
+
+-- 求交集（默认求和分数）
+ZINTER 2 students class2
+-- 返回共同元素: Jerry, Rose
+
+-- 求并集
+ZUNION 2 students class2
+-- 返回所有元素（去重）
+```
+
+#### 🚀 实用技巧
+
+**排行榜系统**
+
+```sql
+-- 游戏玩家排行榜
+ZADD leaderboard 1500 "player1" 2000 "player2" 1800 "player3"
+
+-- 获取前十名
+ZREVRANGE leaderboard 0 9 WITHSCORES
+
+-- 玩家得分增加
+ZINCRBY leaderboard 50 "player1"
+```
+
+**时间轴排序**
+
+```sql
+-- 新闻热度排行榜（时间戳作为分数）
+ZADD news:hot 1642252800 "article1" 1642253100 "article2" 1642253400 "article3"
+
+-- 获取最新文章（时间戳越大越新）
+ZREVRANGE news:hot 0 9
+```
+
+**价格区间查询**
+
+```sql
+-- 商品价格排序
+ZADD products 299 "iphone" 599 "ipad" 1299 "macbook" 199 "airpods"
+
+-- 查询500-1000元的产品
+ZRANGEBYSCORE products 500 1000 WITHSCORES
+```
