@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.step2.mapper.UserRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.spring.step2.domain.entity.UserRoleEntity">
+        <id column="id" property="id"/>
+        <id column="role_id" property="roleId"/>
+        <id column="user_id" property="userId"/>
+        <id column="create_time" property="createTime"/>
+        <id column="update_time" property="updateTime"/>
+        <id column="create_user" property="createUser"/>
+        <id column="update_user" property="updateUser"/>
+        <id column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,role_id,user_id,create_time,update_time,create_user,update_user,is_deleted
+    </sql>
+
+    <!-- 根据用户id删除用户相关分配角色 -->
+    <delete id="deleteByUserId">
+        delete
+        from t_user_role
+        where user_id = #{userId}
+    </delete>
+
+    <!-- 分页查询用户角色关联表内容 -->
+    <select id="selectListByPage" resultType="com.spring.step2.domain.vo.UserRoleVo">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_role
+        <where>
+            base.is_deleted = 0
+        </where>
+    </select>
+
+    <!-- 根据用户id获取当前用户角色列表 -->
+    <select id="getRoleListByUserId" resultType="com.spring.step2.domain.entity.UserRoleEntity">
+        select *
+        from t_user_role
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+</mapper>

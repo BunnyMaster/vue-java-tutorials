@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/vue@2.7.16.js"></script>
+    <title>Vue中的数据代理</title>
+</head>
+
+<body>
+    <div id="app">
+        Vue中的数据代理: <span>{{name}}</span>
+    </div>
+</body>
+
+<script>
+    const vm = new Vue({
+        el: "#app",
+        data: {
+            name: "代理..."
+        }
+    });
+
+    // 如果要查看可以使用 vm._data 看到name，在_data中做了数据劫持
+    // 验证，data==_data 可以将data定义到外部之后使用 vm._data == data 即可
+    // 通过 Object.defineProperty 对vm中对象进行映射，只要修改了 vm._data 或者 vm.xxx 会触发双向绑定
+</script>
+
+</html>

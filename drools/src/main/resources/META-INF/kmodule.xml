@@ -1,0 +1,21 @@
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+
+    <!-- 练习 -->
+    <kbase name="Exercise" packages="rules.exercise.test" default="false">
+        <ksession name="exercise_test_1" default="true"/>
+    </kbase>
+
+    <!-- 计算税额 -->
+    <kbase name="ExerciseTax" packages="rules.exercise.tax" default="false">
+    </kbase>
+
+    <!-- 信用卡 -->
+    <kbase name="Group_CreditCardApply" packages="rules.exercise.card" default="false">
+        <ksession name="credit_card_apply_card_1" default="true"/>
+    </kbase>
+
+    <!-- demo 练习 -->
+    <kbase name="BookDisCount" packages="rules.demo" default="true">
+    </kbase>
+
+</kmodule>

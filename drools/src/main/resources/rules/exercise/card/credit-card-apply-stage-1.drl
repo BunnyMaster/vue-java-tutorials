@@ -1,0 +1,56 @@
+package rules.exercise.card;
+import cn.bunny.drools.bean.exercise.CreditCardApply;
+
+rule "检查学历与薪水1 如果申请人既没房也没车，同时学历为大专以下，并且月薪少于5000，那么不通过"
+    salience 10
+    no-loop true
+
+    // && 可以写成 ,
+    when
+        $creditCard:CreditCardApply(hasHouse == false, hasCar == false,
+        education == CreditCardApply.EDUCATION_1, monthlyIncome < 5000)
+    then
+        // 审核不通过直接结束
+        $creditCard.setCheckResult(false);
+        drools.halt();
+end
+
+rule "检查学历与薪水2 如果申请人既没房也没车，同时学历为大专或本科，并且月薪少于3000，那么不通过"
+    salience 10
+    no-loop true
+
+    when
+        $creditCard:CreditCardApply(hasCar == false, hasHouse==false,
+            (education == CreditCardApply.EDUCATION_2 || education == CreditCardApply.EDUCATION_3)
+            &&
+            monthlyIncome < 3000
+        )
+    then
+    $creditCard.setCheckResult(false);
+    drools.halt();
+end
+
+rule "检查学历与薪水3 如果申请人既没房也没车，同时学历为本科以上，并且月薪少于2000，同时之前没有信用卡的，那么不通过"
+    salience 10
+    no-loop true
+
+    when
+        $creditCard:CreditCardApply(hasCar == false, hasHouse==false,
+            education == CreditCardApply.EDUCATION_4 , monthlyIncome < 2000
+            , hasCreditCardCount == 0
+        )
+    then
+        $creditCard.setCheckResult(false);
+        drools.halt();
+end
+
+rule "检查申请人已有的信用卡数量 如果申请人现有的信用卡数量大于10，那么不通过"
+    salience 10
+    no-loop true
+
+    when
+        $creditCard:CreditCardApply(hasCreditCardCount > 20)
+    then
+        $creditCard.setCheckResult(false);
+        drools.halt();
+end

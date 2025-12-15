@@ -1,0 +1,11 @@
+server:
+  port: 6666
+bunny:
+  database: xhl
+  host: 192.168.3.129
+  port: 27017
+  username: admin
+  password: "02120212"
+  authentication-database: admin
+  additional-hosts: 192.168.3.129
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>08 对props限制</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+    class HelloMessage extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>Hello {this.props.name} {this.props.isOk ? '好' : '不好'}</h1>
+                </div>
+            )
+        }
+    }
+
+    class App extends React.Component {
+        // 方式一
+        // static propTypes = {
+        //     name: PropTypes.string.isRequired,  // 必需的字符串类型
+        //     age: PropTypes.number.isRequired,          // 可选的数字类型
+        //     gender: PropTypes.oneOf(['男', '女']) // 枚举类型，只能是'男'或'女'
+        // }
+
+        constructor(props) {
+            // 是否接受props就是希望在构造器中使用props
+            super(props)
+        }
+
+        state = { isReact: true }
+
+        onChangeIsReact = () => {
+            this.setState({ isReact: !this.state.isReact })
+        }
+
+        render() {
+            const { name, age, gender, speak } = this.props
+
+            return (
+                <div>
+                    <HelloMessage name="Tom" isOk={true} />
+
+                    <ul>
+                        <li>名称：{name}</li>
+                        <li>年龄：{age + 1}</li>
+                        <li>性别：{gender}</li>
+                        <li onClick={speak}>说话</li>
+                    </ul>
+                </div>
+            )
+        }
+    }
+
+    // 方式二
+    App.propTypes = {
+        name: PropTypes.string.isRequired,
+        age: PropTypes.number.isRequired,
+        gender: PropTypes.oneOf(['男', '女']),
+        speak: PropTypes.func.isRequired
+    }
+
+    const person = {
+        name: 'Tom',
+        age: 18,
+        gender: '男'
+    }
+
+    function speak() {
+        console.log('说话')
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App {...person} speak={speak} />)
+</script>
+
+</html>

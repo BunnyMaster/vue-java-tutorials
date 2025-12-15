@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>09 回调形式的ref</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+    class App extends React.Component {
+        constructor(props) {
+            super(props)
+        }
+
+        /**
+         * 显示输入框内容
+         */
+        showData = () => {
+            const val = this.input1.value
+
+            alert(val)
+
+            console.log(val)
+        }
+
+        render() {
+            return (
+                <div>
+                    <input ref={v => this.input1 = v} type="text" />
+                    <button onClick={this.showData}>显示左边按钮</button>
+
+                    <input ref={(v) => this.input2 = v} type="text" onBlur={() => console.log(this.input2.value)} />
+                </div>
+            )
+        }
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App />)
+</script>
+
+</html>

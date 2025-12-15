@@ -1,0 +1,16 @@
+package rules.exercise.test;
+import cn.bunny.drools.bean.exercise.ComparisonOperation;
+
+rule "exercise-02-contains"
+    when
+        $comparisonOperation:ComparisonOperation(field not contains "zxc")
+    then
+        System.out.println("02 field 匹配到");
+end
+
+rule "exercise list 02"
+    when
+        $comparisonOperation:ComparisonOperation(operatorList not contains field)
+    then
+        System.out.println("02 operatorList 匹配到");
+end

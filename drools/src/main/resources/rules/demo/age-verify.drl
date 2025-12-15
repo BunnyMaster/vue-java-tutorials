@@ -1,0 +1,51 @@
+package rules.demo;
+
+import cn.bunny.drools.bean.demo.demo2.User;
+import cn.bunny.drools.bean.demo.demo2.AccessRequest;
+import cn.bunny.drools.bean.demo.demo2.Content;
+import cn.bunny.drools.bean.demo.demo2.ContentType;
+
+/**
+场景：年龄限制内容访问控制
+
+要求：
+18岁以下用户不能访问R级内容
+21岁以下用户不能购买酒精类产品
+需要处理用户年龄和访问内容类型两个维度
+*/
+
+rule "Deny R-rated content for under 18"
+    when
+        $request: AccessRequest(
+            user.age < 18,
+            content.type == ContentType.R_RATED,
+            granted == true
+        )
+    then
+        $request.setGranted(false);
+        $request.setDenialReason("未满18岁禁止访问R级内容");
+        System.out.println("拒绝R级内容访问: 用户年龄 " + $request.getUser().getAge());
+end
+
+rule "Deny alcohol purchase for under 21"
+     when
+        $request: AccessRequest(
+            user.age < 21,
+            content.type == ContentType.ALCOHOL,
+            granted == true
+        )
+    then
+        $request.setGranted(false);
+        $request.setDenialReason("未满21岁禁止购买酒精类产品");
+        System.out.println("拒绝酒精购买: 用户年龄 " + $request.getUser().getAge());
+end
+
+// 规则3: 默认允许访问
+rule "Default access grant"
+    when
+        $request: AccessRequest(granted == false)
+    then
+        // 如果没有被前面的规则拒绝，则允许访问
+        $request.setGranted(true);
+        System.out.println("允许访问: " + $request.getContent().getType());
+end

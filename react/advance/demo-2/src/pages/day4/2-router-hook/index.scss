@@ -1,0 +1,186 @@
+.router-hook-demo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+  .container {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 2.5rem;
+
+    h3 {
+      color: #2c3e50;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .hook-info-card {
+      .info-item {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #3498db;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        h4 {
+          color: #3498db;
+          margin-top: 0;
+          margin-bottom: 1rem;
+          font-size: 1.3rem;
+          font-weight: 600;
+        }
+
+        .info-content {
+          display: flex;
+          align-items: center;
+          margin-bottom: 1rem;
+          flex-wrap: wrap;
+
+          &.vertical {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
+          .label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-right: 10px;
+            flex-shrink: 0;
+          }
+
+          .value {
+            font-weight: 500;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+            &.success {
+              background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+              color: white;
+            }
+
+            &.error {
+              background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+              color: white;
+            }
+
+            &.navigation-type {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+            }
+          }
+
+          .path-details {
+            width: 100%;
+            margin-top: 10px;
+
+            .path-item {
+              display: flex;
+              margin-bottom: 8px;
+
+              &:last-child {
+                margin-bottom: 0;
+              }
+
+              .path-label {
+                font-weight: 600;
+                color: #2c3e50;
+                width: 70px;
+                flex-shrink: 0;
+              }
+
+              .path-value {
+                color: #7f8c8d;
+                background: white;
+                padding: 3px 10px;
+                border-radius: 5px;
+                flex: 1;
+              }
+            }
+          }
+        }
+
+        .description {
+          color: #7f8c8d;
+          margin: 0;
+          font-size: 0.9rem;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+
+  // 响应式设计
+  @media (max-width: 768px) {
+    padding: 15px;
+
+    .container {
+      padding: 1.5rem;
+
+      h3 {
+        font-size: 1.5rem;
+      }
+
+      .hook-info-card {
+        .info-item {
+          padding: 1rem;
+
+          .info-content {
+            .label {
+              margin-bottom: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      .hook-info-card {
+        .info-item {
+          .info-content {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .label {
+              margin-right: 0;
+              margin-bottom: 5px;
+            }
+          }
+
+          .path-details {
+            .path-item {
+              flex-direction: column;
+
+              .path-label {
+                width: 100%;
+                margin-bottom: 3px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

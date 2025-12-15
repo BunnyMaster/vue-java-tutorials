@@ -1,0 +1,30 @@
+﻿<Window x:Class="WPF_16_Expander.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Background="LightBlue">
+            <TextBlock Text="Name" FontSize="16" />
+            <Expander Header="更多">
+                <TextBlock FontSize="16">
+                    隐藏的内容
+                </TextBlock>
+            </Expander>
+
+            <Button Name="DDetailButton" Width="100" Height="25" Click="DDetailButton_OnClick">Details </Button>
+        </StackPanel>
+
+        <Expander Name="DetailExpander" Grid.Column="1" ExpandDirection="Left" Background="DarkGray"
+                  BorderThickness="0">
+            <Rectangle Fill="DarkCyan" Width="125" />
+        </Expander>
+    </Grid>
+</Window>

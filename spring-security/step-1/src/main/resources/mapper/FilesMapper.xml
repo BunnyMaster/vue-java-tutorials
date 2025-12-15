@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.step1.mapper.FilesMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.spring.step1.bean.entity.FilesEntity">
+        <id column="id" property="id"/>
+        <id column="url" property="url"/>
+        <id column="size" property="size"/>
+        <id column="file_size_str" property="fileSizeStr"/>
+        <id column="filename" property="filename"/>
+        <id column="original_filename" property="originalFilename"/>
+        <id column="base_path" property="basePath"/>
+        <id column="filepath" property="filepath"/>
+        <id column="ext" property="ext"/>
+        <id column="content_type" property="contentType"/>
+        <id column="platform" property="platform"/>
+        <id column="th_url" property="thUrl"/>
+        <id column="th_filename" property="thFilename"/>
+        <id column="th_size" property="thSize"/>
+        <id column="th_content_type" property="thContentType"/>
+        <id column="object_id" property="objectId"/>
+        <id column="object_type" property="objectType"/>
+        <id column="metadata" property="metadata"/>
+        <id column="user_metadata" property="userMetadata"/>
+        <id column="th_metadata" property="thMetadata"/>
+        <id column="th_user_metadata" property="thUserMetadata"/>
+        <id column="attr" property="attr"/>
+        <id column="file_acl" property="fileAcl"/>
+        <id column="th_file_acl" property="thFileAcl"/>
+        <id column="hash_info" property="hashInfo"/>
+        <id column="upload_id" property="uploadId"/>
+        <id column="upload_status" property="uploadStatus"/>
+        <id column="download_count" property="downloadCount"/>
+        <id column="create_user" property="createUser"/>
+        <id column="update_user" property="updateUser"/>
+        <id column="create_time" property="createTime"/>
+        <id column="update_time" property="updateTime"/>
+        <id column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,url,size,file_size_str,filename,original_filename,base_path,filepath,ext,content_type,platform,th_url,th_filename,th_size,th_content_type,object_id,object_type,metadata,user_metadata,th_metadata,th_user_metadata,attr,file_acl,th_file_acl,hash_info,upload_id,upload_status,download_count,create_user,update_user,create_time,update_time,is_deleted
+    </sql>
+
+    <!-- 分页查询文件记录内容 -->
+    <select id="selectListByPage" resultType="com.spring.step1.bean.vo.FilesVo">
+        select
+        base.*,
+        create_user.username as create_username,
+        update_user.username as update_username
+        from sys_files base
+        left join sys_user create_user on create_user.id = base.create_user
+        left join sys_user update_user on update_user.id = base.update_user
+        <where>
+            base.is_deleted = 0
+            <if test="dto.id != null and dto.id != ''">
+                and base.id like CONCAT('%',#{dto.id},'%')
+            </if>
+            <if test="dto.url != null and dto.url != ''">
+                and base.url like CONCAT('%',#{dto.url},'%')
+            </if>
+            <if test="dto.size != null and dto.size != ''">
+                and base.size like CONCAT('%',#{dto.size},'%')
+            </if>
+            <if test="dto.fileSizeStr != null and dto.fileSizeStr != ''">
+                and base.file_size_str like CONCAT('%',#{dto.fileSizeStr},'%')
+            </if>
+            <if test="dto.filename != null and dto.filename != ''">
+                and base.filename like CONCAT('%',#{dto.filename},'%')
+            </if>
+            <if test="dto.originalFilename != null and dto.originalFilename != ''">
+                and base.original_filename like CONCAT('%',#{dto.originalFilename},'%')
+            </if>
+            <if test="dto.basePath != null and dto.basePath != ''">
+                and base.base_path like CONCAT('%',#{dto.basePath},'%')
+            </if>
+            <if test="dto.filepath != null and dto.filepath != ''">
+                and base.filepath like CONCAT('%',#{dto.filepath},'%')
+            </if>
+            <if test="dto.ext != null and dto.ext != ''">
+                and base.ext like CONCAT('%',#{dto.ext},'%')
+            </if>
+            <if test="dto.contentType != null and dto.contentType != ''">
+                and base.content_type like CONCAT('%',#{dto.contentType},'%')
+            </if>
+            <if test="dto.platform != null and dto.platform != ''">
+                and base.platform like CONCAT('%',#{dto.platform},'%')
+            </if>
+            <if test="dto.thUrl != null and dto.thUrl != ''">
+                and base.th_url like CONCAT('%',#{dto.thUrl},'%')
+            </if>
+            <if test="dto.thFilename != null and dto.thFilename != ''">
+                and base.th_filename like CONCAT('%',#{dto.thFilename},'%')
+            </if>
+            <if test="dto.thSize != null and dto.thSize != ''">
+                and base.th_size like CONCAT('%',#{dto.thSize},'%')
+            </if>
+            <if test="dto.thContentType != null and dto.thContentType != ''">
+                and base.th_content_type like CONCAT('%',#{dto.thContentType},'%')
+            </if>
+            <if test="dto.objectId != null and dto.objectId != ''">
+                and base.object_id like CONCAT('%',#{dto.objectId},'%')
+            </if>
+            <if test="dto.objectType != null and dto.objectType != ''">
+                and base.object_type like CONCAT('%',#{dto.objectType},'%')
+            </if>
+            <if test="dto.metadata != null and dto.metadata != ''">
+                and base.metadata like CONCAT('%',#{dto.metadata},'%')
+            </if>
+            <if test="dto.userMetadata != null and dto.userMetadata != ''">
+                and base.user_metadata like CONCAT('%',#{dto.userMetadata},'%')
+            </if>
+            <if test="dto.thMetadata != null and dto.thMetadata != ''">
+                and base.th_metadata like CONCAT('%',#{dto.thMetadata},'%')
+            </if>
+            <if test="dto.thUserMetadata != null and dto.thUserMetadata != ''">
+                and base.th_user_metadata like CONCAT('%',#{dto.thUserMetadata},'%')
+            </if>
+            <if test="dto.attr != null and dto.attr != ''">
+                and base.attr like CONCAT('%',#{dto.attr},'%')
+            </if>
+            <if test="dto.fileAcl != null and dto.fileAcl != ''">
+                and base.file_acl like CONCAT('%',#{dto.fileAcl},'%')
+            </if>
+            <if test="dto.thFileAcl != null and dto.thFileAcl != ''">
+                and base.th_file_acl like CONCAT('%',#{dto.thFileAcl},'%')
+            </if>
+            <if test="dto.hashInfo != null and dto.hashInfo != ''">
+                and base.hash_info like CONCAT('%',#{dto.hashInfo},'%')
+            </if>
+            <if test="dto.uploadId != null and dto.uploadId != ''">
+                and base.upload_id like CONCAT('%',#{dto.uploadId},'%')
+            </if>
+            <if test="dto.uploadStatus != null and dto.uploadStatus != ''">
+                and base.upload_status like CONCAT('%',#{dto.uploadStatus},'%')
+            </if>
+            <if test="dto.downloadCount != null and dto.downloadCount != ''">
+                and base.download_count like CONCAT('%',#{dto.downloadCount},'%')
+            </if>
+            <if test="dto.createUser != null and dto.createUser != ''">
+                and base.create_user like CONCAT('%',#{dto.createUser},'%')
+            </if>
+            <if test="dto.updateUser != null and dto.updateUser != ''">
+                and base.update_user like CONCAT('%',#{dto.updateUser},'%')
+            </if>
+            <if test="dto.createTime != null and dto.createTime != ''">
+                and base.create_time like CONCAT('%',#{dto.createTime},'%')
+            </if>
+            <if test="dto.updateTime != null and dto.updateTime != ''">
+                and base.update_time like CONCAT('%',#{dto.updateTime},'%')
+            </if>
+            <if test="dto.isDeleted != null and dto.isDeleted != ''">
+                and base.is_deleted like CONCAT('%',#{dto.isDeleted},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

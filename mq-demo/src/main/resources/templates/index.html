@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>RabbitMQ学习项目 - SpringBoot实践</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF6600;
+            --secondary-color: #663300;
+            --light-color: #FFF8F0;
+            --dark-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: var(--dark-color);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 5rem 0;
+            margin-bottom: 3rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+        }
+
+        .nav-pills .nav-link {
+            color: var(--dark-color);
+        }
+
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .rabbitmq-logo {
+            max-height: 80px;
+            margin-right: 15px;
+        }
+
+        .code-example {
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .diagram-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin: 20px 0;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+
+        .social-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: white;
+            transition: color 0.3s;
+        }
+
+        .social-icon:hover {
+            color: var(--primary-color);
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+        }
+
+        .topic-badge {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img alt="RabbitMQ Logo" class="rabbitmq-logo"
+                 src="https://www.rabbitmq.com/img/rabbitmq-logo-with-name.svg">
+            <span class="fs-4 fw-bold" style="color: var(--primary-color);">RabbitMQ学习项目</span>
+        </a>
+        <button class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#home">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#features">功能</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#examples">示例</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#resources">资源</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">关于</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 英雄区域 -->
+<section class="hero-section" id="home">
+    <div class="container text-center">
+        <h1 class="display-3 fw-bold mb-4">掌握RabbitMQ与Spring Boot</h1>
+        <p class="lead fs-4 mb-5">通过实践项目学习消息队列的核心概念与应用场景</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a class="btn btn-light btn-lg px-4 py-2 fw-bold" href="#features">探索项目 <i class="bi bi-arrow-down"></i></a>
+            <a class="btn btn-outline-light btn-lg px-4 py-2 fw-bold"
+               href="https://gitee.com/BunnyBoss/vue-tutorials_drools-tutorials/tree/master/mq-demo"
+               target="_blank">Gitee代码 <i
+                    class="bi bi-git"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- 项目介绍 -->
+<section class="container mb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h2 class="fw-bold mb-4">关于这个学习项目</h2>
+            <p class="lead">这是一个使用Spring
+                Boot和RabbitMQ构建的综合性学习项目，旨在帮助开发者掌握消息队列的核心概念和实践应用。</p>
+            <p>项目涵盖了RabbitMQ的所有主要功能，从基础的消息发送/接收到高级主题如死信队列、延迟消息和集群配置。</p>
+            <div class="mt-4">
+                <span class="badge rounded-pill topic-badge fs-6 p-2"><i class="bi bi-check-circle me-1"></i> Spring Boot集成</span>
+                <span class="badge rounded-pill topic-badge fs-6 p-2"><i class="bi bi-check-circle me-1"></i> 多种交换器类型</span>
+                <span class="badge rounded-pill topic-badge fs-6 p-2"><i class="bi bi-check-circle me-1"></i> 消息确认机制</span>
+                <span class="badge rounded-pill topic-badge fs-6 p-2"><i
+                        class="bi bi-check-circle me-1"></i> 死信队列</span>
+                <span class="badge rounded-pill topic-badge fs-6 p-2"><i
+                        class="bi bi-check-circle me-1"></i> 延迟消息</span>
+                <span class="badge rounded-pill topic-badge fs-6 p-2"><i
+                        class="bi bi-check-circle me-1"></i> 集群配置</span>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img alt="RabbitMQ架构图" class="img-fluid rounded shadow"
+                 src="https://www.rabbitmq.com/img/rabbitmq-logo-with-name.svg">
+        </div>
+    </div>
+</section>
+
+<!-- 功能特性 -->
+<section class="container mb-5 py-5" id="features">
+    <h2 class="text-center fw-bold mb-5">项目核心功能</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="text-center">
+                    <i class="bi bi-send feature-icon"></i>
+                    <h4>基本消息队列</h4>
+                </div>
+                <div class="card-body">
+                    <p>实现简单的生产者-消费者模型，学习RabbitMQ最基本的工作方式。</p>
+                    <ul>
+                        <li>点对点通信</li>
+                        <li>消息持久化</li>
+                        <li>手动确认机制</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="text-center">
+                    <i class="bi bi-shuffle feature-icon"></i>
+                    <h4>交换器类型</h4>
+                </div>
+                <div class="card-body">
+                    <p>探索RabbitMQ的四种交换器类型及其应用场景。</p>
+                    <ul>
+                        <li>Direct交换器</li>
+                        <li>Fanout交换器</li>
+                        <li>Topic交换器</li>
+                        <li>Headers交换器</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="text-center">
+                    <i class="bi bi-clock-history feature-icon"></i>
+                    <h4>延迟队列</h4>
+                </div>
+                <div class="card-body">
+                    <p>实现延迟消息处理，适用于定时任务和延迟执行场景。</p>
+                    <ul>
+                        <li>TTL设置</li>
+                        <li>死信队列应用</li>
+                        <li>插件实现方式</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="text-center">
+                    <i class="bi bi-arrow-repeat feature-icon"></i>
+                    <h4>消息重试</h4>
+                </div>
+                <div class="card-body">
+                    <p>处理消费失败的消息，实现可靠的消息处理机制。</p>
+                    <ul>
+                        <li>重试策略</li>
+                        <li>最大重试次数</li>
+                        <li>死信处理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="text-center">
+                    <i class="bi bi-diagram-3 feature-icon"></i>
+                    <h4>集群配置</h4>
+                </div>
+                <div class="card-body">
+                    <p>搭建RabbitMQ集群，实现高可用和负载均衡。</p>
+                    <ul>
+                        <li>镜像队列</li>
+                        <li>节点管理</li>
+                        <li>HA策略</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="text-center">
+                    <i class="bi bi-shield-check feature-icon"></i>
+                    <h4>安全配置</h4>
+                </div>
+                <div class="card-body">
+                    <p>实现RabbitMQ的安全访问控制。</p>
+                    <ul>
+                        <li>用户权限管理</li>
+                        <li>TLS加密</li>
+                        <li>防火墙配置</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 代码示例 -->
+<section class="container mb-5 py-5 bg-light rounded-3" id="examples">
+    <h2 class="text-center fw-bold mb-5">代码示例</h2>
+
+    <div class="row mb-5">
+        <div class="col-lg-6">
+            <h4><i class="bi bi-send me-2"></i>生产者示例</h4>
+            <div class="code-example mt-3">
+                    <pre><code>
+@Autowired
+private RabbitTemplate rabbitTemplate;
+
+/* 测试发送消息 */
+@Test
+void publishTest() {
+    String exchangeDirect = RabbitMQMessageListenerConstants.EXCHANGE_DIRECT;
+    String routingKeyDirect = RabbitMQMessageListenerConstants.ROUTING_KEY_DIRECT;
+    rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, "你好小球球~~~");
+
+    Bunny bunny = Bunny.builder().rabbitName("Bunny").age(2).build();
+    rabbitTemplate.convertAndSend(exchangeDirect, routingKeyDirect, JSON.toJSONString(bunny));
+}
+}</code></pre>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <h4><i class="bi bi-receipt me-2"></i>消费者示例</h4>
+            <div class="code-example mt-3">
+                    <pre><code>
+@RabbitListener(bindings = @QueueBinding(
+        exchange = @Exchange(value = EXCHANGE_DIRECT),
+        value = @Queue(value = QUEUE_NAME, durable = "true"),
+        key = ROUTING_KEY_DIRECT
+)
+)
+public void processMessage(String dataString, Message message, Channel channel) {
+    System.out.println("消费端接受消息：" + dataString);
+}
+                    </code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a class="btn btn-primary btn-lg"
+           href="https://gitee.com/BunnyBoss/vue-tutorials_drools-tutorials/tree/master/mq-demo"
+           target="_blank">
+            <i class="bi bi-git me-2"></i>查看完整代码
+        </a>
+    </div>
+</section>
+
+<!-- RabbitMQ架构图 -->
+<section class="container mb-5 py-5">
+    <h2 class="text-center fw-bold mb-5">RabbitMQ架构概览</h2>
+    <div class="diagram-container">
+        <img alt="RabbitMQ架构图" class="img-fluid rounded"
+             src="https://www.rabbitmq.com/img/rabbitmq-logo-with-name.svg">
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="text-center p-3">
+                    <i class="bi bi-box-seam fs-1 text-primary"></i>
+                    <h5>生产者</h5>
+                    <p>发送消息到交换器</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3">
+                    <i class="bi bi-shuffle fs-1 text-primary"></i>
+                    <h5>交换器</h5>
+                    <p>路由消息到队列</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3">
+                    <i class="bi bi-list-ul fs-1 text-primary"></i>
+                    <h5>队列</h5>
+                    <p>存储待消费消息</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3">
+                    <i class="bi bi-download fs-1 text-primary"></i>
+                    <h5>消费者</h5>
+                    <p>从队列获取消息</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 学习资源 -->
+<section class="container mb-5 py-5" id="resources">
+    <h2 class="text-center fw-bold mb-5">学习资源</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5><i class="bi bi-book me-2"></i>推荐书籍</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            《RabbitMQ实战指南》
+                            <span class="badge bg-primary rounded-pill">中文</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            《RabbitMQ in Depth》
+                            <span class="badge bg-success rounded-pill">英文</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            《Spring Boot与RabbitMQ整合实践》
+                            <span class="badge bg-primary rounded-pill">中文</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="bi bi-link-45deg me-2"></i>在线资源</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a class="list-group-item list-group-item-action"
+                           href="https://www.rabbitmq.com/documentation.html"
+                           target="_blank">
+                            官方文档 <i class="bi bi-box-arrow-up-right ms-2"></i>
+                        </a>
+                        <a class="list-group-item list-group-item-action"
+                           href="https://www.rabbitmq.com/tutorials/tutorial-one-java.html"
+                           target="_blank">
+                            Java教程 <i class="bi bi-box-arrow-up-right ms-2"></i>
+                        </a>
+                        <a class="list-group-item list-group-item-action"
+                           href="https://spring.io/guides/gs/messaging-rabbitmq/"
+                           target="_blank">
+                            Spring官方指南 <i class="bi bi-box-arrow-up-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5><i class="bi bi-youtube me-2"></i>视频教程</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="ratio ratio-16x9">
+                        <iframe allowfullscreen
+                                src="https://www.bilibili.com/video/BV1sw4m1U7Qe/?spm_id_from=333.1391.0.0&p=8"></iframe>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="ratio ratio-16x9">
+                        <iframe allowfullscreen
+                                src="https://www.bilibili.com/video/BV1mN4y1Z7t9/?spm_id_from=333.1387.favlist.content.click"></iframe>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="ratio ratio-16x9">
+                        <iframe allowfullscreen
+                                src="https://www.bilibili.com/video/BV1cb4y1o7zz/?spm_id_from=333.337.search-card.all.click&vd_source=d42b5b664efb958be39eef8ee1196a7e"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 关于项目 -->
+<section class="container mb-5 py-5" id="about">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <h2 class="fw-bold mb-4">关于这个项目</h2>
+            <p class="lead">这个RabbitMQ学习项目旨在通过实践帮助开发者掌握消息队列的核心概念和Spring Boot集成。</p>
+            <p>项目包含了从基础到高级的各种RabbitMQ特性实现，每个功能模块都有详细的文档说明和代码示例，适合学习和参考。</p>
+
+            <div class="mt-5">
+                <h4 class="mb-3">技术栈</h4>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <span class="badge bg-primary p-3 fs-6">Spring Boot 3.x</span>
+                    <span class="badge bg-secondary p-3 fs-6">RabbitMQ 3.11</span>
+                    <span class="badge bg-success p-3 fs-6">Java 17</span>
+                    <span class="badge bg-danger p-3 fs-6">Docker</span>
+                    <span class="badge bg-warning text-dark p-3 fs-6">Maven</span>
+                    <span class="badge bg-info text-dark p-3 fs-6">Spring AMQP</span>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h4 class="mb-3">项目进度</h4>
+                <div class="progress mb-3" style="height: 25px;">
+                    <div aria-valuemax="100" aria-valuemin="0"
+                         aria-valuenow="85" class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar" style="width: 85%;">基础功能 85%
+                    </div>
+                </div>
+                <div class="progress mb-3" style="height: 25px;">
+                    <div aria-valuemax="100" aria-valuemin="0"
+                         aria-valuenow="70" class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                         role="progressbar" style="width: 70%;">高级特性 70%
+                    </div>
+                </div>
+                <div class="progress mb-3" style="height: 25px;">
+                    <div aria-valuemax="100" aria-valuemin="0"
+                         aria-valuenow="60" class="progress-bar progress-bar-striped progress-bar-animated bg-info"
+                         role="progressbar" style="width: 60%;">环境配置 60%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 页脚 -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5>RabbitMQ学习项目</h5>
+                <p>一个使用Spring Boot和RabbitMQ构建的综合性学习项目，帮助开发者掌握消息队列的核心概念和实践应用。</p>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5>快速链接</h5>
+                <ul class="list-unstyled">
+                    <li><a class="text-white" href="#home">首页</a></li>
+                    <li><a class="text-white" href="#features">功能特性</a></li>
+                    <li><a class="text-white" href="#examples">代码示例</a></li>
+                    <li><a class="text-white" href="#resources">学习资源</a></li>
+                    <li><a class="text-white" href="#about">关于项目</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>联系我</h5>
+                <p>如有任何问题或建议，欢迎联系：</p>
+                <div>
+                    <a class="social-icon" href="#"><i class="bi bi-github"></i></a>
+                    <a class="social-icon" href="#"><i class="bi bi-twitter"></i></a>
+                    <a class="social-icon" href="#"><i class="bi bi-linkedin"></i></a>
+                    <a class="social-icon" href="#"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-4 mb-4" style="border-color: rgba(255,255,255,0.1);">
+        <div class="text-center">
+            <p class="mb-0">© 2023 RabbitMQ学习项目. 保留所有权利.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // 导航栏高亮
+    window.addEventListener('scroll', function () {
+        const sections = document.querySelectorAll('section');
+        const navItems = document.querySelectorAll('.nav-link');
+
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (pageYOffset >= (sectionTop - 300)) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('href') === '#' + current) {
+                item.classList.add('active');
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="../js/vue@2.7.16.js"></script>
+    <script src="../js/dayjs.min.js"></script>
+    <title>过滤器</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 管道符只能使用在filters中 -->
+      <h3>现在是：{{time | timeFormater}}</h3>
+      <h3>现在是：{{time | timeFormater("YYYY年MM月DD日 HH:mm:ss")}}</h3>
+      <h3>
+        现在是：{{time | timeFormater("YYYY年MM月DD日 HH:mm:ss") |
+        timeFormaterSlice}}
+      </h3>
+
+      <!-- 不能使用在v-model -->
+      <h3 :peiqi="message | globeTimeFormaterSlice">
+        使用全局过滤器：{{message | globeTimeFormaterSlice}}
+      </h3>
+    </div>
+  </body>
+
+  <script>
+    // 定义全局过滤器
+    Vue.filter("globeTimeFormaterSlice", function (val) {
+      return val.slice(0, 4);
+    });
+
+    const vm = new Vue({
+      el: "#app",
+      data: {
+        time: new Date(),
+        message: "全局的过滤器使用在标签上...",
+      },
+      methods: {},
+      filters: {
+        /* 时间格式化 */
+        timeFormater(val, str = "YYYY-MM-DD HH:mm:ss") {
+          return dayjs(val).format(str);
+        },
+        timeFormaterSlice(val) {
+          return val.slice(0, 4);
+        },
+      },
+    });
+  </script>
+</html>

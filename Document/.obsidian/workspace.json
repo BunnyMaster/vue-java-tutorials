@@ -1,0 +1,234 @@
+{
+  "main": {
+    "id": "5e28111fa56fbfc3",
+    "type": "split",
+    "children": [
+      {
+        "id": "56c020dc0f019d0b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ba797490fa605efd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "AI/LangChain4J/1-LangChain4j 快速入门.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "1-LangChain4j 快速入门"
+            }
+          },
+          {
+            "id": "65c892c7943f5dd0",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "System/Ubuntu/初始化配置.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "初始化配置"
+            }
+          },
+          {
+            "id": "df1f3340e4fe0ee8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "杂项/Redis.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "Redis"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "12f5739f0cfcffd9",
+    "type": "split",
+    "children": [
+      {
+        "id": "e3768303e4522333",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6b252c48700ae549",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": true
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "47d7c8d3d4bbd02b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "8cf94726f03ae18a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 264.5
+  },
+  "right": {
+    "id": "4b142e7749d3b6ba",
+    "type": "split",
+    "children": [
+      {
+        "id": "2c2a9b7f627dd3fd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c69f6936e9b650aa",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7b3d289a75a8a2a3",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Docker/Auth环境.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Auth环境"
+            }
+          },
+          {
+            "id": "6e26cb052a0a5df4",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Docker/Docker存储.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Docker存储"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "df1f3340e4fe0ee8",
+  "lastOpenFiles": [
+    "杂项/IDEA.md",
+    "AI/LangChain4J/2-LangChain4j 核心功能.md",
+    "AI/LangChain4J/3-LangChain4j 使用指南.md",
+    "System/Git/Git多仓库推送.md",
+    "System/Git/Git查看提交次数.md",
+    "System/Git/配置Git永久存储.md",
+    "System/Ubuntu/软件安装.md",
+    "AI/LangChain4J/4-LangChain4j 进阶.md",
+    "AI/LangChain4J/1-LangChain4j 快速入门.md",
+    "System/Ubuntu/运行Exe程序.md",
+    "System/Ubuntu/初始化配置.md",
+    "System/Ubuntu/网络配置.md",
+    "System/Ubuntu/Hostname修改.md",
+    "System/Docker/1-Docker安装.md",
+    "System/Ubuntu/解压缩包.md",
+    "System/Ubuntu/Docker.md",
+    "System/Ubuntu/管理进程.md",
+    "System/Ubuntu/关机、重启.md",
+    "System/Ubuntu/防火墙.md",
+    "System/Ubuntu/时间设置.md",
+    "System/Ubuntu/设置镜像源.md",
+    "System/Ubuntu/快捷操作.md",
+    "System/Ubuntu/打压缩包.md",
+    "System/Vim 命令手册.md",
+    "System/Ubuntu/环境变量.md",
+    "System/Git/Untitled.md",
+    "System/Ubuntu/Hostname修改",
+    "System/GitLab搭建/assets/image-20251214193121720.png",
+    "System/GitLab搭建/assets/image-20251214192752632.png",
+    "System/GitLab搭建/assets/image-20251214191728029.png",
+    "System/GitLab搭建/assets/image-20251214191621647.png",
+    "System/GitLab搭建/assets/image-20251214184142506.png",
+    "System/GitLab搭建/assets",
+    "System/Windows",
+    "System/Ubuntu",
+    "System/GitLab搭建",
+    "System/Git",
+    "System/Docker",
+    "System",
+    "AI/LangChain4J",
+    "UML/生成器初稿.png",
+    "UML/UML绘制/assets/image-20251202200633150.png",
+    "UML/UML绘制/assets/image-20251202200510486.png",
+    "UML/UML绘制/assets/image-20251202200351846.png",
+    "UML/UML绘制/assets/image-20251202200312651.png",
+    "UML/UML绘制/assets"
+  ]
+}

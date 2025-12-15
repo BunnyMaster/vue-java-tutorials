@@ -1,0 +1,23 @@
+package rules.exercise.test;
+import cn.bunny.drools.bean.exercise.ComparisonOperation;
+
+rule "exercise-03-contains"
+    when
+        $comparisonOperation:ComparisonOperation(field memberOf "qwe")
+    then
+        System.out.println("03 field 匹配到");
+end
+
+rule "exercise list 03 memberOf"
+    when
+        $comparisonOperation:ComparisonOperation("sss" memberOf operatorList)
+    then
+        System.out.println("03 operatorList memberOf 匹配到");
+end
+
+rule "exercise list 03"
+    when
+        $comparisonOperation:ComparisonOperation(operatorList not memberOf field)
+    then
+        System.out.println("03 not memberOf 匹配到");
+end

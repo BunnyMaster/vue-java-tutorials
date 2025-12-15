@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.step1.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.spring.step1.bean.entity.UserEntity">
+        <id column="id" property="id"/>
+        <id column="username" property="username"/>
+        <id column="nickname" property="nickname"/>
+        <id column="email" property="email"/>
+        <id column="phone" property="phone"/>
+        <id column="password" property="password"/>
+        <id column="avatar" property="avatar"/>
+        <id column="sex" property="sex"/>
+        <id column="summary" property="summary"/>
+        <id column="ip_address" property="ipAddress"/>
+        <id column="ip_region" property="ipRegion"/>
+        <id column="status" property="status"/>
+        <id column="create_time" property="createTime"/>
+        <id column="update_time" property="updateTime"/>
+        <id column="create_user" property="createUser"/>
+        <id column="update_user" property="updateUser"/>
+        <id column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,username,nickname,email,phone,password,avatar,sex,summary,ip_address,ip_region,status,create_time,update_time,create_user,update_user,is_deleted
+    </sql>
+
+    <!-- 分页查询用户信息内容 -->
+    <select id="selectListByPage" resultType="com.spring.step1.bean.vo.UserVo">
+        select
+        base.*,
+        create_user.username as create_username,
+        update_user.username as update_username
+        from sys_user base
+        left join sys_user create_user on create_user.id = base.create_user
+        left join sys_user update_user on update_user.id = base.update_user
+        <where>
+            base.is_deleted = 0
+            <if test="dto.id != null and dto.id != ''">
+                and base.id like CONCAT('%',#{dto.id},'%')
+            </if>
+            <if test="dto.username != null and dto.username != ''">
+                and base.username like CONCAT('%',#{dto.username},'%')
+            </if>
+            <if test="dto.nickname != null and dto.nickname != ''">
+                and base.nickname like CONCAT('%',#{dto.nickname},'%')
+            </if>
+            <if test="dto.email != null and dto.email != ''">
+                and base.email like CONCAT('%',#{dto.email},'%')
+            </if>
+            <if test="dto.phone != null and dto.phone != ''">
+                and base.phone like CONCAT('%',#{dto.phone},'%')
+            </if>
+            <if test="dto.password != null and dto.password != ''">
+                and base.password like CONCAT('%',#{dto.password},'%')
+            </if>
+            <if test="dto.avatar != null and dto.avatar != ''">
+                and base.avatar like CONCAT('%',#{dto.avatar},'%')
+            </if>
+            <if test="dto.sex != null and dto.sex != ''">
+                and base.sex like CONCAT('%',#{dto.sex},'%')
+            </if>
+            <if test="dto.summary != null and dto.summary != ''">
+                and base.summary like CONCAT('%',#{dto.summary},'%')
+            </if>
+            <if test="dto.ipAddress != null and dto.ipAddress != ''">
+                and base.ip_address like CONCAT('%',#{dto.ipAddress},'%')
+            </if>
+            <if test="dto.ipRegion != null and dto.ipRegion != ''">
+                and base.ip_region like CONCAT('%',#{dto.ipRegion},'%')
+            </if>
+            <if test="dto.status != null and dto.status != ''">
+                and base.status like CONCAT('%',#{dto.status},'%')
+            </if>
+            <if test="dto.createTime != null and dto.createTime != ''">
+                and base.create_time like CONCAT('%',#{dto.createTime},'%')
+            </if>
+            <if test="dto.updateTime != null and dto.updateTime != ''">
+                and base.update_time like CONCAT('%',#{dto.updateTime},'%')
+            </if>
+            <if test="dto.createUser != null and dto.createUser != ''">
+                and base.create_user like CONCAT('%',#{dto.createUser},'%')
+            </if>
+            <if test="dto.updateUser != null and dto.updateUser != ''">
+                and base.update_user like CONCAT('%',#{dto.updateUser},'%')
+            </if>
+            <if test="dto.isDeleted != null and dto.isDeleted != ''">
+                and base.is_deleted like CONCAT('%',#{dto.isDeleted},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

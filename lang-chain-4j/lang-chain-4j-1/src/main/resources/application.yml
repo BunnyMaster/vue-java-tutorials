@@ -1,0 +1,60 @@
+server:
+  port: 8081
+
+spring:
+  data:
+    redis:
+      host: c
+      port: 6379
+      password: "Dev1234!"
+      database: 0
+  datasource:
+    username: root
+    password: "Dev1234!"
+    url: jdbc:mysql://192.168.3.19:3306/volunteer?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  freemarker:
+    template-loader-path: classpath:/templates/
+
+langchain4j:
+  community:
+    redis:
+      host: 192.168.3.19
+      port: 16379
+      password: "Dev1234!"
+      user: default
+  open-ai:
+    chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${ALIYUN-AI-API-KEY}
+      model-name: "qwen3-max"
+      log-requests: true
+      log-responses: true
+    streaming-chat-model:
+      base-url: ${langchain4j.open-ai.chat-model.base-url}
+      api-key: ${langchain4j.open-ai.chat-model.api-key}
+      model-name: "qwen3-max"
+      log-requests: true
+      log-responses: true
+    embedding-model:
+      base-url: ${langchain4j.open-ai.chat-model.base-url}
+      api-key: ${langchain4j.open-ai.chat-model.api-key}
+      model-name: "text-embedding-v4"
+      log-requests: true
+      log-responses: true
+      # 批量处理最多一次发送10个
+      max-segments-per-batch: 10
+
+# mybatis
+mybatis-plus:
+  mapper-locations:
+    - "classpath*:/mapper/*.xml"
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  level:
+    root: info
+    com.baomidou.mybatisplus: debug
+    dev.langchain4j: debug

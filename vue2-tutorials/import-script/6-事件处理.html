@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/vue@2.7.16.js"></script>
+    <title>事件处理</title>
+</head>
+
+<body>
+    <div id="app">
+        <h1>Vue2-事件处理</h1>
+        <button @click="showinfo1">函数不传参</button>
+        <button @click="showinfo2($event,66)">函数传参</button>
+    </div>
+</body>
+
+<script>
+    const vm = new Vue({
+        el: "#app",
+        data: {
+
+        },
+        methods: {
+            showinfo1() {
+                alert("函数不传参");
+            },
+            showinfo2(event, val) {
+                alert("函数传参")
+                console.log(event, val);
+            }
+        }
+    })
+</script>
+
+</html>

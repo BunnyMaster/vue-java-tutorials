@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13 引出生命周期</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+    class Child extends React.Component {
+        constructor(props) {
+            super(props)
+
+            this.state = { isHot: true }
+
+            console.log('constructor')
+        }
+
+        /**
+         * 废弃API
+         */
+        // componentWillMount() {
+        //     console.log('1-componentWillMount')
+        // }
+
+        /**
+         * 组件挂载完成
+         */
+        componentDidMount() {
+            console.log('componentDidMount')
+        }
+
+        /**
+         * 废弃API
+         */
+        // componentWillReceiveProps(nextProps) {
+        //     console.log('1-omponentWillReceiveProps')
+        // }
+
+        componentWillUnmount() {
+            console.log('componentWillUmount')
+        }
+
+        /**
+         * 是否确定要更新组件
+         */
+        shouldComponentUpdate(nextProps, nextState) {
+            console.log('shouldComponentUpdate')
+            return true
+        }
+
+        handleClick = () => {
+            console.log('handleClick')
+            this.setState({ isHot: !this.state.isHot })
+        }
+
+        handleForceUpdate = () => {
+            console.log('handleForceUpdate')
+            this.forceUpdate()
+        }
+
+        render() {
+            console.log('render')
+
+            const { isHot } = this.state
+            return (
+                <div>
+                    <h1>{isHot ? 'isHot' : '666'}</h1>
+                    <button onClick={this.handleClick}>按钮</button>
+                    <button onClick={this.handleForceUpdate}>强制更新</button>
+                </div>
+            )
+        }
+    }
+
+    class App extends React.Component {
+        constructor(props) {
+            super(props)
+
+            this.state = { isShow: true }
+        }
+
+        render() {
+            return (
+                <div>
+                    {this.state.isShow && <Child />}
+                    <button onClick={() => this.setState({ isShow: !this.state.isShow })}>切换</button>
+                </div>
+            )
+        }
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App />)
+</script>
+
+</html>

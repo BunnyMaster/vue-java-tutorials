@@ -1,0 +1,30 @@
+server:
+  port: 7070
+
+spring:
+  application:
+    name: mq-demo
+  profiles:
+    active: dev
+
+  rabbitmq:
+    host: ${bunny.rabbitmq.host}
+    port: ${bunny.rabbitmq.port}
+    username: ${bunny.rabbitmq.username}
+    password: ${bunny.rabbitmq.password}
+    virtual-host: ${bunny.rabbitmq.virtual-host}
+    # publisher-confirm-type: correlated # 交换机确认
+    # publisher-returns: true # 队列确认
+    listener:
+      simple:
+        acknowledge-mode: manual # 手动处理消息
+        prefetch: 5 # 设置每次取回数量，消息条数（非字节或KB）
+    # connection-timeout: 1s # 设置MQ连接超时时间
+    # template:
+    #   retry:
+    #     enabled: true # 失败重试
+    #     initial-interval: 1000ms # 失败后初始时间
+    #     multiplier: 1 # 失败后下次等待时长倍数 initial-interval * multiplier
+    #     max-attempts: 3 # 最大重试次数
+
+

@@ -1,0 +1,52 @@
+spring:
+  cloud:
+    gateway:
+      # 全局跨域
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-headers:
+              - "*"
+            allowed-origin-patterns:
+              - "*"
+            allowed-methods:
+              - "*"
+
+      # 路由
+      routes:
+        - id: order-route
+          uri: lb://service-order
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - AddRequestHeader=X-Request-red, blue
+            - OnceToken=X-Response-Token, uuid
+
+        - id: product-route
+          uri: lb://service-product
+          predicates:
+            - name: Path
+              args:
+                patterns: /api/product/**
+                matchTrailingSlash: true
+
+        - id: bing-route
+          uri: https://cn.bing.com/
+          predicates:
+            - name: Path
+              args:
+                patterns: /search
+            - name: Query
+              args:
+                param: q
+                regexp: 被世界温柔以待
+            # 短写法
+            # - Vip=User,bunny
+
+            # 长写法
+            - name: Vip
+              args:
+                param: user
+                value: bunny
+          # filters:
+          # - RedirectTo=/api/order/?(?<segment>.*), /$\{segment}

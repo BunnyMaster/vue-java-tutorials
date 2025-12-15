@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/vue@2.7.16.js"></script>
+    <title>数据绑定</title>
+</head>
+
+<body>
+    <div id="app">
+        单项数据绑定：<input type="text" v-bind:value="name">
+        双向数据绑定：<input type="text" v-model="name">
+    </div>
+
+    <div id="root">
+        2秒后绑定到这个上
+        单项数据绑定：<input type="text" v-bind:value="name">
+        双向数据绑定：<input type="text" v-model="name">
+    </div>
+</body>
+<script>
+    // 只要vm有的内容都可以用
+    const v = new Vue({
+        // el: "#app",
+        // data: {
+        //     name: "数据绑定"
+        // },
+
+        // 不能用箭头函数
+        // data: function () {
+        //     return {
+        //         name: "数据绑定"
+        //     }
+        // }
+        data() {
+            return {
+                name: "数据绑定"
+            }
+        }
+    });
+
+    // 下面内容可以简写成 v-if形式
+    setTimeout(() => {
+        v.$mount("#app");
+        console.log("app");
+    }, 1000);
+
+    setTimeout(() => {
+        // 正确做法：销毁旧实例，创建新实例
+        v.$destroy();
+
+        const v2 = new Vue({
+            data: {
+                name: "新数据绑定"
+            }
+        });
+        v2.$mount("#root");
+        console.log("root");
+    }, 2000);
+</script>
+
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14 getDerivedStateFormProps</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+
+    class App extends React.Component {
+        constructor(props) {
+            super(props)
+
+            console.log("1-constructor");
+
+            this.state = { count: 0 }
+        }
+
+        componentDidMount() {
+            console.log("3-componentDidMount");
+        }
+
+        static getDerivedStateFromProps(nextProps, prevState) {
+            console.log('getDerivedStateFromProps')
+            // 可以指定返回值状态，修改state的，但是无法更新
+            return Object.assign(prevState, nextProps)
+        }
+
+        shouldcomponentUpdate(nextProps, nextState) {
+            console.log('shouldcomponentUpdate')
+            return true
+        }
+
+        componentDidUpdate(prevProps, prevState) {
+            console.log('componentDidUpdate')
+        }
+
+        componentWillUnmount() {
+            console.log('4-componentWillUnmount')
+        }
+
+        compoenntDidUnMount() {
+            console.log('5-compoenntDidUnMount')
+        }
+
+        /**
+         * 点击按钮，计数器加1
+         */
+        handleIncrease = () => {
+            this.setState({ count: this.state.count + 1 })
+        }
+
+        render() {
+            console.log("2-render");
+            const { count } = this.state
+            return (
+                <div>
+                    <h3>计数器：{count}</h3>
+
+                    <button onClick={this.handleIncrease}>+1</button>
+                </div>
+            )
+        }
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App />)
+</script>
+
+</html>

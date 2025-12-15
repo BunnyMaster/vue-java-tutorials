@@ -1,0 +1,40 @@
+package rules.demo;
+import cn.bunny.drools.bean.demo.BookDisCount
+
+/*
+  入门示例
+*/
+rule "There is no discount for books purchased with a total price below 100 yuan"
+    when
+        $bookDisCount:BookDisCount(originalPrice < 100)
+    then
+        $bookDisCount.setRealPrice($bookDisCount.getOriginalPrice());
+        System.out.println("小于100没有优惠");
+end
+
+rule "20 yuan off the total price of 100 to 200 yuan"
+    when
+        $bookDisCount:BookDisCount(originalPrice > 100 && originalPrice < 200 )
+    then
+        Double originalPrice = $bookDisCount.getOriginalPrice();
+        $bookDisCount.setRealPrice(originalPrice - 20);
+        System.out.println("所购图书总价在100到200元的优惠20元");
+end
+
+rule "50 yuan off the total book price of 200 to 300 yuan"
+    when
+        $bookDisCount:BookDisCount(originalPrice > 200 && originalPrice < 300)
+    then
+        Double originalPrice = $bookDisCount.getOriginalPrice();
+        $bookDisCount.setRealPrice(originalPrice - 50);
+        System.out.println("所购图书总价在200到300元的优惠50元");
+end
+
+rule "A discount of 100 yuan will be given if the total price is over 300 yuan"
+    when
+        $bookDisCount:BookDisCount(originalPrice > 300)
+    then
+        Double originalPrice = $bookDisCount.getOriginalPrice();
+        $bookDisCount.setRealPrice(originalPrice - 100);
+        System.out.println("所购图书总价在300元以上的优惠100元");
+end

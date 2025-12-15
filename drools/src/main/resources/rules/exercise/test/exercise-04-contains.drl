@@ -1,0 +1,23 @@
+package rules.exercise.test;
+import cn.bunny.drools.bean.exercise.ComparisonOperation;
+
+rule "exercise-04-contains"
+    activation-group "group_1"
+    enabled false
+    // 方言
+    // dialect "mvel"
+    when
+        //  让其返回 ture 表示匹配成功
+        // eval(true)
+        $comparisonOperation:ComparisonOperation(field matches "q.*")
+    then
+        System.out.println("04 field matches q.* 匹配到");
+end
+
+rule "exercise-04-contains-1"
+    activation-group "group_1"
+    when
+        $comparisonOperation:ComparisonOperation(field not matches "q.*")
+    then
+        System.out.println("04 field not matches q.* 匹配到");
+end

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object.defineProperty</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    let age = 18
+    const person = {
+        name: "Bunny",
+        sex: "男",
+        // age: 16
+    }
+
+    Object.defineProperty(person, 'age', {
+        // value: 18,// 赋值
+        // enumerable: true,// 控制是否可以被枚举
+        // writable: true,// 控制是否可以被修改
+        // configurable: true,// 控制是否可以被删除
+
+        // 修改属性时触发
+        get() {
+            console.log("修改属性时触发");
+            return age
+        },
+        // 修改age时触发
+        set(value) {
+            console.log("修改age时触发");
+            age = value
+        }
+    })
+
+    console.log(person);
+</script>
+
+</html>

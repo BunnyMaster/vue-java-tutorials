@@ -1,0 +1,29 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          # 对所有配置
+          default:
+            logger-level: full
+            connect-timeout: 1000
+            read-timeout: 1000 # 最多等待对方 5s
+
+          # 对 service-product 单独设置
+          service-product:
+            logger-level: full
+            connect-timeout: 3000
+            read-timeout: 5000 # 最多等待对方 5s
+            request-interceptors:
+              - cn.bunny.service.interceptor.XTokenRequestInterceptor
+    sentinel:
+      enabled: true
+      eager: true # 提前加载
+      transport:
+        dashboard: 192.168.3.150:8858
+      filter:
+        enabled: true
+      # web-context-unify: false # 关闭统一上下文
+feign:
+  sentinel:
+    enabled: true

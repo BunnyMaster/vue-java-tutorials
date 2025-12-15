@@ -1,0 +1,37 @@
+image: maven:3.9.9-eclipse-temurin-21
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dhttps.protocols=TLSv1.2"
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  GIT_DEPTH: "0"
+
+stages:
+  - sonarqube
+
+cache:
+  paths:
+    - .m2/repository
+    - .sonar/cache
+
+sonarqube-analysis:
+  stage: sonarqube
+  script:
+    - |
+      mvn clean compile sonar:sonar \
+        -s ci-settings.xml \
+        -Dsonar.projectKey=lang-chain-4j-demo \
+        -Dsonar.projectName="Lang Chain 4J Demo" \
+        -Dsonar.host.url=$SONAR_HOST_URL \
+        -Dsonar.login=$SONAR_TOKEN \
+        -Dsonar.projectVersion=$CI_COMMIT_SHORT_SHA \
+        -Dsonar.java.source=21 \
+        -Dsonar.java.target=21 \
+        -Dsonar.sources=src/main/java \
+        -Dsonar.java.binaries=target/classes \
+        -DskipTests=true
+  only:
+    - master
+  artifacts:
+    paths:
+      - target/
+    expire_in: 1 hour

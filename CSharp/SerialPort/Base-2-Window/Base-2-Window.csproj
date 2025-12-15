@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <RootNamespace>Base_2_Window</RootNamespace>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="System.IO.Ports">
+            <HintPath>..\..\..\..\..\..\..\software\Plugins\nuget\system.io.ports\5.0.1\ref\netstandard2.0\System.IO.Ports.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.IO.Ports" Version="6.0.0"/>
+    </ItemGroup>
+
+</Project>

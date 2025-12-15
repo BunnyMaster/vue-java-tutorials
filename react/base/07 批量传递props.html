@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07 批量传递props</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+    class HelloMessage extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>Hello {this.props.name} {this.props.isOk ? '好' : '不好'}</h1>
+                </div>
+            )
+        }
+    }
+
+    class App extends React.Component {
+        constructor(props) {
+            super(props)
+        }
+
+        state = { isReact: true }
+
+        onChangeIsReact = () => {
+            this.setState({ isReact: !this.state.isReact })
+        }
+
+        render() {
+            const { name, age, gender } = this.props
+
+            return (
+                <div>
+                    <HelloMessage name="Tom" isOk={true} />
+
+                    <ul>
+                        <li>名称：{name}</li>
+                        <li>年龄：{age}</li>
+                        <li>性别：{gender}</li>
+                    </ul>
+                </div>
+            )
+        }
+    }
+
+    const person = {
+        name: 'Tom',
+        age: 18,
+        gender: '男'
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App {...person} />)
+</script>
+
+</html>

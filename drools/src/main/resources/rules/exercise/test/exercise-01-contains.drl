@@ -1,0 +1,20 @@
+package rules.exercise.test;
+
+import cn.bunny.drools.bean.exercise.ComparisonOperation;
+
+/*
+    使用 contains 匹配
+*/
+rule "exercise-01-contains"
+    when
+        $comparisonOperation:ComparisonOperation(field contains "张三名称")
+    then
+        System.out.println("01 field 匹配到");
+end
+
+rule "exercise list"
+    when
+        $comparisonOperation:ComparisonOperation(operatorList contains field)
+    then
+        System.out.println("01 operatorList 匹配到");
+end

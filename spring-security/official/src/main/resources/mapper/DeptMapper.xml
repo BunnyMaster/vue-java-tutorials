@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.official.mapper.DeptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.spring.official.domain.entity.DeptEntity">
+            <id column="id" property="id"/>
+            <id column="parent_id" property="parentId"/>
+            <id column="manager" property="manager"/>
+            <id column="dept_name" property="deptName"/>
+            <id column="summary" property="summary"/>
+            <id column="create_time" property="createTime"/>
+            <id column="update_time" property="updateTime"/>
+            <id column="create_user" property="createUser"/>
+            <id column="update_user" property="updateUser"/>
+            <id column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,parent_id,manager,dept_name,summary,create_time,update_time,create_user,update_user,is_deleted
+    </sql>
+
+    <!-- 分页查询部门表内容 -->
+    <select id="selectListByPage" resultType="com.spring.official.domain.vo.DeptVo">
+        select
+        base.*,
+        create_user.username as create_username,
+        update_user.username as update_username
+        from sys_dept base
+        left join sys_user create_user on create_user.id = base.create_user
+        left join sys_user update_user on update_user.id = base.update_user
+        <where>
+            base.is_deleted = 0
+                <if test="dto.id != null and dto.id != ''">
+                    and base.id like CONCAT('%',#{dto.id},'%')
+                </if>
+                <if test="dto.parentId != null and dto.parentId != ''">
+                    and base.parent_id like CONCAT('%',#{dto.parentId},'%')
+                </if>
+                <if test="dto.manager != null and dto.manager != ''">
+                    and base.manager like CONCAT('%',#{dto.manager},'%')
+                </if>
+                <if test="dto.deptName != null and dto.deptName != ''">
+                    and base.dept_name like CONCAT('%',#{dto.deptName},'%')
+                </if>
+                <if test="dto.summary != null and dto.summary != ''">
+                    and base.summary like CONCAT('%',#{dto.summary},'%')
+                </if>
+                <if test="dto.createTime != null and dto.createTime != ''">
+                    and base.create_time like CONCAT('%',#{dto.createTime},'%')
+                </if>
+                <if test="dto.updateTime != null and dto.updateTime != ''">
+                    and base.update_time like CONCAT('%',#{dto.updateTime},'%')
+                </if>
+                <if test="dto.createUser != null and dto.createUser != ''">
+                    and base.create_user like CONCAT('%',#{dto.createUser},'%')
+                </if>
+                <if test="dto.updateUser != null and dto.updateUser != ''">
+                    and base.update_user like CONCAT('%',#{dto.updateUser},'%')
+                </if>
+                <if test="dto.isDeleted != null and dto.isDeleted != ''">
+                    and base.is_deleted like CONCAT('%',#{dto.isDeleted},'%')
+                </if>
+        </where>
+    </select>
+
+</mapper>

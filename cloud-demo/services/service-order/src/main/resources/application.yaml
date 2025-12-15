@@ -1,0 +1,56 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: service-order
+  profiles:
+    active: dev
+    include:
+      - feign
+  cloud:
+    nacos:
+      server-addr: 192.168.2.19:8848
+      config:
+        import-check:
+          enabled: false
+        # namespace: prod # 所在的命名空间
+        namespace: ${spring.profiles.active:dev} # 所在的命名空间，如果没有写 dev 为默认值
+
+logging:
+  level:
+    root: info
+    cn.bunny.service.feign: debug
+
+---
+spring:
+  config:
+    import:
+      - nacos:service-order.yml
+      - nacos:common.yml?group=order # 在nacos中配置了分组
+      - nacos:database.yml?group=order # 在nacos中配置了分组
+    activate:
+      on-profile: prod
+---
+
+---
+spring:
+  config:
+    import:
+      - nacos:service-order.yml
+      - nacos:common.yml?group=order # 在nacos中配置了分组
+      - nacos:database.yml?group=order # 在nacos中配置了分组
+    activate:
+      on-profile: dev
+---
+
+---
+spring:
+  config:
+    import:
+      - nacos:service-order.yml
+      - nacos:common.yml?group=order # 在nacos中配置了分组
+      - nacos:database.yml?group=order # 在nacos中配置了分组
+    activate:
+      on-profile: test
+---

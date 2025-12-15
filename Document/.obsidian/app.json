@@ -1,0 +1,14 @@
+{
+  "strictLineBreaks": false,
+  "vimMode": false,
+  "showLineNumber": true,
+  "foldIndent": true,
+  "autoPairBrackets": true,
+  "autoPairMarkdown": true,
+  "useTab": true,
+  "smartIndentList": true,
+  "focusNewTab": true,
+  "showUnsupportedFiles": false,
+  "alwaysUpdateLinks": true,
+  "readableLineLength": false
+}

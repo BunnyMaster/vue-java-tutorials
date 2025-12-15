@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: MongoDB
+  profiles:
+    active: dev
+  data:
+    mongodb:
+      database: ${bunny.database}
+      host: ${bunny.host}
+      port: ${bunny.port}
+      username: ${bunny.username}
+      password: ${bunny.password}
+      authentication-database: ${bunny.authentication-database}
+      additional-hosts: ${bunny.additional-hosts}

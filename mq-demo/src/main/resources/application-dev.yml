@@ -1,0 +1,16 @@
+server:
+  port: 7070
+
+bunny:
+  rabbitmq:
+    # # 集群环境
+    # host: 192.168.3.144
+    # port: 22222   # 集群环境的端口号
+
+    # 联邦队列---需要下游的
+    host: 192.168.3.148
+    port: 5673
+
+    virtual-host: /
+    username: admin
+    password: admin

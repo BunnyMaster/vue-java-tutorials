@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>11 回调形式的createRef</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+    class App extends React.Component {
+        constructor(props) {
+            super(props)
+        }
+
+        myRef = React.createRef()
+
+        /**
+         * 显示输入框内容
+         */
+        showData = () => {
+            alert(this.myRef.current.value)
+        }
+
+        render() {
+            return (
+                <div>
+                    <input ref={this.myRef} type="text" />
+                    <p>如果写多个ref会以最后的Ref为主</p>
+                    <button onClick={this.showData}>显示左边按钮</button>
+                </div>
+            )
+        }
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App />)
+</script>
+
+</html>

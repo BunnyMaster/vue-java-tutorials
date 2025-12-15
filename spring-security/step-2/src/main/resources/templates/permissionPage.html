@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.15.4/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/src/lib/css/style.css}">
+    <link rel="stylesheet" th:href="@{/src/lib/css/tablePage.css}">
+    <!-- Vue3 -->
+    <script th:src="@{/src/lib/js/vue/vue.global.js}"></script>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js}"></script>
+    <!-- 本地引入 popper JS -->
+    <script th:src="@{/src/lib/js/boostrap/popper.min.js}"></script>
+    <!-- 本地引入 axios JS -->
+    <script th:src="@{/src/lib/js/axios/axios.min.js}"></script>
+    <!-- 引入dayjs -->
+    <script th:src="@{/src/lib/js/dayjs/dayjs.min.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/customParseFormat.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/weekday.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/localeData.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/weekOfYear.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/weekYear.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/advancedFormat.js}"></script>
+    <script th:src="@{/src/lib/js/dayjs/quarterOfYear.js}"></script>
+    <!-- 引入 antd JS -->
+    <script th:src="@{/src/lib/js/dayjs/antd.min.js}"></script>
+
+    <title>权限管理页面</title>
+</head>
+<body>
+<div class="container-fluid" id="app">
+    <dialog-permission :is-add="isAdd" :on-search="onSearch"
+                       :permission-info="permissionInfo"></dialog-permission>
+
+    <header-navs></header-navs>
+    <!-- 头部 -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-search me-2"></i>权限查询</span>
+        </div>
+        <div class="card-body">
+            <form @reset="onRest" @submit.prevent="onSearch">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-4">
+                        <label class="form-label" for="permissionCode"><i
+                                class="fas fa-power-off me-1"></i>权限码</label>
+                        <input autocomplete="false" class="form-control" id="permissionCode" placeholder="请输入权限码"
+                               type="text" v-model="searchForm.permissionCode">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="url"><i
+                                class="fas fa-ruler me-1"></i>URL</label>
+                        <input autocomplete="false" class="form-control" id="url" placeholder="请输入URL"
+                               type="text" v-model="searchForm.url">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="method"><i
+                                class="fas fa-pager me-1"></i>请求方法名称</label>
+                        <input autocomplete="false" class="form-control" id="method" placeholder="请输入请求方法名称"
+                               type="text" v-model="searchForm.method">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="description"><i class="fas fa-text-width me-1"></i>描述</label>
+                        <input autocomplete="false" class="form-control" id="description" placeholder="请输入描述"
+                               type="text" v-model="searchForm.description">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="remark"><i class="fas fa-info me-1"></i>简述</label>
+                        <input autocomplete="false" class="form-control" id="remark" placeholder="请输入简述"
+                               type="text" v-model="searchForm.remark">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="search-btn-group">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search me-1"></i>查询
+                            </button>
+                            <button class="btn btn-outline-secondary" type="reset">
+                                <i class="fas fa-redo me-1"></i>重置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 表格 -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-power-off me-2"></i>权限列表</span>
+            <button @click="onAdd" class="btn btn-sm btn-success"
+                    data-bs-target="#permissionBackdrop" data-bs-toggle="modal">
+                <i class="fas fa-plus me-1"></i>新增权限
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col" width="5%">#</th>
+                        <th scope="col" width="10%">权限名</th>
+                        <th scope="col" width="10%">描述</th>
+                        <th scope="col" width="10%">简述</th>
+                        <th scope="col" width="10%">地址</th>
+                        <th scope="col" width="5%">方法</th>
+                        <th scope="col" width="15%">创建时间</th>
+                        <th scope="col" width="15%">更新时间</th>
+                        <th scope="col" width="20%">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr :key="permission.id" v-for="(permission,index) in dataList">
+                        <th scope="row">{{index + 1}}</th>
+                        <td>{{permission.permissionCode}}</td>
+                        <td>{{permission.description}}</td>
+                        <td>{{permission.remark}}</td>
+                        <td>{{permission.url}}</td>
+                        <td>{{permission.method}}</td>
+                        <td>{{formatDate(permission.createTime)}}</td>
+                        <td>{{formatDate(permission.updateTime)}}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button @click="onEdit(permission)" class="btn btn-outline-primary btn-action"
+                                        data-bs-target="#permissionBackdrop" data-bs-toggle="modal">
+                                    <i class="fas fa-edit"></i> 修改
+                                </button>
+                                <button @click="onDeleted(permission)" class="btn btn-outline-danger btn-action">
+                                    <i class="fas fa-trash"></i> 删除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 表格分页 -->
+            <pagination :on-search="onSearch" v-model:pagination="searchForm"></pagination>
+        </div>
+    </div>
+</div>
+</body>
+<!-- 设置 popper 提示框 -->
+<script th:src="@{/src/config/popper-config.js}"></script>
+<!-- 加载全局axios配置 -->
+<script th:src="@{/src/config/axios-config.js}"></script>
+
+<!-- 头部导航 -->
+<script th:src="@{/src/components/HeaderNavs.js}"></script>
+<!-- 分页 -->
+<script th:src="@{/src/components/Pagination.js}"></script>
+<!-- 权限表单 -->
+<script th:src="@{/src/views/permission/DialogPermission.js}"></script>
+<script>
+    const {createApp, ref} = Vue;
+
+    const app = createApp({
+        data() {
+            return {
+                // 查询表单
+                searchForm: ref({
+                    permissionCode: undefined,
+                    url: undefined,
+                    method: undefined,
+                    description: undefined,
+                    remark: undefined,
+                    pageNo: 1,
+                    pageSize: 30,
+                    pages: 0
+                }),
+                // 权限信息
+                permissionInfo: ref({}),
+                // 弹窗标题
+                isAdd: ref(false),
+                // 查询权限列表
+                dataList: ref([])
+            };
+        },
+        computed: {},
+        methods: {
+            /* 格式化时间 */
+            formatDate(date) {
+                return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+            },
+
+            /* 加载数据 */
+            async onSearch() {
+                const {pageNo, pageSize} = this.searchForm;
+                // 查询数据
+                const {data} = await axiosInstance.get(`/permission/${pageNo}/${pageSize}`, {params: this.searchForm})
+
+                // 赋值数据
+                this.dataList = data.list;
+
+                // 设置分页内容
+                this.searchForm.pageNo = data.pageNo;
+                this.searchForm.pageSize = data.pageSize;
+                this.searchForm.pages = data.pages;
+            },
+
+            /* 重制表单 */
+            onRest() {
+                this.searchForm.permissionCode = undefined;
+                this.searchForm.url = undefined;
+                this.searchForm.method = undefined;
+                this.searchForm.description = undefined;
+                this.searchForm.remark = undefined;
+                this.onSearch();
+            },
+
+            /* 添加 */
+            onAdd() {
+                this.isAdd = true;
+                this.permissionInfo = {};
+            },
+
+            /* 修改 */
+            onEdit(permission) {
+                this.isAdd = false;
+                this.permissionInfo = permission;
+            },
+
+            /* 删除 */
+            async onDeleted(permission) {
+                const result = confirm("确认删除？");
+                if (!result) return false;
+
+                // 删除权限
+                const {code, message} = await axiosInstance.delete(`/permission`, {data: [permission.id]});
+                if (code === 200) {
+                    await this.onSearch();
+                    antd.message.success(message);
+                } else {
+                    antd.message.error(message);
+                }
+            },
+        },
+        mounted() {
+            this.onSearch();
+        },
+    });
+
+    app.component('HeaderNavs', HeaderNavs)
+    app.component('Pagination', Pagination)
+    app.component('DialogPermission', DialogPermission)
+    app.mount('#app');
+</script>
+</html>

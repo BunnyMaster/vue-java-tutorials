@@ -1,0 +1,89 @@
+package rules.demo;
+
+import cn.bunny.drools.bean.demo.demo3.ApprovalDecision
+import cn.bunny.drools.bean.demo.demo3.CreditCardApplication
+import cn.bunny.drools.bean.demo.demo3.ApprovalDecision;
+
+/**
+根据申请人的信用评分、收入和现有负债自动决策
+信用评分>700且收入>5万：批准高额度
+信用评分600-700：批准中等额度
+信用评分<600但收入>10万：批准低额度
+其他情况拒绝
+*/
+
+// 规则1: 高额度批准
+rule "Approve High Limit - Excellent Credit"
+    salience 9  // 提高优先级
+    when
+        $application: CreditCardApplication(
+            creditScore > 700,
+            annualIncome > 50000,
+            decision == null,
+            existingDebt / annualIncome <= 0.5
+        )
+    then
+        $application.setDecision(ApprovalDecision.APPROVED_HIGH);
+        $application.setApprovedLimit(20000);
+        System.out.println("批准高额度信用卡: " + $application.getApplicantName());
+        drools.halt();
+end
+
+// 规则2: 中等额度批准
+rule "Approve Medium Limit - Good Credit"
+    salience 8
+    when
+        $application: CreditCardApplication(
+            creditScore >= 600 && creditScore <= 700,
+            decision == null,
+            existingDebt / annualIncome <= 0.5
+        )
+    then
+        $application.setDecision(ApprovalDecision.APPROVED_MEDIUM);
+        $application.setApprovedLimit(10000);
+        System.out.println("批准中等额度信用卡: " + $application.getApplicantName());
+        drools.halt();
+end
+
+// 规则3: 低额度批准
+rule "Approve Low Limit - High Income with Low Credit"
+    salience 6
+    when
+        $application: CreditCardApplication(
+            creditScore < 600,
+            annualIncome > 100000,
+            decision == null,
+            existingDebt / annualIncome <= 0.5
+        )
+    then
+        $application.setDecision(ApprovalDecision.APPROVED_LOW);
+        $application.setApprovedLimit(5000);
+        System.out.println("批准低额度信用卡(高收入特殊情况): " + $application.getApplicantName());
+        drools.halt();
+end
+
+// 规则4: 负债过高拒绝
+rule "Reject Application - High Debt Ratio"
+    salience 10  // 最高优先级
+    when
+        $application: CreditCardApplication(
+            existingDebt / annualIncome > 0.5,
+            decision == null
+        )
+    then
+        $application.setDecision(ApprovalDecision.REJECTED);
+        $application.setApprovedLimit(0);
+        System.out.println("拒绝申请: 负债过高 - " + $application.getApplicantName());
+        drools.halt();
+end
+
+// 规则5: 默认拒绝
+rule "Default Rejection"
+    salience 1  // 最低优先级
+    when
+        $application: CreditCardApplication(decision == null)
+    then
+        $application.setDecision(ApprovalDecision.REJECTED);
+        $application.setApprovedLimit(0);
+        System.out.println("拒绝申请: 不满足任何批准条件 - " + $application.getApplicantName());
+end

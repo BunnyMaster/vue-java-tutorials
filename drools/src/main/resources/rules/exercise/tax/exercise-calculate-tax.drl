@@ -1,0 +1,133 @@
+package rules.exercise.tax;
+import cn.bunny.drools.bean.exercise.CalculateTax
+
+rule "个人所得税：计算应纳税所得额 应纳税所得额为税前工资减去3500"
+    // 需要优先执行
+    salience 100
+    // 设置生效日期
+    date-effective "2011-09-01"
+    // 防止循环
+    no-loop true
+    activation-group "exercise-calculate-tax"
+
+    when
+        $cal:CalculateTax(wage > 0)
+    then
+        // 计算应纳税所得额
+        double wageMore = $cal.getWage() - 3500;
+        $cal.setWagemore(wageMore);
+        // 更新规则，之后重新计算
+        update($cal);
+end
+
+rule "个人所得税：设置税率-->>应纳税所得额 <= 1500 税率为0.03，速算扣除数为0"
+    salience 90
+    no-loop true
+    activation-group "exercise-calculate-tax"
+
+    when
+        $cal:CalculateTax(wagemore <= 1500)
+    then
+        $cal.setCess(0.03);
+        $cal.setPreminus(0);
+        update($cal);
+end
+
+rule "设置税率，应纳税所得额在 1500 ~ 4500 之间 税率为0.1，速算扣除数为105"
+    salience 90
+    no-loop true
+    activation-group "exercise-calculate-tax"
+
+    when
+        $cal:CalculateTax(wagemore > 1500 && wagemore <= 4000)
+    then
+        $cal.setCess(0.1);
+        $cal.setPreminus(105);
+        update($cal);
+end
+
+rule "设置税率，应纳税所得额在 4500 ~ 9000 之间 税率为0.2，速算扣除数为555"
+    salience 90
+    no-loop true
+    activation-group "exercise-calculate-tax"
+
+    when
+        $cal:CalculateTax(wagemore > 4500 && wagemore <= 9000)
+    then
+        $cal.setCess(0.2);
+        $cal.setPreminus(555);
+        update($cal);
+end
+
+rule "设置税率，应纳税所得额在 9000 ~ 35000 之间 税率为0.25，速算扣除数为1005"
+    salience 90
+    no-loop true
+    activation-group "exercise-calculate-tax"
+
+    when
+        $cal:CalculateTax(wagemore > 9000 && wagemore <= 35000)
+    then
+        $cal.setCess(0.25);
+        $cal.setPreminus(1005);
+        update($cal);
+end
+
+rule "设置税率，应纳税所得额在 35000 ~ 55000 之间 税率为0.3，速算扣除数为2755"
+    salience 90
+    no-loop true
+    activation-group "exercise-calculate-tax"
+
+    when
+        $cal:CalculateTax(wagemore > 35000 && wagemore <= 55000)
+    then
+        $cal.setCess(0.3);
+        $cal.setPreminus(2755);
+        update($cal);
+end
+
+rule "设置税率，应纳税所得额在 55000 ~ 80000 之间 税率为0.35，速算扣除数为5505"
+    salience 90
+    no-loop true
+    activation-group "exercise-calculate-tax"
+
+    when
+        $cal:CalculateTax(wagemore > 55000 && wagemore < 80000)    
+    then 
+        $cal.setCess(0.35);
+        $cal.setPreminus(5505);
+        update($cal);
+end
+
+rule "设置税率，应纳税所得额在80000以上 税率为0.45，速算扣除数为13505"
+    salience 90
+    no-loop true
+    activation-group "exercise-calculate-tax"
+
+    when
+        $cal:CalculateTax(wagemore > 80000)
+    then
+        $cal.setCess(0.45);
+        $cal.setPreminus(13505);
+        update($cal);
+end
+
+rule "计算税后工资"
+    salience 1
+    when
+        $cal:CalculateTax(wage > 0 && wagemore > 0 && cess > 0)
+    then
+        // 扣税额=应纳税所得额*税率-速算扣除数
+        double wageMore = ($cal.getWagemore() * $cal.getCess()) - $cal.getPreminus();
+        $cal.setWagemore(wageMore);
+
+        // 税后工资=税前工资-扣税额
+        double actualWage = $cal.getWage() - wageMore;
+        $cal.setActualwage(actualWage);
+
+        System.out.println("-----税前工资："+$cal.getWage());
+        System.out.println("-----应纳税所得额："+$cal.getWagemore());
+        System.out.println("-----税率：" + $cal.getCess());
+        System.out.println("-----速算扣除数：" + $cal.getPreminus());
+        System.out.println("-----扣税额：" + $cal.getWageminus());
+        System.out.println("-----税后工资：" + $cal.getActualwage());
+end

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="../js/vue@2.7.16.js"></script>
+    <title>VueComponent构造函数</title>
+  </head>
+  <body>
+    <div id="app">
+      <School />
+    </div>
+  </body>
+
+  <script>
+    const School = Vue.extend({
+      name: "School",
+      template: `
+      <div>
+        <h2>学校名称：{{name}} </h2>
+        <h2>学校地址：{{address}} </h2>
+        </div>
+      `,
+      data() {
+        return {
+          name: "Bunny",
+          address: "昆山县印象花园",
+        };
+      },
+    });
+
+    // 类型是构造函数
+    // ƒ VueComponent(options) {
+    //     this._init(options);
+    // }
+    // 每次调用 Vue.extend 返回都是全新的 VueComponent
+    console.log(School);
+
+    new Vue({
+      el: "#app",
+      components: { School },
+    });
+  </script>
+</html>

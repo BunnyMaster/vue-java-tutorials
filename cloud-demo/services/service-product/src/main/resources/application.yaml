@@ -1,0 +1,22 @@
+server:
+  port: 8001
+spring:
+  application:
+    name: service-product
+  profiles:
+    active: dev
+
+  cloud:
+    nacos:
+      server-addr: ${nacos.server-addr}
+      config:
+        import-check:
+          enabled: false
+
+    sentinel:
+      enabled: true
+      eager: true # 提前加载
+      transport:
+        dashboard: 192.168.3.150:8858
+      filter:
+        enabled: true
