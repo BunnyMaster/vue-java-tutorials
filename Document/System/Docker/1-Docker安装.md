@@ -41,20 +41,38 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 # 重启终端生效
 exit
+```
 
+#### 配置镜像
+
+```shell
 sudo mkdir /etc/docker
 sudo touch /etc/docker/daemon.json
 sudo chmod 777 /etc/docker/daemon.json
 sudo vim /etc/docker/daemon.json
-```
 
-**重启docker**
+# 创建目录
+sudo mkdir -p /etc/docker
+# 写入配置文件
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+    "registry-mirrors": [
+        "https://docker-0.unsee.tech",
+        "https://docker-cf.registry.cyou",
+        "https://docker.1panel.live"
+    ]
+}
+EOF
+# 重启docker服务
+sudo systemctl daemon-reload && sudo systemctl restart docker
 
-```shell
 sudo systemctl restart docker.socket
 ```
 
 ### 安装 Docker-Compose
+
+>[!MOTE]
+>目前新版的Docker已经内置了Docker Compose下面的是CentOS系统安装示例
 
 ```bash
 sudo yum install docker-ce docker-ce-cli containerd.io
@@ -66,4 +84,3 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 sudo docker-compose --version
 ```
-
