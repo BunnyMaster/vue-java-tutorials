@@ -1,6 +1,6 @@
 ## 卸载旧版 Wine（没装过wine跳过）
 
-```
+```bash
 sudo apt remove --purge wine* -y 
 sudo apt autoremove --purge -y 
 sudo apt autoclean
@@ -14,7 +14,7 @@ sudo apt update
 
 ## 安装新版 wine
 
-```
+```bash
 sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt install wget -y
@@ -32,7 +32,7 @@ winecfg
 
 ### 安装额外的依赖（如果需要）
 
-```
+```bash
 sudo apt install winetricks -y
 
 sudo apt install winetricks -y
@@ -41,7 +41,7 @@ winetricks vcrun2015 vcrun2019 corefonts
 
 ## 使用方式
 
-```
+```bash
 wine WeCom_x.x.x.x.exe
 ```
 
