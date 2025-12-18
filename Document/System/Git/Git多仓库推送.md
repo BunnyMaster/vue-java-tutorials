@@ -11,6 +11,7 @@ git remote set-url --add origin 新的仓库地址
 
 ```bash
 git remote set-url --delete origin 仓库地址
+
 ```
 
 ### 删除全部仓库

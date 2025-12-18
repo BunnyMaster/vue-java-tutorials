@@ -601,3 +601,45 @@ docker compose logs
 mongodb://admin:Dev1234!@192.168.2.19:27017,192.168.2.19:27018,192.168.2.19:27019/?replicaSet=rs0&authSource=admin
 ```
 
+### Sonarqube问题
+
+#### 权限问题
+
+```
+docker logs sonarqube 
+2025.12.18 15:02:23 INFO  app[][o.s.a.AppFileSystem] Cleaning or creating temp directory /opt/sonarqube/temp
+2025.12.18 15:02:23 INFO  app[][o.s.a.es.EsSettings] Elasticsearch listening on [HTTP: 127.0.0.1:9001, TCP: 127.0.0.1:34017]
+2025.12.18 15:02:23 INFO  app[][o.s.a.ProcessLauncherImpl] Launch process[ELASTICSEARCH] from [/opt/sonarqube/elasticsearch]: /opt/sonarqube/elasticsearch/bin/elasticsearch
+2025.12.18 15:02:23 INFO  app[][o.s.a.SchedulerImpl] Waiting for Elasticsearch to be up and running
+2025-12-18 15:02:24,756 main ERROR Unable to create file /opt/sonarqube/logs/es.log java.io.IOException: Permission denied
+	at java.base/java.io.UnixFileSystem.createFileExclusively(Native Method)
+	at java.base/java.io.File.createNewFile(Unknown Source)
+	at org.apache.logging.log4j.core.appender.rolling.RollingFileManager$RollingFileManagerFactory.cre
+```
+
+将下面的目录改成你的目录地址
+
+```bash
+mkdir -p ~/develop/docker-compose/develop/sonarqube/{data,logs,extensions}
+sudo chown -R 1000:1000 ~/develop/docker-compose/develop/sonarqube/
+sudo chmod -R 755 ~/develop/docker-compose/develop/sonarqube/
+```
+
+#### 没有创建数据库
+
+到postgres中创建`sonarqube`数据库即可
+
+#### 推送不成功
+
+需要生成Token放到`SONAR_TOKEN`中
+
+![image-20251219005338390](./assets/image-20251219005338390.png)
+
+#### 配置地址
+
+| 名称           | 值                                                 |
+| -------------- | -------------------------------------------------- |
+| SONAR_HOST_URL | 选项修改成：`Visible` </br> 取消`Protect variable` |
+| SONAR_TOKEN    | 选项修改成：`Visible` </br> 取消`Protect variable` |
+
+![image-20251219004703776](./assets/image-20251219004703776.png)
