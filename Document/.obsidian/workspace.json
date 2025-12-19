@@ -182,8 +182,18 @@
       "bases:Create new base": false
     }
   },
-  "active": "65c892c7943f5dd0",
+  "active": "6b252c48700ae549",
   "lastOpenFiles": [
+    "System/Docker/assets/image-20251219005338390.png",
+    "System/Docker/assets/image-20251219004703776.png",
+    "System/Docker/assets",
+    "System/Git/Git多仓库推送.md",
+    "System/Ubuntu/软件安装.md",
+    "AI/LangChain4J/1-LangChain4j 快速入门.md",
+    "System/Ubuntu/安装基础软件/初始化配置.md",
+    "System/Docker/2-Docker命令.md",
+    "System/Docker/Auth环境.md",
+    "System/Ubuntu/解压缩包.md",
     "System/Ubuntu/安装基础软件/安装五笔输入法.md",
     "System/Ubuntu/解压缩包.md",
     "System/Ubuntu/网络配置.md",
@@ -191,7 +201,6 @@
     "System/Ubuntu/防火墙.md",
     "System/Ubuntu/系统安装/Linux Mint安装.md",
     "System/Ubuntu/安装基础软件/EXE程序运行.md",
-    "System/Ubuntu/软件安装.md",
     "System/Ubuntu/安装基础软件/谷歌问题.md",
     "System/Ubuntu/系统安装/assets/701ba7f9cdaa8f0582f0064d4bccee03.jpg",
     "System/Ubuntu/系统安装/assets",
@@ -200,7 +209,6 @@
     "System/Ubuntu/账户密码修改.md",
     "System/Ubuntu/系统安装",
     "System/Ubuntu/管理进程.md",
-    "System/Ubuntu/安装基础软件/初始化配置.md",
     "System/Docker/1-Docker安装.md",
     "System/Ubuntu/安装基础软件/Docker安装.md",
     "System/Vim 命令手册.md",
@@ -226,9 +234,7 @@
     "System/Ubuntu",
     "System/GitLab搭建",
     "System/Git",
-    "System/Docker",
     "UML/生成器初稿.png",
-    "UML/UML绘制/assets/image-20251202200633150.png",
-    "UML/UML绘制/assets/image-20251202200510486.png"
+    "UML/UML绘制/assets/image-20251202200633150.png"
   ]
 }
