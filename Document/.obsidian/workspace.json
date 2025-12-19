@@ -28,13 +28,13 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System/Ubuntu/解压缩包.md",
+                "file": "System/Ubuntu/安装基础软件/初始化配置.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "解压缩包"
+              "title": "初始化配置"
             }
           },
           {
@@ -184,6 +184,8 @@
   },
   "active": "65c892c7943f5dd0",
   "lastOpenFiles": [
+    "System/Ubuntu/安装基础软件/安装五笔输入法.md",
+    "System/Ubuntu/解压缩包.md",
     "System/Ubuntu/网络配置.md",
     "System/Ubuntu/打压缩包.md",
     "System/Ubuntu/防火墙.md",
@@ -200,7 +202,6 @@
     "System/Ubuntu/管理进程.md",
     "System/Ubuntu/安装基础软件/初始化配置.md",
     "System/Docker/1-Docker安装.md",
-    "System/Ubuntu/安装基础软件/安装五笔输入法.md",
     "System/Ubuntu/安装基础软件/Docker安装.md",
     "System/Vim 命令手册.md",
     "System/Ubuntu/安装基础软件",
@@ -214,7 +215,6 @@
     "System/Git/配置Git永久存储.md",
     "AI/LangChain4J/4-LangChain4j 进阶.md",
     "AI/LangChain4J/1-LangChain4j 快速入门.md",
-    "System/Ubuntu/解压缩包.md",
     "System/Ubuntu/Hostname修改",
     "System/GitLab搭建/assets/image-20251214193121720.png",
     "System/GitLab搭建/assets/image-20251214192752632.png",
