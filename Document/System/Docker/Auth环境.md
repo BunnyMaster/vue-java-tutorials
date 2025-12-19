@@ -643,3 +643,41 @@ sudo chmod -R 755 ~/develop/docker-compose/develop/sonarqube/
 | SONAR_TOKEN    | 选项修改成：`Visible` </br> 取消`Protect variable` |
 
 ![image-20251219004703776](./assets/image-20251219004703776.png)
+
+### Gitlab问题
+
+#### 权限问题
+
+```
+        - create symlink at /opt/gitlab/service/gitlab-workhorse to /opt/gitlab/sv/gitlab-workhorse
+      * directory[/opt/gitlab/service/gitlab-workhorse/supervise] action create[2025-12-19T02:09:31+00:00] INFO: directory[/opt/gitlab/service/gitlab-workhorse/supervise] created directory /opt/gitlab/service/gitlab-workhorse/supervise
+
+        - create new directory /opt/gitlab/service/gitlab-workhorse/supervise[2025-12-19T02:09:31+00:00] INFO: directory[/opt/gitlab/service/gitlab-workhorse/supervise] mode changed to 755
+
+        - change mode from '' to '0755'
+      * directory[/opt/gitlab/service/gitlab-workhorse/log/supervise] action create[2025-12-19T02:09:31+00:00] INFO: directory[/opt/gitlab/service/gitlab-workhorse/log/supervise] created directory /opt/gitlab/service/gitlab-workhorse/log/supervise
+
+        - create new directory /opt/gitlab/service/gitlab-workhorse/log/supervise[2025-12-19T02:09:31+00:00] INFO: directory[/opt/gitlab/service/gitlab-workhorse/log/supervise] mode changed to 755
+
+        - change mode from '' to '0755'
+
+```
+
+**解决方式**
+
+```bash
+sudo mkdir -p ~/develop/docker-compose/develop/gitlab/{data,logs,extensions}
+sudo chown -R 1000:1000 ~/develop/docker-compose/develop/gitlab/
+sudo chmod -R 755 ~/develop/docker-compose/develop/gitlab/
+
+# 删除现有数据目录
+sudo rm -rf ~/develop/docker-compose/develop/gitlab/data/*
+sudo rm -rf ~/develop/docker-compose/develop/gitlab/logs/*
+sudo rm -rf ~/develop/docker-compose/develop/gitlab/config/*
+
+# 创建目录并设置官方推荐的权限
+sudo mkdir -p ~/develop/docker-compose/develop/gitlab/{config,logs,data}
+sudo chown -R 1000:1000 ~/develop/docker-compose/develop/gitlab/
+sudo chmod -R 777 ~/develop/docker-compose/develop/gitlab/
+```
+

@@ -43,17 +43,17 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System/Ubuntu/系统安装/Linux Mint安装.md",
+                "file": "System/Docker/Auth环境.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "Linux Mint安装"
+              "title": "Auth环境"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -182,18 +182,23 @@
       "bases:Create new base": false
     }
   },
-  "active": "65c892c7943f5dd0",
+  "active": "df1f3340e4fe0ee8",
   "lastOpenFiles": [
+    "System/Git/Git查看提交次数.md",
+    "System/Git/Git多仓库推送.md",
+    "System/Git/配置Git永久存储.md",
+    "System/Ubuntu/安装基础软件/初始化配置.md",
+    "System/Docker/Auth环境.md",
+    "System/Ubuntu/磁盘命令.md",
+    "System/Ubuntu/系统安装/Linux Mint安装.md",
+    "System/Ubuntu/时间设置.md",
     "System/Ubuntu/安装基础软件/其他安装.md",
     "System/Ubuntu/软件安装.md",
     "System/Ubuntu/安装基础软件/安装五笔输入法.md",
     "System/Ubuntu/安装基础软件/EXE程序运行.md",
-    "System/Ubuntu/安装基础软件/初始化配置.md",
-    "System/Docker/Auth环境.md",
     "System/Docker/assets/image-20251219005338390.png",
     "System/Docker/assets/image-20251219004703776.png",
     "System/Docker/assets",
-    "System/Git/Git多仓库推送.md",
     "AI/LangChain4J/1-LangChain4j 快速入门.md",
     "System/Docker/2-Docker命令.md",
     "System/Ubuntu/解压缩包.md",
@@ -201,7 +206,6 @@
     "System/Ubuntu/网络配置.md",
     "System/Ubuntu/打压缩包.md",
     "System/Ubuntu/防火墙.md",
-    "System/Ubuntu/系统安装/Linux Mint安装.md",
     "System/Ubuntu/安装基础软件/谷歌问题.md",
     "System/Ubuntu/系统安装/assets/701ba7f9cdaa8f0582f0064d4bccee03.jpg",
     "System/Ubuntu/系统安装/assets",
@@ -214,10 +218,6 @@
     "System/Ubuntu/安装基础软件/Docker安装.md",
     "System/Vim 命令手册.md",
     "System/Ubuntu/安装基础软件",
-    "杂项/Ubuntu激活Typora.md",
-    "杂项/Redis.md",
-    "杂项/IDEA.md",
-    "AI/LangChain4J/2-LangChain4j 核心功能.md",
     "System/Ubuntu/Hostname修改",
     "System/GitLab搭建/assets/image-20251214193121720.png",
     "System/GitLab搭建/assets/image-20251214192752632.png",
