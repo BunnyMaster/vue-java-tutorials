@@ -19,3 +19,13 @@ Value=-Dsun.stdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -Dconsole.encoding=UTF
 ```
 
 ![image-20251118151935360](./assets/image-20251118151935360.png)
+
+## 能运行但报错
+
+项目中有很多Java类没有找到，比如`Object`、`List`等，但是可以启动项目
+
+### 解决方式
+
+用快捷键`Ctrl + Alt + A`打开并输入`Add Maven Projects`
+
+![image-20251219153852707](./assets/image-20251219153852707.png)
