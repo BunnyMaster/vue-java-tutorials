@@ -620,9 +620,8 @@ docker logs sonarqube
 将下面的目录改成你的目录地址
 
 ```bash
-mkdir -p ~/develop/docker-compose/develop/sonarqube/{data,logs,extensions}
-sudo chown -R 1000:1000 ~/develop/docker-compose/develop/sonarqube/
-sudo chmod -R 755 ~/develop/docker-compose/develop/sonarqube/
+sudo chown -R 1000:1000 sonarqube/
+sudo chmod -R 755 sonarqube/
 ```
 
 #### 没有创建数据库

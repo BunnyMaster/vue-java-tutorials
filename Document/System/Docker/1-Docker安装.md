@@ -18,27 +18,21 @@ yum remove docker \
 
 ```shell
 sudo apt-get remove docker docker-engine docker.io containerd runc
-sudo apt update
-sudo apt upgrade
-sudo apt-get install ca-certificates curl gnupg lsb-release
-# 添加Docker官方GPG密钥
-sudo curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
-# 安装docker
-sudo apt-get install docker-ce docker-ce-cli containerd.io
-# 默认情况下，只有root用户和docker组的用户才能运行Docker命令。我们可以将当前用户添加到docker组，以避免每次使用Docker时都需要使用sudo，设置完成后退出当前用户之后再进入既可
-sudo usermod -aG docker $USER
-# 运行docker
-sudo systemctl start docker
-# 安装工具
-sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
-# 重启docker
-sudo service docker restart
 
-# 创建分组一般
-sudo groupadd docker
-# 将当前用户添加到分组
-sudo usermod -aG docker $USER
+# 添加阿里云Docker仓库的正确方法
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# 添加阿里云源
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://mirrors.aliyun.com/docker-ce/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# 安装docker# 安装docker
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo apt upgrade
+
 # 重启终端生效
 exit
 ```
