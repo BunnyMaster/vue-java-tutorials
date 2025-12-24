@@ -4,22 +4,22 @@
     "type": "split",
     "children": [
       {
-        "id": "b3c12d130a69de61",
+        "id": "000137262f6e1534",
         "type": "tabs",
         "children": [
           {
-            "id": "de310e0556df1d02",
+            "id": "3aa3d94f86f7b042",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System/Vim 命令手册.md",
+                "file": "System/Ubuntu/网络 - 配置.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "Vim 命令手册"
+              "title": "网络 - 配置"
             }
           }
         ]
@@ -151,39 +151,39 @@
       "bases:Create new base": false
     }
   },
-  "active": "de310e0556df1d02",
+  "active": "3aa3d94f86f7b042",
   "lastOpenFiles": [
-    "杂项/开源项目许可证说明.md",
-    "System/Ubuntu/安装基础软件/安装五笔输入法.md",
-    "System/Ubuntu/安装基础软件/EXE程序运行.md",
+    "System/Vim 命令手册.md",
+    "System/Ubuntu/磁盘维护 - 容量.md",
+    "System/Ubuntu/系统维护 - 软件.md",
+    "System/Ubuntu/管理进程.md",
+    "System/Ubuntu/系统维护 - 系统.md",
+    "System/Ubuntu/环境变量.md",
+    "System/Ubuntu/时间设置.md",
+    "System/Ubuntu/账户密码修改.md",
+    "System/Ubuntu/系统维护 - 启动和重启.md",
+    "System/Ubuntu/网络 - 配置.md",
+    "System/Ubuntu/设置镜像源.md",
+    "System/Ubuntu/软件安装.md",
     "System/Ubuntu/解压缩包.md",
+    "System/Ubuntu/打压缩包.md",
+    "System/Ubuntu/系统维护 - 命令行.md",
+    "System/Ubuntu/快捷操作.md",
+    "System/Ubuntu/关机、重启.md",
+    "System/Ubuntu/防火墙.md",
+    "System/Docker/4-Docker-Compose安装.md",
+    "System/Ubuntu/安装基础软件/安装五笔输入法.md",
+    "杂项/开源项目许可证说明.md",
+    "System/Ubuntu/安装基础软件/EXE程序运行.md",
     "杂项/Ubuntu激活Typora.md",
     "杂项/SonarQube使用.md",
     "System/Ubuntu/安装基础软件/其他安装.md",
     "System/Ubuntu/安装基础软件/初始化配置.md",
-    "System/Ubuntu/打压缩包.md",
-    "System/Ubuntu/磁盘命令.md",
-    "System/Ubuntu/环境变量.md",
-    "System/Docker/1-Docker安装.md",
-    "System/Ubuntu/发行版使用感受.md",
-    "System/Git/Git多仓库推送.md",
-    "System/Ubuntu/软件安装.md",
-    "System/Docker/Auth环境.md",
-    "杂项/IDEA.md",
     "杂项/assets/image-20251219153852707.png",
     "杂项/assets/image-20251219153830869.png",
-    "System/Git/Git查看提交次数.md",
-    "System/Git/配置Git永久存储.md",
-    "System/Ubuntu/系统安装/Linux Mint安装.md",
-    "System/Ubuntu/时间设置.md",
     "System/Docker/assets/image-20251219005338390.png",
     "System/Docker/assets/image-20251219004703776.png",
     "System/Docker/assets",
-    "AI/LangChain4J/1-LangChain4j 快速入门.md",
-    "System/Docker/2-Docker命令.md",
-    "System/Ubuntu/网络配置.md",
-    "System/Ubuntu/防火墙.md",
-    "System/Ubuntu/安装基础软件/谷歌问题.md",
     "System/Ubuntu/系统安装/assets/701ba7f9cdaa8f0582f0064d4bccee03.jpg",
     "System/Ubuntu/系统安装/assets",
     "701ba7f9cdaa8f0582f0064d4bccee03.jpg",
