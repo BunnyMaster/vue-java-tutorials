@@ -4,22 +4,22 @@
     "type": "split",
     "children": [
       {
-        "id": "000137262f6e1534",
+        "id": "b3c12d130a69de61",
         "type": "tabs",
         "children": [
           {
-            "id": "3aa3d94f86f7b042",
+            "id": "de310e0556df1d02",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System/Ubuntu/安装基础软件/安装五笔输入法.md",
+                "file": "System/Vim 命令手册.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "安装五笔输入法"
+              "title": "Vim 命令手册"
             }
           }
         ]
@@ -151,8 +151,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "3aa3d94f86f7b042",
+  "active": "de310e0556df1d02",
   "lastOpenFiles": [
+    "杂项/开源项目许可证说明.md",
+    "System/Ubuntu/安装基础软件/安装五笔输入法.md",
     "System/Ubuntu/安装基础软件/EXE程序运行.md",
     "System/Ubuntu/解压缩包.md",
     "杂项/Ubuntu激活Typora.md",
@@ -174,7 +176,6 @@
     "System/Git/配置Git永久存储.md",
     "System/Ubuntu/系统安装/Linux Mint安装.md",
     "System/Ubuntu/时间设置.md",
-    "System/Ubuntu/安装基础软件/安装五笔输入法.md",
     "System/Docker/assets/image-20251219005338390.png",
     "System/Docker/assets/image-20251219004703776.png",
     "System/Docker/assets",
