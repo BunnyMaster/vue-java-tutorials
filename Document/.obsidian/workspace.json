@@ -13,13 +13,13 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System/Ubuntu/网络 - 配置.md",
+                "file": "Spring/SpringBoot/条件注释.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "网络 - 配置"
+              "title": "条件注释"
             }
           }
         ]
@@ -153,6 +153,9 @@
   },
   "active": "3aa3d94f86f7b042",
   "lastOpenFiles": [
+    "System/Ubuntu/网络 - 配置.md",
+    "Spring/SpringBoot/条件注释.md",
+    "Spring/SpringBoot",
     "System/Vim 命令手册.md",
     "System/Ubuntu/磁盘维护 - 容量.md",
     "System/Ubuntu/系统维护 - 软件.md",
@@ -162,7 +165,6 @@
     "System/Ubuntu/时间设置.md",
     "System/Ubuntu/账户密码修改.md",
     "System/Ubuntu/系统维护 - 启动和重启.md",
-    "System/Ubuntu/网络 - 配置.md",
     "System/Ubuntu/设置镜像源.md",
     "System/Ubuntu/软件安装.md",
     "System/Ubuntu/解压缩包.md",
@@ -178,7 +180,6 @@
     "杂项/Ubuntu激活Typora.md",
     "杂项/SonarQube使用.md",
     "System/Ubuntu/安装基础软件/其他安装.md",
-    "System/Ubuntu/安装基础软件/初始化配置.md",
     "杂项/assets/image-20251219153852707.png",
     "杂项/assets/image-20251219153830869.png",
     "System/Docker/assets/image-20251219005338390.png",
@@ -197,7 +198,6 @@
     "System/GitLab搭建/assets",
     "System/Windows",
     "System/Ubuntu",
-    "System/GitLab搭建",
-    "System/Git"
+    "System/GitLab搭建"
   ]
 }
