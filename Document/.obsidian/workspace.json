@@ -151,11 +151,37 @@
       "bases:Create new base": false
     }
   },
-  "active": "3aa3d94f86f7b042",
+  "active": "6b252c48700ae549",
   "lastOpenFiles": [
+<<<<<<< HEAD
     "System/Ubuntu/网络 - 配置.md",
     "Spring/SpringBoot/条件注释.md",
     "Spring/SpringBoot",
+=======
+    "杂项/规范/Java 开发传输对象说明.md",
+    "杂项/规范/前端CSS-BEM规范.md",
+    "杂项/规范/Java 开发.md",
+    "杂项/规范/前端CSS.md",
+    "杂项/规范/Untitled.md",
+    "System/Ubuntu/网络 - 配置.md",
+    "杂项/IDEA.md",
+    "杂项/规范",
+    "杂项/远东",
+    "杂项/其他/开源项目许可证说明.md",
+    "杂项/其他/Ubuntu激活Typora.md",
+    "杂项/其他/SonarQube使用.md",
+    "杂项/其他/Redis.md",
+    "杂项/其他/IDEA.md",
+    "杂项/其他/assets/企业微信截图_17636265328667.png",
+    "杂项/其他/assets/image-20251219153852707.png",
+    "杂项/其他/assets/image-20251120160105674.png",
+    "杂项/其他/assets/image-20251120155817057.png",
+    "杂项/其他/assets/image-20251118151959620.png",
+    "杂项/其他/assets/image-20251118151935360.png",
+    "杂项/其他/assets",
+    "杂项/其他",
+    "远东",
+>>>>>>> 0289410ef012207eed4663438286562381cd5398
     "System/Vim 命令手册.md",
     "System/Ubuntu/磁盘维护 - 容量.md",
     "System/Ubuntu/系统维护 - 软件.md",
@@ -170,6 +196,7 @@
     "System/Ubuntu/解压缩包.md",
     "System/Ubuntu/打压缩包.md",
     "System/Ubuntu/系统维护 - 命令行.md",
+<<<<<<< HEAD
     "System/Ubuntu/快捷操作.md",
     "System/Ubuntu/关机、重启.md",
     "System/Ubuntu/防火墙.md",
@@ -180,16 +207,17 @@
     "杂项/Ubuntu激活Typora.md",
     "杂项/SonarQube使用.md",
     "System/Ubuntu/安装基础软件/其他安装.md",
+=======
+>>>>>>> 0289410ef012207eed4663438286562381cd5398
     "杂项/assets/image-20251219153852707.png",
     "杂项/assets/image-20251219153830869.png",
     "System/Docker/assets/image-20251219005338390.png",
     "System/Docker/assets/image-20251219004703776.png",
     "System/Docker/assets",
-    "System/Ubuntu/系统安装/assets/701ba7f9cdaa8f0582f0064d4bccee03.jpg",
     "System/Ubuntu/系统安装/assets",
-    "701ba7f9cdaa8f0582f0064d4bccee03.jpg",
     "System/Ubuntu/系统安装",
     "System/Ubuntu/安装基础软件",
+<<<<<<< HEAD
     "System/Ubuntu/Hostname修改",
     "System/GitLab搭建/assets/image-20251214193121720.png",
     "System/GitLab搭建/assets/image-20251214192752632.png",
@@ -199,5 +227,8 @@
     "System/Windows",
     "System/Ubuntu",
     "System/GitLab搭建"
+=======
+    "System/Ubuntu/Hostname修改"
+>>>>>>> 0289410ef012207eed4663438286562381cd5398
   ]
 }
