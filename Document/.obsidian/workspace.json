@@ -1,25 +1,20 @@
 {
   "main": {
-    "id": "5e28111fa56fbfc3",
+    "id": "b33d8c0ab99e5209",
     "type": "split",
     "children": [
       {
-        "id": "000137262f6e1534",
+        "id": "77c1cdd27daad4d5",
         "type": "tabs",
         "children": [
           {
-            "id": "3aa3d94f86f7b042",
+            "id": "abb01146fa77367e",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Spring/SpringBoot/条件注释.md",
-                "mode": "source",
-                "source": false,
-                "backlinks": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "条件注释"
+              "title": "New tab"
             }
           }
         ]
@@ -28,15 +23,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "12f5739f0cfcffd9",
+    "id": "f3d8497eed1069a2",
     "type": "split",
     "children": [
       {
-        "id": "e3768303e4522333",
+        "id": "0cca8942a3980f81",
         "type": "tabs",
         "children": [
           {
-            "id": "6b252c48700ae549",
+            "id": "ca281fcc3bbf04a4",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -49,7 +44,7 @@
             }
           },
           {
-            "id": "47d7c8d3d4bbd02b",
+            "id": "855d22832ab14419",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -66,7 +61,7 @@
             }
           },
           {
-            "id": "8cf94726f03ae18a",
+            "id": "e0aa333adb3b79e9",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -79,18 +74,31 @@
       }
     ],
     "direction": "horizontal",
-    "width": 264.5
+    "width": 300
   },
   "right": {
-    "id": "4b142e7749d3b6ba",
+    "id": "f5eec88ac5f47cfd",
     "type": "split",
     "children": [
       {
-        "id": "2c2a9b7f627dd3fd",
+        "id": "0224b8341c5f8992",
         "type": "tabs",
         "children": [
           {
-            "id": "c69f6936e9b650aa",
+            "id": "1fa7b979b0b8a870",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "d98b0aaec9942d03",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -105,40 +113,35 @@
             }
           },
           {
-            "id": "7b3d289a75a8a2a3",
+            "id": "79be1b4aa0f3d148",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "Docker/Auth环境.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Auth环境"
+              "title": "Outline"
             }
           },
           {
-            "id": "6e26cb052a0a5df4",
+            "id": "3546029374573983",
             "type": "leaf",
             "state": {
-              "type": "outgoing-link",
-              "state": {
-                "file": "Docker/Docker存储.md",
-                "linksCollapsed": false,
-                "unlinkedCollapsed": true
-              },
-              "icon": "links-going-out",
-              "title": "Outgoing links from Docker存储"
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -148,87 +151,12 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-git:Open Git source control": false
     }
   },
-  "active": "6b252c48700ae549",
+  "active": "ca281fcc3bbf04a4",
   "lastOpenFiles": [
-<<<<<<< HEAD
-    "System/Ubuntu/网络 - 配置.md",
-    "Spring/SpringBoot/条件注释.md",
-    "Spring/SpringBoot",
-=======
-    "杂项/规范/Java 开发传输对象说明.md",
-    "杂项/规范/前端CSS-BEM规范.md",
-    "杂项/规范/Java 开发.md",
-    "杂项/规范/前端CSS.md",
-    "杂项/规范/Untitled.md",
-    "System/Ubuntu/网络 - 配置.md",
-    "杂项/IDEA.md",
-    "杂项/规范",
-    "杂项/远东",
-    "杂项/其他/开源项目许可证说明.md",
-    "杂项/其他/Ubuntu激活Typora.md",
-    "杂项/其他/SonarQube使用.md",
-    "杂项/其他/Redis.md",
-    "杂项/其他/IDEA.md",
-    "杂项/其他/assets/企业微信截图_17636265328667.png",
-    "杂项/其他/assets/image-20251219153852707.png",
-    "杂项/其他/assets/image-20251120160105674.png",
-    "杂项/其他/assets/image-20251120155817057.png",
-    "杂项/其他/assets/image-20251118151959620.png",
-    "杂项/其他/assets/image-20251118151935360.png",
-    "杂项/其他/assets",
-    "杂项/其他",
-    "远东",
->>>>>>> 0289410ef012207eed4663438286562381cd5398
-    "System/Vim 命令手册.md",
-    "System/Ubuntu/磁盘维护 - 容量.md",
-    "System/Ubuntu/系统维护 - 软件.md",
-    "System/Ubuntu/管理进程.md",
-    "System/Ubuntu/系统维护 - 系统.md",
-    "System/Ubuntu/环境变量.md",
-    "System/Ubuntu/时间设置.md",
-    "System/Ubuntu/账户密码修改.md",
-    "System/Ubuntu/系统维护 - 启动和重启.md",
-    "System/Ubuntu/设置镜像源.md",
-    "System/Ubuntu/软件安装.md",
-    "System/Ubuntu/解压缩包.md",
-    "System/Ubuntu/打压缩包.md",
-    "System/Ubuntu/系统维护 - 命令行.md",
-<<<<<<< HEAD
-    "System/Ubuntu/快捷操作.md",
-    "System/Ubuntu/关机、重启.md",
-    "System/Ubuntu/防火墙.md",
-    "System/Docker/4-Docker-Compose安装.md",
-    "System/Ubuntu/安装基础软件/安装五笔输入法.md",
-    "杂项/开源项目许可证说明.md",
-    "System/Ubuntu/安装基础软件/EXE程序运行.md",
-    "杂项/Ubuntu激活Typora.md",
-    "杂项/SonarQube使用.md",
-    "System/Ubuntu/安装基础软件/其他安装.md",
-=======
->>>>>>> 0289410ef012207eed4663438286562381cd5398
-    "杂项/assets/image-20251219153852707.png",
-    "杂项/assets/image-20251219153830869.png",
-    "System/Docker/assets/image-20251219005338390.png",
-    "System/Docker/assets/image-20251219004703776.png",
-    "System/Docker/assets",
-    "System/Ubuntu/系统安装/assets",
-    "System/Ubuntu/系统安装",
-    "System/Ubuntu/安装基础软件",
-<<<<<<< HEAD
-    "System/Ubuntu/Hostname修改",
-    "System/GitLab搭建/assets/image-20251214193121720.png",
-    "System/GitLab搭建/assets/image-20251214192752632.png",
-    "System/GitLab搭建/assets/image-20251214191728029.png",
-    "System/GitLab搭建/assets/image-20251214191621647.png",
-    "System/GitLab搭建/assets",
-    "System/Windows",
-    "System/Ubuntu",
-    "System/GitLab搭建"
-=======
-    "System/Ubuntu/Hostname修改"
->>>>>>> 0289410ef012207eed4663438286562381cd5398
+    "Untitled.base"
   ]
 }
