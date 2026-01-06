@@ -1,5 +1,3 @@
-git checkout master
-git merge dev
-git push --all
-git push --tags
-git checkout dev
+git push origin master
+git push gitee master
+git push github master

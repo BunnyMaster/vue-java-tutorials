@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "e004fb39521f5aa2",
+        "id": "1d78f14c31c539e0",
         "type": "tabs",
         "children": [
           {
-            "id": "bc8e860ae5b73e21",
+            "id": "31faba23b2ff3940",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Document/AI/LangChain4J/2-LangChain4j 核心功能.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "2-LangChain4j 核心功能"
+              "title": "New tab"
             }
           }
         ]
@@ -164,13 +160,23 @@
               "icon": "lucide-list",
               "title": "Outline of 3-LangChain4j 使用指南"
             }
+          },
+          {
+            "id": "e4888f6e0f3788c5",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -180,56 +186,57 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-git:Open Git source control": false
     }
   },
-  "active": "bc8e860ae5b73e21",
+  "active": "31faba23b2ff3940",
   "lastOpenFiles": [
-    "Document/AI/LangChain4J/3-LangChain4j 使用指南.md",
-    "Document/AI/LangChain4J/2-LangChain4j 核心功能.md",
-    "Document/AI/LangChain4J/1-LangChain4j 快速入门.md",
-    "Document/AI/3-LangChain4j 使用指南.md",
-    "Document/AI/LangChain4J/9-LangChain4jRAG 知识库.md",
-    "Document/AI/LangChain4J/8-LangChain4j 工具调用.md",
-    "Document/AI/LangChain4J/7-LangChain4j 提示词.md",
-    "Document/AI/LangChain4J/6-LangChain4j 记忆功能.md",
-    "Document/AI/LangChain4J/5-LangChain4j 流式输出.md",
-    "Document/AI/LangChain4J/4-LangChain4j 进阶.md",
-    "Document/AI/LangChain4J",
+    "Document/杂项/其他/Ubuntu Wine 中文乱码.md",
+    "Document/System/Vim 命令手册.md",
+    "Document/AI/1-训练大模型.md",
+    "ReadMe.md",
+    "redis/src/main/java/com/redis/redis/model/vo/result/Result.java",
+    "redis/src/main/java/com/redis/redis/model/vo/result/PageResult.java",
+    "redis/src/main/java/com/redis/redis/service/impl/HotelServiceImpl.java",
+    "redis/src/main/java/com/redis/redis/model/vo/result",
+    "redis/src/main/java/com/redis/redis/model/vo/HotelVO.java",
+    "redis/src/main/java/com/redis/redis/model/entity/HotelEntity.java",
+    "redis/src/main/java/com/redis/redis/model/dto/package-info.java",
+    "redis/src/main/java/com/redis/redis/service/impl",
+    "redis/src/main/java/com/redis/redis/service/HotelService.java",
+    "redis/src/main/java/com/redis/redis/model/vo",
+    "mongo-db/ReadMe.md",
+    "lang-chain-4j/lang-chain-4j-2/src/main/resources/static/image-test-1.jpg",
+    "lang-chain-4j/ReadMe.md",
+    "Document/杂项/其他/assets/企业微信截图_17636265328667.png",
+    "Document/杂项/其他/assets/image-20251219153852707.png",
+    "Document/杂项/其他/assets/image-20251120160105674.png",
+    "Document/杂项/其他/assets/image-20251120155817057.png",
+    "Document/杂项/其他/assets/image-20251118151959620.png",
+    "Document/杂项/其他/assets/image-20251118151935360.png",
+    "Document/杂项/规范/前端CSS-BEM规范.md",
+    "Document/杂项/规范/Java 开发传输对象说明.md",
+    "Document/杂项/其他/开源项目许可证说明.md",
+    "Document/杂项/其他/Ubuntu激活Typora.md",
+    "Document/杂项/其他/SonarQube使用.md",
+    "Document/杂项/其他/IDEA.md",
+    "Document/杂项/其他/Redis.md",
+    "Document/UML/设计模式/assets/image-20251212093016505.png",
     "Document/UML/UML绘制/assets/image-20251202200633150.png",
     "Document/UML/UML绘制/assets/image-20251202200510486.png",
-    "Document/UML/UML绘制/assets/image-20251202200312651.png",
-    "Document/UML/UML绘制/assets/image-20251202200351846.png",
-    "Document/UML/UML绘制/assets/image-20251202200208320.png",
-    "Document/UML/UML绘制/assets/image-20251202200016976.png",
-    "Document/UML/UML绘制/assets/image-20251202200120358.png",
-    "Document/UML/UML绘制/类图.md",
-    "Document/UML/UML绘制/流程图.md",
-    "Document/UML/UML绘制/assets",
-    "Document/UML/UML绘制",
-    "Document/Redis/assets/image-20251201231442813.png",
-    "Document/Redis/assets",
-    "redis/information/缓存击穿.jmx",
-    "redis/information",
-    "lang-chain-4j/lang-chain-4j-2/src/main/java/com/auth/ai/service/ai/LawAssistantService.java",
-    "lang-chain-4j/lang-chain-4j-2/src/main/java/com/auth/ai/service/ai/ChatAssistantService.java",
-    "lang-chain-4j/lang-chain-4j-2/src/main/java/com/auth/ai/service/ai/ChatAssistantExampleService.java",
-    "lang-chain-4j/lang-chain-4j-2/src/main/java/com/auth/ai/service/package-info.java",
-    "Document/UML/设计模式/assets/image-20251212093016505.png",
+    "Document/UML/设计模式/4-行为型模式.md",
     "Document/UML/设计模式/3-结构型模式.md",
     "Document/UML/设计模式/2-创建型模式.md",
-    "Document/UML/设计模式/4-行为型模式.md",
     "Document/UML/设计模式/1-设计模式.md",
-    "Document/AI/9-LangChain4jRAG 知识库.md",
-    "Document/AI/8-LangChain4j 工具调用.md",
-    "Document/AI/7-LangChain4j 提示词.md",
-    "Document/AI/6-LangChain4j 记忆功能.md",
-    "mq-demo/images/image-20250520150526785.png",
-    "Document/UML/流程图.md",
-    "Document/Redis/Redis持久化.md",
-    "Document/Redis/1-Redis 缓存相关.md",
-    "Document/AI/3-LangChain4j 待完善.md",
-    "Document/AI/2-LangChain4j.md",
-    "Document/AI/2-阿里百炼.md"
+    "Document/UML/UML绘制/类图.md",
+    "Document/UML/UML绘制/流程图.md",
+    "Document/System/Ubuntu/系统安装/Linux Mint安装.md",
+    "Document/System/Ubuntu/安装基础软件/安装五笔输入法.md",
+    "Document/System/Ubuntu/安装基础软件/初始化配置.md",
+    "Document/System/Ubuntu/安装基础软件/其他安装.md",
+    "Document/System/Ubuntu/安装基础软件/EXE程序运行.md",
+    "Document/System/Windows/重装系统.md",
+    "Document/System/Ubuntu/网络 - 配置.md"
   ]
 }
