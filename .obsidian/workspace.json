@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "1d78f14c31c539e0",
+        "id": "a24ef45936728031",
         "type": "tabs",
         "children": [
           {
-            "id": "31faba23b2ff3940",
+            "id": "9438225d771f5ad5",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -152,17 +152,17 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Document/AI/3-LangChain4j 使用指南.md",
+                "file": "Document/Java/后端返回格式说明.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 3-LangChain4j 使用指南"
+              "title": "Outline of 后端返回格式说明"
             }
           },
           {
-            "id": "e4888f6e0f3788c5",
+            "id": "6aebc6718d9ea125",
             "type": "leaf",
             "state": {
               "type": "git-view",
@@ -176,7 +176,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 509.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -190,31 +190,41 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "31faba23b2ff3940",
+  "active": "4c13d908671d4a7e",
   "lastOpenFiles": [
+    "Untitled.base",
+    "Document/Java/后端返回格式说明.md",
+    "Document/Java/后端返回格式.md",
+    "Document/Java/Spring6/images/spring6/img027.png",
+    "Document/Java/Spring6/images/spring6/img026.png",
+    "Document/Java/Spring6/images/spring6/img025.png",
+    "Document/Java/Spring6/images/spring6/img024.png",
+    "Document/Java/Spring6/images/spring6/img023.png",
+    "Document/Java/Spring6/images/spring6/img022.png",
+    "Document/Java/Spring6/images/spring6/img021.png",
+    "Document/Java/Spring6/images/spring6/img020.png",
+    "Document/Java/Spring6/images/spring6/img019.png",
+    "Document/Java/Spring6/images/spring6/img018.png",
+    "Document/Java/Spring6/images/spring6",
+    "Document/Java/SpringCloud/环境搭建.md",
+    "Document/Java/SpringCloud/SpringCloud+Nacos.md",
+    "Document/Java/SpringBoot/条件注释.md",
+    "Document/Java/SpringSecurity6/SpringSecurity6.md",
+    "Document/Java/Spring6/images",
+    "Document/Java/Spring6/Spring6.md",
+    "Document/Java/SpringSecurity6",
+    "Document/Java/SpringCloud",
+    "Document/Java/SpringBoot",
+    "Document/Java/Spring6",
+    "Document/Java",
     "Document/杂项/其他/Ubuntu Wine 中文乱码.md",
     "Document/System/Vim 命令手册.md",
     "Document/AI/1-训练大模型.md",
     "ReadMe.md",
     "redis/src/main/java/com/redis/redis/model/vo/result/Result.java",
     "redis/src/main/java/com/redis/redis/model/vo/result/PageResult.java",
-    "redis/src/main/java/com/redis/redis/service/impl/HotelServiceImpl.java",
-    "redis/src/main/java/com/redis/redis/model/vo/result",
-    "redis/src/main/java/com/redis/redis/model/vo/HotelVO.java",
-    "redis/src/main/java/com/redis/redis/model/entity/HotelEntity.java",
-    "redis/src/main/java/com/redis/redis/model/dto/package-info.java",
-    "redis/src/main/java/com/redis/redis/service/impl",
-    "redis/src/main/java/com/redis/redis/service/HotelService.java",
-    "redis/src/main/java/com/redis/redis/model/vo",
     "mongo-db/ReadMe.md",
-    "lang-chain-4j/lang-chain-4j-2/src/main/resources/static/image-test-1.jpg",
     "lang-chain-4j/ReadMe.md",
-    "Document/杂项/其他/assets/企业微信截图_17636265328667.png",
-    "Document/杂项/其他/assets/image-20251219153852707.png",
-    "Document/杂项/其他/assets/image-20251120160105674.png",
-    "Document/杂项/其他/assets/image-20251120155817057.png",
-    "Document/杂项/其他/assets/image-20251118151959620.png",
-    "Document/杂项/其他/assets/image-20251118151935360.png",
     "Document/杂项/规范/前端CSS-BEM规范.md",
     "Document/杂项/规范/Java 开发传输对象说明.md",
     "Document/杂项/其他/开源项目许可证说明.md",
@@ -222,21 +232,10 @@
     "Document/杂项/其他/SonarQube使用.md",
     "Document/杂项/其他/IDEA.md",
     "Document/杂项/其他/Redis.md",
-    "Document/UML/设计模式/assets/image-20251212093016505.png",
-    "Document/UML/UML绘制/assets/image-20251202200633150.png",
-    "Document/UML/UML绘制/assets/image-20251202200510486.png",
     "Document/UML/设计模式/4-行为型模式.md",
     "Document/UML/设计模式/3-结构型模式.md",
     "Document/UML/设计模式/2-创建型模式.md",
     "Document/UML/设计模式/1-设计模式.md",
-    "Document/UML/UML绘制/类图.md",
-    "Document/UML/UML绘制/流程图.md",
-    "Document/System/Ubuntu/系统安装/Linux Mint安装.md",
-    "Document/System/Ubuntu/安装基础软件/安装五笔输入法.md",
-    "Document/System/Ubuntu/安装基础软件/初始化配置.md",
-    "Document/System/Ubuntu/安装基础软件/其他安装.md",
-    "Document/System/Ubuntu/安装基础软件/EXE程序运行.md",
-    "Document/System/Windows/重装系统.md",
-    "Document/System/Ubuntu/网络 - 配置.md"
+    "Document/UML/UML绘制/类图.md"
   ]
 }
