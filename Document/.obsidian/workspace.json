@@ -4,17 +4,22 @@
     "type": "split",
     "children": [
       {
-        "id": "b7bef58cc41bbb33",
+        "id": "7f2b84f02c4a6d1c",
         "type": "tabs",
         "children": [
           {
-            "id": "2ed2c2a10dcda576",
+            "id": "4f68b77ef3d3332b",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Java/Java需要测试哪些类.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Java需要测试哪些类"
             }
           }
         ]
@@ -155,14 +160,17 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "3546029374573983",
+  "active": "4f68b77ef3d3332b",
   "lastOpenFiles": [
+    "Java/后端返回格式.md",
+    "Java/Java需要测试哪些类.md",
+    "Java/Java 中一些约定俗成的规范.md",
+    "Java/后端返回格式说明.md",
+    "杂项/其他/SonarQube使用.md",
+    "杂项/其他/Ubuntu Wine 中文乱码.md",
     "Java/Spring6/Spring6.md",
     "Java/Spring6/images/spring6/2097896352.png",
     "Java/Spring6/images/spring6/image-20221031155411978.png",
-    "杂项/其他/Ubuntu Wine 中文乱码.md",
-    "Java/后端返回格式说明.md",
-    "Java/后端返回格式.md",
     "Java/SpringSecurity6/SpringSecurity6.md",
     "Java/SpringSecurity6",
     "Java/SpringCloud/环境搭建.md",
