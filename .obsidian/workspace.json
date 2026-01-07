@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "a24ef45936728031",
+        "id": "3733e4bd962d7c4d",
         "type": "tabs",
         "children": [
           {
-            "id": "9438225d771f5ad5",
+            "id": "ed32a221bdfa8196",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -176,7 +176,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 509.5
+    "width": 287.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -190,8 +190,17 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "4c13d908671d4a7e",
+  "active": "ed32a221bdfa8196",
   "lastOpenFiles": [
+    "Document/System/Ubuntu/系统维护 - 软件.md",
+    "Document/System/Ubuntu/系统维护 - 文件.md",
+    "Document/System/Ubuntu/系统维护 - 系统.md",
+    "Document/System/Ubuntu/系统维护 - 命令行.md",
+    "Document/System/Ubuntu/系统维护 - 启动和重启.md",
+    "Document/System/Ubuntu/磁盘维护 - 容量.md",
+    "mongo-db/ReadMe.md",
+    "Document/Java/Java需要测试哪些类.md",
+    "Document/Java/Java 中一些约定俗成的规范.md",
     "Untitled.base",
     "Document/Java/后端返回格式说明.md",
     "Document/Java/后端返回格式.md",
@@ -223,19 +232,11 @@
     "ReadMe.md",
     "redis/src/main/java/com/redis/redis/model/vo/result/Result.java",
     "redis/src/main/java/com/redis/redis/model/vo/result/PageResult.java",
-    "mongo-db/ReadMe.md",
     "lang-chain-4j/ReadMe.md",
     "Document/杂项/规范/前端CSS-BEM规范.md",
     "Document/杂项/规范/Java 开发传输对象说明.md",
     "Document/杂项/其他/开源项目许可证说明.md",
     "Document/杂项/其他/Ubuntu激活Typora.md",
-    "Document/杂项/其他/SonarQube使用.md",
-    "Document/杂项/其他/IDEA.md",
-    "Document/杂项/其他/Redis.md",
-    "Document/UML/设计模式/4-行为型模式.md",
-    "Document/UML/设计模式/3-结构型模式.md",
-    "Document/UML/设计模式/2-创建型模式.md",
-    "Document/UML/设计模式/1-设计模式.md",
-    "Document/UML/UML绘制/类图.md"
+    "Document/杂项/其他/SonarQube使用.md"
   ]
 }
