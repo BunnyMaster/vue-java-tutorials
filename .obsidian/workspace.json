@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "3733e4bd962d7c4d",
+        "id": "a700fe219eeb8ff4",
         "type": "tabs",
         "children": [
           {
-            "id": "ed32a221bdfa8196",
+            "id": "d842c9086a47cb9c",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -190,8 +190,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "ed32a221bdfa8196",
+  "active": "d842c9086a47cb9c",
   "lastOpenFiles": [
+    "Document/System/Ubuntu/安装基础软件/安装五笔输入法.md",
     "Document/System/Ubuntu/系统维护 - 软件.md",
     "Document/System/Ubuntu/系统维护 - 文件.md",
     "Document/System/Ubuntu/系统维护 - 系统.md",
@@ -236,7 +237,6 @@
     "Document/杂项/规范/前端CSS-BEM规范.md",
     "Document/杂项/规范/Java 开发传输对象说明.md",
     "Document/杂项/其他/开源项目许可证说明.md",
-    "Document/杂项/其他/Ubuntu激活Typora.md",
-    "Document/杂项/其他/SonarQube使用.md"
+    "Document/杂项/其他/Ubuntu激活Typora.md"
   ]
 }
