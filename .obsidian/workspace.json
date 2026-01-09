@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "a700fe219eeb8ff4",
+        "id": "6e3793a1ffe4d7b8",
         "type": "tabs",
         "children": [
           {
-            "id": "d842c9086a47cb9c",
+            "id": "91f0676f471b453a",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -190,8 +190,13 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "d842c9086a47cb9c",
+  "active": "4c13d908671d4a7e",
   "lastOpenFiles": [
+    "Document/System/Git/Git GC.md",
+    "Document/System/Git/Git 常用.md",
+    "Document/System/Git/Git Tag管理.md",
+    "Document/System/Git/Git查看提交次数.md",
+    "Document/System/Git/Git多仓库推送.md",
     "Document/System/Ubuntu/安装基础软件/安装五笔输入法.md",
     "Document/System/Ubuntu/系统维护 - 软件.md",
     "Document/System/Ubuntu/系统维护 - 文件.md",
@@ -232,11 +237,6 @@
     "Document/AI/1-训练大模型.md",
     "ReadMe.md",
     "redis/src/main/java/com/redis/redis/model/vo/result/Result.java",
-    "redis/src/main/java/com/redis/redis/model/vo/result/PageResult.java",
-    "lang-chain-4j/ReadMe.md",
-    "Document/杂项/规范/前端CSS-BEM规范.md",
-    "Document/杂项/规范/Java 开发传输对象说明.md",
-    "Document/杂项/其他/开源项目许可证说明.md",
-    "Document/杂项/其他/Ubuntu激活Typora.md"
+    "redis/src/main/java/com/redis/redis/model/vo/result/PageResult.java"
   ]
 }
