@@ -12,6 +12,18 @@ import com.design.patterns.abstractfactory.factory.ArtDecoFactory;
  */
 public class App {
     public static void main(String[] args) {
+        way1();
+
+        System.out.println("------------------------------------------------------------");
+        AbstractFactory factory = FactoryEnum.getFactory(FactoryEnum.ArtDeco);
+        String products = factory.createProducts();
+        System.out.println(products);
+    }
+
+    /**
+     * 第一种方式
+     */
+    private static void way1() {
         // 创建Art Deco风格的具体工厂实例
         AbstractFactory factory = new ArtDecoFactory();
 
