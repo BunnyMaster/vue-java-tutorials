@@ -8,14 +8,15 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.desgin.patterns</groupId>
-    <artifactId>java-desgin-patterns</artifactId>
+    <groupId>com.design.patterns</groupId>
+    <artifactId>java-design-patterns</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>java-desgin-patterns</name>
+    <name>java-design-patterns</name>
     <modules>
         <module>abstractfactory</module>
+        <module>adapter</module>
     </modules>
 
     <properties>
