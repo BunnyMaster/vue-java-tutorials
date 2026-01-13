@@ -11,10 +11,15 @@
             "id": "45b1fa7196c07249",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "System/Ubuntu/系统维护 - 文件.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "系统维护 - 文件"
             }
           }
         ]
@@ -141,7 +146,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -155,16 +160,28 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "ca281fcc3bbf04a4",
+  "active": "45b1fa7196c07249",
   "lastOpenFiles": [
+    "System/Ubuntu/系统维护 - 系统.md",
+    "System/Ubuntu/系统维护 - 软件.md",
+    "System/Ubuntu/安装基础软件/初始化配置.md",
+    "System/Ubuntu/安装基础软件/EXE程序运行.md",
+    "System/Ubuntu/安装基础软件/其他安装.md",
+    "Java/SpringSecurity6/SpringSecurity7.md",
+    "Java/开发规范/后端返回格式说明.md",
+    "Java/开发规范/后端返回格式.md",
+    "Java/开发规范/Java需要测试哪些类.md",
+    "Java/开发规范/Java 中一些约定俗成的规范.md",
+    "Java/开发规范",
+    "Development Guidelines/阿里巴巴Java开发规范（嵩山版）.pdf",
+    "Development Guidelines/Web",
+    "Development Guidelines",
     "Java/Gradle/安装Gradle.md",
     "AI/LangChain4J/9-LangChain4jRAG 知识库.md",
     "Java/Gradle",
     "System/Ubuntu/系统维护 - 文件.md",
-    "System/Ubuntu/系统维护 - 软件.md",
     "System/Ubuntu/网络 - 配置.md",
     "System/Ubuntu/磁盘维护 - 容量.md",
-    "System/Ubuntu/系统维护 - 系统.md",
     "Java/Java需要测试哪些类.md",
     "Java/后端返回格式.md",
     "Java/Java 中一些约定俗成的规范.md",
@@ -190,9 +207,6 @@
     "Java/Spring6/images/spring6/img021.png",
     "Java/Spring6/images/spring6/img020.png",
     "Java/Spring6/images/spring6",
-    "Java/Spring6/images",
-    "Java/Spring6",
-    "Java",
-    "Untitled.base"
+    "Java/Spring6/images"
   ]
 }
