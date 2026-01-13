@@ -11,10 +11,14 @@
             "id": "d7929cf4fe823fb2",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Document/Java/SpringSecurity6/SpringSecurity7.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "SpringSecurity7"
             }
           }
         ]
@@ -190,8 +194,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "4c13d908671d4a7e",
+  "active": "d7929cf4fe823fb2",
   "lastOpenFiles": [
+    "Document/Java/SpringSecurity6/SpringSecurity6.md",
+    "Document/Java/SpringSecurity6/SpringSecurity7.md",
     "Document/Development Guidelines/阿里巴巴Java开发规范（嵩山版）.pdf",
     "Document/Development Guidelines/Web/coding/javascript.zh.md",
     "Document/Development Guidelines/Web/engineering/http-json-api.md",
@@ -219,7 +225,6 @@
     "Document/Development Guidelines/Web/coding/node.zh.md",
     "Document/Development Guidelines/Web/coding",
     "Document/Development Guidelines/Web/docs/README.md",
-    "Document/Development Guidelines/Web/docs/README.zh.md",
     "Document/Development Guidelines/Web/packages/f2elint/test/fixtures/template/init/_vscode/settings.json",
     "Document/Development Guidelines/Web/packages/f2elint/test/fixtures/template/init/package.json",
     "Document/Development Guidelines/Web/packages/f2elint/test/fixtures/template/init/_vscode",
@@ -227,7 +232,6 @@
     "Document/Development Guidelines/Web/packages/f2elint/test/fixtures/warning/index.css",
     "Document/Development Guidelines/Web/packages/f2elint/test/fixtures/autofix/semi-expected.js",
     "Document/Development Guidelines/Web/packages/f2elint/test/fixtures/autofix/semi-error.js",
-    "Document/Development Guidelines/Web/packages/f2elint/test/fixtures/template/init",
     "Document/Java/Spring6/images/spring6/img027.png",
     "Document/Java/Spring6/images/spring6/img026.png",
     "Document/Java/Spring6/images/spring6/img025.png",
