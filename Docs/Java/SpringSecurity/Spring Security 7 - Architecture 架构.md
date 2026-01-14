@@ -26,7 +26,7 @@ public interface Filter {
 
 ### `DelegatingFilterProxy`
 
-`DelegatingFilterProxy`是`SpringWeb`中的一个委托代理，在`SpringWeb`中，并非`SpringSecurity`。
+`DelegatingFilterProxy`是`SpringWeb`中的一个==委托代理，在`SpringWeb`中，并非`SpringSecurity`。==
 
 ```java
 public class DelegatingFilterProxy extends GenericFilterBean {}
@@ -34,11 +34,11 @@ public class DelegatingFilterProxy extends GenericFilterBean {}
 
 ![DelegatingFilterProxy](https://docs.spring.io/spring-security/reference/_images/servlet/architecture/delegatingfilterproxy.png)
 
-`DelegatingFilterProxy`可以延迟加载`FilterBean`这一点非常重要，因为容器需要在注册 Filter 实例之前先对其进行注册，而 Spring 通常使用 `ContextLoaderListener` 来加载 Spring Bean，而这一过程是在需要注册 `Filter` 实例之后才进行的。
+`DelegatingFilterProxy`可以==延迟加载==`FilterBean`这一点非常重要，因为容器需要在注册 Filter 实例之前先对其进行注册，而 Spring 通常使用 `ContextLoaderListener` 来加载 Spring Bean，而这一过程是在需要注册 `Filter` 实例之后才进行的。
 
 **说明**
 
-`DelegatingFilterProxy`意思是，等到Spring上下文所有初始化后（**所有 Bean 包括 Filter Bean 都加载完成**）的第一次请求时才会加载并委托给实际的Bean。
+`DelegatingFilterProxy`意思是：等到Spring上下文所有初始化后（**所有 Bean 包括 Filter Bean 都加载完成**）的第一次请求时才会加载并委托给实际的Bean。
 
 这样好处是：启动顺序解耦、依赖注入支持、生命周期管理、灵活配置。
 
@@ -74,7 +74,7 @@ public interface SecurityFilterChain {
 }
 ```
 
-![SecurityFilterChain](http://localhost:6060/_images/servlet/architecture/securityfilterchain.png)
+![SecurityFilterChain](https://docs.spring.io/spring-security/reference/_images/servlet/architecture/securityfilterchain.png)
 
 在 `SecurityFilterChain` 中的安全过滤器通常是 Bean 类型，但它们是通过 `FilterChainProxy` 而非 `DelegatingFilterProxy` 进行注册的。
 
@@ -82,7 +82,7 @@ public interface SecurityFilterChain {
 
 首先，它为 Spring Security 的所有 `Servlet` 支持提供了基础。因此，如果要对 Spring Security 的 `Servlet` 支持进行故障排查，那么在 `FilterChainProxy` 中添加调试点是一个很好的开始点。
 
-![*Multiple SecurityFilterChain*](http://localhost:6060/_images/servlet/architecture/multi-securityfilterchain.png)
+![*Multiple SecurityFilterChain*](https://docs.spring.io/spring-security/reference/_images/servlet/architecture/multi-securityfilterchain.png)
 
 实现 `SecurityFilterChain` 的过滤器会有多个，但只会匹配第一个。比如按照上图中的过滤器， `/api/message` 会被`/api/**` 和 `/**` 匹配，但只匹配第一个 `/api/**` 的过滤器。
 ### Security Filters
@@ -245,6 +245,4 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 3. 否则，如果抛出的是“访问被拒绝异常”，那么就表示“访问被拒绝”。此时会调用“访问被拒绝处理程序”来处理访问被拒绝的情况。
 
 如果应用程序没有抛出“访问被拒绝异常”或“认证异常”，那么“异常转换过滤器”就不会执行任何操作。
-
-### `HttpServletRequest`
 

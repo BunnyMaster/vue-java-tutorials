@@ -11,11 +11,38 @@
             "id": "e45afd10c1ce8903",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
-            }
+              "title": "Spring Security 7 - SecurityContextHolder"
+            },
+            "group": "a1b91e965179fd12"
+          }
+        ]
+      },
+      {
+        "id": "b5bcd68392885d10",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a08fe3389a52482b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Spring Security 7 - SecurityContextHolder"
+            },
+            "group": "a1b91e965179fd12"
           }
         ]
       }
@@ -190,28 +217,33 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "4c13d908671d4a7e",
+  "active": "e45afd10c1ce8903",
   "lastOpenFiles": [
+    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/manger/CustomerProviderManager.java~",
+    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/manger/CustomerProviderManager.java",
+    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/manger",
+    "Docs/Java/SpringSecurity/Spring Security 7 - Architecture 架构.md",
+    "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder.md~",
+    "Java/spring-security-7/architecture/src/test/java/SecurityContextHolderTest.java~",
+    "Java/spring-security-7/architecture/target/test-classes/SecurityContextHolderTest.class",
+    "Java/spring-security-7/architecture/target/test-classes",
+    "Java/spring-security-7/architecture/target/generated-test-sources/test-annotations",
+    "Java/spring-security-7/architecture/target/generated-test-sources",
+    "Java/spring-security-7/architecture/src/test/java/SecurityContextHolderTest.java",
+    "Java/spring-security-7/architecture/src/test/java",
+    "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder.md",
+    "Docs/System/Ubuntu/系统维护 - 文件.md",
+    "Docs/System/Ubuntu/系统维护 - 系统.md",
     "Docs/Development Guidelines/Java/后端返回格式.md",
-    "Docs/Development Guidelines/Java/阿里巴巴Java开发规范（嵩山版）.pdf",
     "Docs/Development Guidelines/Java/后端返回格式说明.md",
     "Docs/Development Guidelines/Java/Java需要测试哪些类.md",
     "Docs/Development Guidelines/Java/Java 中一些约定俗成的规范.md",
-    "Docs/Development Guidelines/Java",
     "Docs/Development Guidelines/开发规范/后端返回格式说明.md",
     "Docs/Development Guidelines/开发规范/后端返回格式.md",
     "Docs/Development Guidelines/开发规范/Java需要测试哪些类.md",
     "Docs/Development Guidelines/开发规范/Java 中一些约定俗成的规范.md",
-    "Docs/Development Guidelines/开发规范",
     "Document/Java/SpringSecurity/Spring Security 7 - Architecture 架构.md",
-    "Web/vue3-tutorials/src/views/HomeView.vue",
-    "Web/vue3-tutorials/src/views/AboutView.vue",
-    "Web/vue3-tutorials/src/router/index.ts",
-    "Web/vue3-tutorials/src/stores/counter.ts",
-    "Web/vue3-tutorials/src/assets/main.css",
     "Web/vue3-tutorials/src/assets/logo.svg",
-    "Web/vue3-tutorials/src/assets/base.css",
-    "Web/vue3-tutorials/src/views",
     "Web/vue3-tutorials/README.md",
     "Web/vue2-tutorials/single-file/demo2/src/views/demo9/Vue2 组件通信与事件处理深度指南.md",
     "Web/vue2-tutorials/single-file/demo2/src/views/demo8/Vue2 组件通信与事件处理最佳实践.md",
@@ -226,10 +258,6 @@
     "Web/vue2-tutorials/single-file/demo2/src/assets/logo.png",
     "Web/vue2-tutorials/import-script/images/image-20250614180522000.png",
     "Web/vue2-tutorials/single-file/demo2/README.md",
-    "Web/vue2-tutorials/import-script/9-监视属性.md",
-    "Web/vue2-tutorials/import-script/9-Vue 2 中样式动态绑定和使用文档.md",
-    "Web/vue2-tutorials/import-script/8-计算属性.md",
-    "Web/vue2-tutorials/import-script/7-键盘事件.md",
     "Web/react/advance/demo-2/src/assets/react.svg",
     "Web/react/advance/redux-meituan/public/logo512.png",
     "Web/react/advance/redux-meituan/public/logo192.png",
