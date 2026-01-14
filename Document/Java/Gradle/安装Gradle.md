@@ -1,6 +1,7 @@
-## 使用 SDKMAN
+## 使用 `SDKMAN`
 
-目前SpringFramework使用的是`gradle 7.2`如果使用别的会有兼容问题，如果下载`SpringFramwork`配置Gradle还要安装JDK25。
+目前`SpringFramework`使用的是`gradle 7.2`如果使用别的会有兼容问题，如果下载`SpringFramwork`配置`Gradle`还要安装`JDK25`。
+`SpringSecutiy`使用的是`Gradle 8.5`
 
 ```bash
 # 安装 SDKMAN
@@ -13,10 +14,10 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install gradle
 
 # 或安装特定版本
-sdk install gradle 7.2
+sdk install gradle 8.5
 
 # 卸载 gradle
-sdk uninstall --force gradle 7.2
+sdk uninstall --force gradle 8.5
 ```
 
 ## 配置国内镜像
