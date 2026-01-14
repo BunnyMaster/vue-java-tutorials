@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "ea640af613f3c346",
+        "id": "f8ef2ecea1b89cc5",
         "type": "tabs",
         "children": [
           {
-            "id": "3bd7c9c6f5fa61c9",
+            "id": "e45afd10c1ce8903",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -190,11 +190,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "6aebc6718d9ea125",
+  "active": "4c13d908671d4a7e",
   "lastOpenFiles": [
+    "Docs/Development Guidelines/Java/后端返回格式.md",
     "Docs/Development Guidelines/Java/阿里巴巴Java开发规范（嵩山版）.pdf",
     "Docs/Development Guidelines/Java/后端返回格式说明.md",
-    "Docs/Development Guidelines/Java/后端返回格式.md",
     "Docs/Development Guidelines/Java/Java需要测试哪些类.md",
     "Docs/Development Guidelines/Java/Java 中一些约定俗成的规范.md",
     "Docs/Development Guidelines/Java",
@@ -212,7 +212,6 @@
     "Web/vue3-tutorials/src/assets/logo.svg",
     "Web/vue3-tutorials/src/assets/base.css",
     "Web/vue3-tutorials/src/views",
-    "Web/vue3-tutorials/src/stores",
     "Web/vue3-tutorials/README.md",
     "Web/vue2-tutorials/single-file/demo2/src/views/demo9/Vue2 组件通信与事件处理深度指南.md",
     "Web/vue2-tutorials/single-file/demo2/src/views/demo8/Vue2 组件通信与事件处理最佳实践.md",
