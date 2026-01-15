@@ -4,45 +4,22 @@
     "type": "split",
     "children": [
       {
-        "id": "f8ef2ecea1b89cc5",
+        "id": "ede845cc9273d967",
         "type": "tabs",
         "children": [
           {
-            "id": "e45afd10c1ce8903",
+            "id": "052fc17bbafd15fb",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder.md",
+                "file": "Docs/Java/SpringSecurity/Spring Security 7 - Architecture 架构 - Filter 添加.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Spring Security 7 - SecurityContextHolder"
-            },
-            "group": "a1b91e965179fd12"
-          }
-        ]
-      },
-      {
-        "id": "b5bcd68392885d10",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "a08fe3389a52482b",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "file": "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder.md",
-                "followCursor": false,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-list",
-              "title": "Outline of Spring Security 7 - SecurityContextHolder"
-            },
-            "group": "a1b91e965179fd12"
+              "title": "Spring Security 7 - Architecture 架构 - Filter 添加"
+            }
           }
         ]
       }
@@ -101,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 340.5
+    "width": 484.5
   },
   "right": {
     "id": "ff95d836d1268971",
@@ -203,7 +180,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -217,47 +195,47 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "e45afd10c1ce8903",
+  "active": "4c13d908671d4a7e",
   "lastOpenFiles": [
-    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/manger/CustomerProviderManager.java~",
-    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/manger/CustomerProviderManager.java",
-    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/manger",
-    "Docs/Java/SpringSecurity/Spring Security 7 - Architecture 架构.md",
-    "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder.md~",
-    "Java/spring-security-7/architecture/src/test/java/SecurityContextHolderTest.java~",
-    "Java/spring-security-7/architecture/target/test-classes/SecurityContextHolderTest.class",
-    "Java/spring-security-7/architecture/target/test-classes",
-    "Java/spring-security-7/architecture/target/generated-test-sources/test-annotations",
-    "Java/spring-security-7/architecture/target/generated-test-sources",
-    "Java/spring-security-7/architecture/src/test/java/SecurityContextHolderTest.java",
-    "Java/spring-security-7/architecture/src/test/java",
+    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/filter/LogoutFilterAfter2.java~",
+    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/filter/LogoutFilterAfter1.java~",
+    "Java/spring-security-7/architecture/target/classes/example/security/architecture/filter/LogoutFilterAfter1.class",
+    "Java/spring-security-7/architecture/target/classes/example/security/architecture/filter/LogoutFilterAfter2.class",
+    "Java/spring-security-7/architecture/target/classes/example/security/architecture/config/ArchitectureSecurityConfig.class",
+    "Java/spring-security-7/architecture/target/classes/example/security/architecture/config",
+    "Java/spring-security-7/architecture/target/classes/example/security/architecture/filter/LogoutFilterAfter3.class",
+    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/config/ArchitectureSecurityConfig.java~",
+    "Java/spring-security-7/architecture/src/main/java/example/security/architecture/filter/LogoutFilterAfter3.java~",
+    "Java/spring-security-7/architecture/target/classes/example/security/architecture/controller/FilterController.class",
+    "Java/spring-security-7/architecture/target/classes/example/security/architecture/controller",
+    "Docs/Java/SpringSecurity/SpringSecurity6.md",
+    "Docs/Java/SpringSecurity/Spring Security 7 - Architecture 架构 - Filter 添加.md",
+    "Docs/Java/SpringSecurity/Spring Security 7 - Architecture 架构 - 处理安全异常.md",
+    "Docs/Java/SpringSecurity/Spring Security 7 - Architecture 架构 - Filter.md",
+    "Docs/Java/SpringSecurity/Spring Security 7 - AuthenticationManager 身份验证管理器.md",
+    "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder 上下文.md",
+    "Docs/Java/SpringSecurity/Spring Security 7 - AuthenticationManager.md",
     "Docs/Java/SpringSecurity/Spring Security 7 - SecurityContextHolder.md",
+    "Docs/System/Ubuntu/磁盘维护 - 容量.md",
+    "Docs/System/Ubuntu/系统维护 - 启动和重启.md",
+    "Docs/System/Ubuntu/系统维护 - 命令行.md",
     "Docs/System/Ubuntu/系统维护 - 文件.md",
+    "Docs/System/Ubuntu/安装基础软件/EXE程序运行.md",
+    "Docs/System/Ubuntu/系统安装/Linux Mint安装.md",
+    "Docs/System/Ubuntu/系统维护 - 软件.md",
     "Docs/System/Ubuntu/系统维护 - 系统.md",
+    "Docs/Java/SpringCloud/环境搭建.md",
+    "Docs/Java/SpringCloud/SpringCloud+Nacos.md",
+    "Docs/Java/SpringBoot/条件注释.md",
+    "Docs/Java/Spring6/Spring6.md",
+    "ReadMe.md",
+    "Docs/Development Guidelines/Java/Java需要测试哪些类.md",
     "Docs/Development Guidelines/Java/后端返回格式.md",
     "Docs/Development Guidelines/Java/后端返回格式说明.md",
-    "Docs/Development Guidelines/Java/Java需要测试哪些类.md",
     "Docs/Development Guidelines/Java/Java 中一些约定俗成的规范.md",
-    "Docs/Development Guidelines/开发规范/后端返回格式说明.md",
-    "Docs/Development Guidelines/开发规范/后端返回格式.md",
-    "Docs/Development Guidelines/开发规范/Java需要测试哪些类.md",
-    "Docs/Development Guidelines/开发规范/Java 中一些约定俗成的规范.md",
-    "Document/Java/SpringSecurity/Spring Security 7 - Architecture 架构.md",
     "Web/vue3-tutorials/src/assets/logo.svg",
-    "Web/vue3-tutorials/README.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo9/Vue2 组件通信与事件处理深度指南.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo8/Vue2 组件通信与事件处理最佳实践.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo5/Vuex 状态映射与模块化最佳实践.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo4/Vuex 状态管理最佳实践指南.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo3/Vue2 Mixins 混入机制详解.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo2/Vue2 Props 属性传递机制详解.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo11/Vue2 路由缓存与导航控制最佳实践.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo10/Vue2 过渡动画与 Animate.css 整合指南.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo10/Vue2 Transition 动画系统详解.md",
-    "Web/vue2-tutorials/single-file/demo2/src/views/demo1/获取Ref内容.md",
     "Web/vue2-tutorials/single-file/demo2/src/assets/logo.png",
     "Web/vue2-tutorials/import-script/images/image-20250614180522000.png",
-    "Web/vue2-tutorials/single-file/demo2/README.md",
     "Web/react/advance/demo-2/src/assets/react.svg",
     "Web/react/advance/redux-meituan/public/logo512.png",
     "Web/react/advance/redux-meituan/public/logo192.png",
