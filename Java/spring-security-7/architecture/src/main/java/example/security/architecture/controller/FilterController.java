@@ -18,8 +18,8 @@ import java.util.List;
 @RestController
 public class FilterController {
 
-	@GetMapping("list")
-	public List<String> getFilterList() {
-		return List.of(LogoutFilterAfter1.class.getName(), LogoutFilterAfter2.class.getName(), TenantFilter.class.getName());
-	}
+    @GetMapping("list")
+    public List<String> getFilterList() {
+        return List.of(LogoutFilterAfter1.class.getName(), LogoutFilterAfter2.class.getName(), TenantFilter.class.getName());
+    }
 }
