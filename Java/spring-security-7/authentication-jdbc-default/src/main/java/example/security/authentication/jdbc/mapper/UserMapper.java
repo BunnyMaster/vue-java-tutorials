@@ -18,6 +18,6 @@ public interface UserMapper extends BaseMapper<UserDetailsEntity> {
 	 * @param username 用户名
 	 * @return 用户信息
 	 */
-	UserDetailsEntity selectUserWithAuthorities(String username);
-	
+	UserDetailsEntity selectUserByUsername(String username);
+
 }

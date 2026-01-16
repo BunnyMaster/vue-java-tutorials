@@ -193,11 +193,11 @@ final class FilterOrderRegistration {
 }
 ```
 
-| 如果你的过滤器是以下类型 | 请将它放置在以下过滤器之后      | 因为这些事件已经发生 |
-| ------------------------ | ------------------------------- | -------------------- |
-| **攻击防护过滤器**       | `SecurityContextHolderFilter`   | 1                    |
-| **身份验证过滤器**       | `LogoutFilter`                  | 1, 2                 |
-| **授权过滤器**           | `AnonymousAuthenticationFilter` | 1, 2, 3              |
+| 如果你的过滤器是以下类型 | 请将它放置在以下过滤器之后                   | 因为这些事件已经发生 |
+| ------------ | ------------------------------- | ---------- |
+| **攻击防护过滤器**  | `SecurityContextHolderFilter`   | 1          |
+| **身份验证过滤器**  | `LogoutFilter`                  | 1, 2       |
+| **授权过滤器**    | `AnonymousAuthenticationFilter` | 1, 2, 3    |
 
 [^1]: 安全上下文已建立（SecurityContext established）
 [^2]: 登出已处理（Logout processed）

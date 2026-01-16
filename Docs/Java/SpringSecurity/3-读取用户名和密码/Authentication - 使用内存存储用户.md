@@ -25,8 +25,6 @@ public UserDetailsService users() {
 }
 ```
 
-
-
 这种方式可以实现需求，但是极其不推荐，Spring Security 中已经将这个方法标识为“废弃”。如果使用这种方法很有可能会通过反编译的方式获取密码！
 
 **完整的配置方式**

@@ -32,7 +32,7 @@ public class FormUserDetailsServiceImpl extends ServiceImpl<UserMapper, UserDeta
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// 使用自定义查询
-		UserDetailsEntity user = userMapper.selectUserWithAuthorities(username);
+		UserDetailsEntity user = userMapper.selectUserByUsername(username);
 
 		// 在正式开发不要写 xxx 用户不存在。如果不存在请写：用户名或密码错误！减少安全问题
 		if (user == null) {

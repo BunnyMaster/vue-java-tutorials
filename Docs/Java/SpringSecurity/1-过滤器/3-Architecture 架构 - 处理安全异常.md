@@ -16,3 +16,16 @@
 
 如果应用程序没有抛出“访问被拒绝异常”或“认证异常”，那么“异常转换过滤器”就不会执行任何操作。
 
+## 常见异常
+
+| Exception                        | Event                                          |
+| -------------------------------- | ---------------------------------------------- |
+| `BadCredentialsException`        | `AuthenticationFailureBadCredentialsEvent`     |
+| `UsernameNotFoundException`      | `AuthenticationFailureBadCredentialsEvent`     |
+| `AccountExpiredException`        | `AuthenticationFailureExpiredEvent`            |
+| `ProviderNotFoundException`      | `AuthenticationFailureProviderNotFoundEvent`   |
+| `DisabledException`              | `AuthenticationFailureDisabledEvent`           |
+| `LockedException`                | `AuthenticationFailureLockedEvent`             |
+| `AuthenticationServiceException` | `AuthenticationFailureServiceExceptionEvent`   |
+| `CredentialsExpiredException`    | `AuthenticationFailureCredentialsExpiredEvent` |
+| `InvalidBearerTokenException`    | `AuthenticationFailureBadCredentialsEvent`     |

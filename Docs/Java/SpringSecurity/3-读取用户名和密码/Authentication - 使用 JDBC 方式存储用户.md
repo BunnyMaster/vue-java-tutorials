@@ -12,6 +12,10 @@
 
 ### 实现方式
 
+> [!WARNING]
+>
+> 模块使用 H2 数据库使用内存模式，如果项目重启会导致数据丢失！ 
+
 1. 使用 H2 数据库——内存方式（如果项目重启数据会丢失）
 2. `CustomUserDetailsService` 继承了 `IService<UserDetailsEntity>, UserDetailsService`
 

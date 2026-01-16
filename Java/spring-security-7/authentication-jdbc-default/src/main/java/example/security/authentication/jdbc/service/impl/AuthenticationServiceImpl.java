@@ -73,6 +73,7 @@ public class AuthenticationServiceImpl extends ServiceImpl<UserMapper, UserDetai
 	 */
 	@Override
 	public void logout() {
+		// 比如清除 Redis 缓存等
 		SecurityContextHolder.clearContext();
 	}
 
