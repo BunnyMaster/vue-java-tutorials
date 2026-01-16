@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: authentication-default-customer-service
+    name: authentication-jdbc-customer-service
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:auth_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL

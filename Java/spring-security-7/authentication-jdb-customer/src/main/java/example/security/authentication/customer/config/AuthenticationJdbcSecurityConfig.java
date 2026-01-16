@@ -1,81 +1,21 @@
-## 使用 JDBC 方式存储用户
+package example.security.authentication.customer.config;
 
-> [!TIP]
->
-> 详细参考模块：`spring-serurity-7/authentication-jdbc`
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
-### 简介
-
-默认的创建语句在`org/springframework/security/core/userdetails/jdbc/users.ddl`。但是在在这个模块中使用了自己的实现方式
-
-`JdbcUserDetailsManager` 继承自 `JdbcDaoImpl`，通过 `UserDetailsManager` 接口来实现对用户详情的管理。当 Spring Security 配置为接受用户名/密码进行身份验证时，会使用基于用户详情的认证方式。
-
-### 实现方式
-
-> [!WARNING]
->
-> 模块使用 H2 数据库使用内存模式，如果项目重启会导致数据丢失！ 
-
-1. 使用 H2 数据库——内存方式（如果项目重启数据会丢失）
-2. `CustomUserDetailsService` 继承了 `IService<UserDetailsEntity>, UserDetailsService`
-## 默认方式服务实现
-
-### application配置
-
-```yaml
-server:
-  port: 8802
-
-spring:
-  application:
-    name: authentication-service
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:auth_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
-    username: sa
-    password:
-    hikari:
-      connection-timeout: 30000
-      maximum-pool-size: 20
-      minimum-idle: 10
-  sql:
-    init:
-      mode: always
-      # 移除默认的 Spring Security DDL，使用自己的初始化脚本
-      # schema-locations: classpath:org/springframework/security/core/userdetails/jdbc/users.ddl
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-      settings:
-        web-allow-others: false
-
-# MyBatis Plus 配置
-mybatis-plus:
-  configuration:
-    # 下划线转驼峰
-    map-underscore-to-camel-case: true
-    # 打印 SQL 日志（开发环境使用）
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      # 主键策略，数据库自增
-      id-type: auto
-  # XML 映射文件位置
-  mapper-locations: classpath:mapper/*.xml
-
-# 日志配置
-logging:
-  level:
-    com.example.security: debug
-    org.springframework.security: debug
-```
-
-### Spring Security 配置
-
-```java
 /**
  * 身价验证-JDBC 配置
  * <p>
@@ -127,7 +67,6 @@ public class AuthenticationJdbcSecurityConfig {
 						// 允许同源iframe
 						.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
 				)
-
 		;
 
 		return http.build();
@@ -172,38 +111,3 @@ public class AuthenticationJdbcSecurityConfig {
 		return authConfig.getAuthenticationManager();
 	}
 }
-```
-
-### 用户实现类
-
-```java
-@Service
-public class FormUserDetailsServiceImpl extends ServiceImpl<UserMapper, UserDetailsEntity> implements FormUserDetailsService {
-
-	private final UserMapper userMapper;
-
-	public FormUserDetailsServiceImpl(UserMapper userMapper) {
-		this.userMapper = userMapper;
-	}
-
-	/**
-	 * 根据用户名查询用户详情
-	 *
-	 * @param username 用户名
-	 * @return 用户详情
-	 * @throws UsernameNotFoundException 用户不存在
-	 */
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// 使用自定义查询
-		UserDetailsEntity user = userMapper.selectUserWithAuthorities(username);
-
-		// 在正式开发不要写 xxx 用户不存在。如果不存在请写：用户名或密码错误！减少安全问题
-		if (user == null) {
-			throw new UsernameNotFoundException("用户不存在: " + username);
-		}
-
-		return user;
-	}
-}
-```

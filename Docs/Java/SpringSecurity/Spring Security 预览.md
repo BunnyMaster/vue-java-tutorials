@@ -10,7 +10,9 @@
   - 从 Spring Security 5 开始推荐使用**委托代理密码器**
 - `AuthenticationManager`：认证管理器（正常不用实现这个）
   - `ProviderManager`：父类是 `AuthenticationManager`
-  - `AuthenticationProvider`：如果有自定义需求可以实现这个类
+  - `AuthenticationProvider`：
+	  - 如果有自定义需求可以实现这个类
+	  - 比如使用不同方式进行验证可以使用 `AuthenticationProvider` 方式进行，比如要使用用户名、邮箱、手机号等
 - `SecurityContextHolder`：安全上下文
   - 如果要获取、设置调用里面方式，默认使用 `ThreadLocal` 方式（可以更改）
 - `UsernamePasswordAuthenticationFilter`：表单登录过滤器
