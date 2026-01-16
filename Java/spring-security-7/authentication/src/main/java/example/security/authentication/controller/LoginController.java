@@ -1,36 +1,53 @@
 package example.security.authentication.controller;
 
+import com.alibaba.fastjson2.JSON;
+import example.security.authentication.model.LoginRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 登录控制器
  *
  * @author bunny
  */
+@Slf4j
+@RequestMapping("/api/user")
 @RestController
 public class LoginController {
 
-    private final AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-    public LoginController(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+	public LoginController(AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
+	}
 
-    @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
-        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
-        Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
+	@PostMapping("/login")
+	public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
+		// 创建认证请求
+		Authentication authenticationRequest = UsernamePasswordAuthenticationToken.authenticated(
+				loginRequest.getUsername(),
+				loginRequest.getPassword(),
+				List.of(new SimpleGrantedAuthority("USER"))
+		);
+		log.info("创建认证请求：{}", JSON.toJSONString(authenticationRequest));
 
-        return ResponseEntity.ok().build();
-    }
+		// 执行认证
+		Authentication authenticationResponse = authenticationManager.authenticate(authenticationRequest);
 
-    public record LoginRequest(String username, String password) {
-    }
+		log.info("认证信息：{}", JSON.toJSONString(authenticationResponse));
+
+		// 如果认证成功，Spring Security 会自动处理，不会抛出异常
+		return ResponseEntity.ok().build();
+	}
 
 }

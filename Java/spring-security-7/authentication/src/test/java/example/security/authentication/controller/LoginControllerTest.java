@@ -1,52 +1,67 @@
 package example.security.authentication.controller;
 
+import com.alibaba.fastjson2.JSON;
+import example.security.authentication.config.AuthenticationConfig;
+import example.security.authentication.model.LoginRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(LoginController.class)
+@WebMvcTest
+@Import({AuthenticationConfig.class,})
 class LoginControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @MockBean
-    private AuthenticationManager authenticationManager;
+	/**
+	 * 测试内存用户 1
+	 *
+	 * @throws Exception Exception
+	 */
+	@Test
+	void loginSuccess_withUser1() throws Exception {
+		LoginRequest loginRequest = new LoginRequest("user_1", "password");
 
-    @Test
-    void loginSuccess() throws Exception {
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenReturn(new UsernamePasswordAuthenticationToken("user", null));
+		mockMvc.perform(post("/api/user/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(JSON.toJSONString(loginRequest)))
+				.andExpect(status().isOk());
+	}
 
-        String json = "{\"username\":\"user\",\"password\":\"password\"}";
+	/**
+	 * 测试内存用户 2
+	 *
+	 * @throws Exception Exception
+	 */
+	@Test
+	void loginSuccess_withUser2() throws Exception {
+		LoginRequest loginRequest = new LoginRequest("user_2", "password");
 
-        mockMvc.perform(post("/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk());
-    }
+		mockMvc.perform(post("/api/user/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(JSON.toJSONString(loginRequest)))
+				.andExpect(status().isOk());
+	}
 
-    @Test
-    void loginFailure() throws Exception {
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new BadCredentialsException("Bad credentials"));
+	/**
+	 * 测试用户不存在
+	 *
+	 * @throws Exception Exception
+	 */
+	@Test
+	void loginFailure_withWrongPassword() throws Exception {
+		LoginRequest loginRequest = new LoginRequest("xxx", "wrong_password");
 
-        String json = "{\"username\":\"user\",\"password\":\"wrong\"}";
-
-        mockMvc.perform(post("/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isUnauthorized());
-    }
+		mockMvc.perform(post("/api/user/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(JSON.toJSONString(loginRequest)))
+				.andExpect(status().isForbidden());
+	}
 }
