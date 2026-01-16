@@ -3,24 +3,32 @@ package example.security.authentication.jdbc.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import example.security.authentication.jdbc.mapper.UserMapper;
 import example.security.authentication.jdbc.model.UserDetailsEntity;
-import example.security.authentication.jdbc.service.CustomUserDetailsService;
+import example.security.authentication.jdbc.service.FormUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
+ * 用户服务实现，用于表单登录
+ *
  * @author bunny
  */
 @Service
-public class CustomUserDetailsServiceImpl extends ServiceImpl<UserMapper, UserDetailsEntity> implements UserDetailsService, CustomUserDetailsService {
+public class FormUserDetailsServiceImpl extends ServiceImpl<UserMapper, UserDetailsEntity> implements FormUserDetailsService {
 
 	private final UserMapper userMapper;
 
-	public CustomUserDetailsServiceImpl(UserMapper userMapper) {
+	public FormUserDetailsServiceImpl(UserMapper userMapper) {
 		this.userMapper = userMapper;
 	}
 
+	/**
+	 * 根据用户名查询用户详情
+	 *
+	 * @param username 用户名
+	 * @return 用户详情
+	 * @throws UsernameNotFoundException 用户不存在
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// 使用自定义查询

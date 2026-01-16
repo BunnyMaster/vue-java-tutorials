@@ -5,9 +5,10 @@ import example.security.authentication.jdbc.model.UserDetailsEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * 用户详情服务
+ * 用户详情服务，用于表单登录
  *
  * @author bunny
  */
-public interface CustomUserDetailsService extends IService<UserDetailsEntity>, UserDetailsService {
+public interface FormUserDetailsService extends IService<UserDetailsEntity>, UserDetailsService {
+
 }

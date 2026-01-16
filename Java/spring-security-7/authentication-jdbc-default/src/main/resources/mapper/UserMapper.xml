@@ -3,8 +3,7 @@
 <mapper namespace="example.security.authentication.jdbc.mapper.UserMapper">
 
     <!-- 查询用户信息 -->
-    <select id="selectUserWithAuthorities"
-            resultType="example.security.authentication.jdbc.model.UserDetailsEntity">
+    <select id="selectUserWithAuthorities" resultType="example.security.authentication.jdbc.model.UserDetailsEntity">
         SELECT u.*, a.authority
         FROM users u
                  LEFT JOIN authorities a ON u.id = a.user_id

@@ -31,6 +31,12 @@ public class LoginController {
 		this.authenticationManager = authenticationManager;
 	}
 
+	/**
+	 * 正常的登录请求。在下面输出了认证信息
+	 *
+	 * @param loginRequest 登录的表单
+	 * @return ResponseEntity
+	 */
 	@PostMapping("/login")
 	public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
 		// 创建认证请求

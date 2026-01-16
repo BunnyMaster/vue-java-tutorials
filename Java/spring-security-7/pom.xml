@@ -18,7 +18,8 @@
     <modules>
         <module>architecture</module>
         <module>authentication-memory</module>
-        <module>authentication-jdbc</module>
+        <module>authentication-jdbc-default</module>
+        <module>authentication-jdb-customer</module>
     </modules>
 
     <properties>

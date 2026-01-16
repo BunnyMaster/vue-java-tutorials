@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 用户详情实体
+ * 用户实体
  *
  * @author bunny
  */
@@ -62,6 +62,9 @@ public class UserDetailsEntity implements UserDetails, CredentialsContainer {
 	@TableField(exist = false)
 	private List<GrantedAuthority> authorities;
 
+	/**
+	 * 密码重置（一定要清空！）
+	 */
 	@Override
 	public void eraseCredentials() {
 		this.password = null;

@@ -2,11 +2,14 @@ package example.security.authentication.jdbc.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
@@ -45,6 +48,12 @@ public class AuthenticationJdbcSecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable)
 				// 启用HTTP Basic认证（可选，用于H2控制台）
 				.httpBasic(Customizer.withDefaults())
+				// 表单登录禁用（API使用JSON登录）
+				.formLogin(AbstractHttpConfigurer::disable)
+				// 使用无状态Session（适合API）
+				.sessionManagement(session -> session
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				)
 				// 配置请求路径的授权
 				.authorizeHttpRequests((authorize) -> authorize
 						.requestMatchers("/api/public/**").permitAll()
@@ -53,13 +62,12 @@ public class AuthenticationJdbcSecurityConfig {
 				)
 				// 配置H2控制台的frame选项
 				.headers(headers -> headers
-						// 使用默认值
-						.frameOptions(Customizer.withDefaults())
-						// 完全禁用frame保护
-						// .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
+						// 使用默认值 .frameOptions(Customizer.withDefaults())
+						// 完全禁用frame保护 .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
 						// 允许同源iframe
 						.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
 				)
+
 		;
 
 		return http.build();
@@ -90,5 +98,17 @@ public class AuthenticationJdbcSecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+
+	/**
+	 * 获取认证管理器。使用默认的 AuthenticationManager
+	 *
+	 * @param authConfig 认证配置
+	 * @return 认证管理器实例
+	 * @throws Exception 认证配置异常
+	 */
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
 	}
 }
