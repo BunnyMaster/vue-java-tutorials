@@ -4,6 +4,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
@@ -13,9 +14,11 @@ import java.nio.file.AccessDeniedException;
  *
  * @author bunny
  */
+@Slf4j
 public class TenantFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+		log.info("===>TenantFilter");
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 

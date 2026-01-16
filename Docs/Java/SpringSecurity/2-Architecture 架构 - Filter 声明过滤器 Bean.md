@@ -42,6 +42,7 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 3. 如果这时 加上了 `@Component `使用构造函数方式进行使用会有一次输出，但是顺序并不是按照指定的顺序，而是书写的顺序。
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class ArchitectureSecurityConfig {
