@@ -1,12 +1,12 @@
 package example.security.architecture.filter;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.util.Objects;
 
 /**
  * 租户过滤器
@@ -35,6 +35,6 @@ public class TenantFilter implements Filter {
 	 * @return 是否有权限
 	 */
 	private boolean isUserAllowed(String tenantId) {
-		return Objects.equals(tenantId, "1");
+		return CharSequenceUtil.isNotBlank(tenantId);
 	}
 }

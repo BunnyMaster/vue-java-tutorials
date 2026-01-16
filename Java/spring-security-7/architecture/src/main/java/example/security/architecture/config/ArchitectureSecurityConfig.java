@@ -3,6 +3,7 @@ package example.security.architecture.config;
 import example.security.architecture.filter.LogoutFilterAfter1;
 import example.security.architecture.filter.LogoutFilterAfter2;
 import example.security.architecture.filter.LogoutFilterAfter3;
+import example.security.architecture.filter.TenantFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /**
@@ -61,9 +63,11 @@ public class ArchitectureSecurityConfig {
 		http
 				.httpBasic(Customizer.withDefaults())
 				// 使用 Spring 管理的 Bean 实例，确保顺序和单例
+				.addFilterAfter(new TenantFilter(), AnonymousAuthenticationFilter.class)
 				.addFilterAfter(logoutFilterAfter1, LogoutFilter.class)
 				.addFilterAfter(logoutFilterAfter2, LogoutFilter.class)
-				.addFilterAfter(logoutFilterAfter3, LogoutFilter.class);
+				.addFilterAfter(logoutFilterAfter3, LogoutFilter.class)
+		;
 
 		return http.build();
 	}
