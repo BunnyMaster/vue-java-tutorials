@@ -1,4 +1,4 @@
-package example.security.authentication;
+package example.security.authentication.memory;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

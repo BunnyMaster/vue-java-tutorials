@@ -1,4 +1,4 @@
-package example.security.authentication.model;
+package example.security.authentication.memory.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,7 @@
-package example.security.authentication.controller;
+package example.security.authentication.memory.controller;
 
 import com.alibaba.fastjson2.JSON;
-import example.security.authentication.model.LoginRequest;
+import example.security.authentication.memory.model.LoginRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

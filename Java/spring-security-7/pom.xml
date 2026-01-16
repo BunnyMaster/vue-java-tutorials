@@ -17,7 +17,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>architecture</module>
-        <module>authentication</module>
+        <module>authentication-memory</module>
+        <module>authentication-jdbc</module>
     </modules>
 
     <properties>
@@ -25,11 +26,6 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <java.version>17</java.version>
-
-        <!-- 数据库 -->
-        <mysql.version>9.3.0</mysql.version>
-        <hikari.version>7.0.2</hikari.version>
-        <mybatis-plus.version>3.5.7</mybatis-plus.version>
 
         <!-- 工具类 -->
         <lombok.version>1.18.42</lombok.version>
@@ -73,23 +69,6 @@
             <artifactId>spring-restdocs-mockmvc</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- 数据库相关 -->
-        <!-- <dependency> -->
-        <!--     <groupId>com.mysql</groupId> -->
-        <!--     <artifactId>mysql-connector-j</artifactId> -->
-        <!--     <version>${mysql.version}</version> -->
-        <!-- </dependency> -->
-        <!-- <dependency> -->
-        <!--     <groupId>com.zaxxer</groupId> -->
-        <!--     <artifactId>HikariCP</artifactId> -->
-        <!--     <version>${hikari.version}</version> -->
-        <!-- </dependency> -->
-        <!-- <dependency> -->
-        <!--     <groupId>com.baomidou</groupId> -->
-        <!--     <artifactId>mybatis-plus-spring-boot3-starter</artifactId> -->
-        <!--     <version>${mybatis-plus.version}</version> -->
-        <!-- </dependency> -->
 
         <!-- 开发工具 -->
         <dependency>

@@ -1,8 +1,8 @@
-package example.security.authentication.controller;
+package example.security.authentication.memory.controller;
 
 import com.alibaba.fastjson2.JSON;
-import example.security.authentication.config.AuthenticationConfig;
-import example.security.authentication.model.LoginRequest;
+import example.security.authentication.memory.config.AuthenticationConfig;
+import example.security.authentication.memory.model.LoginRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
