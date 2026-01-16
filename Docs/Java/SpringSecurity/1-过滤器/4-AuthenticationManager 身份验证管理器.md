@@ -12,19 +12,13 @@ public interface AuthenticationManager {
 ```
 
 - 作用：
-
   - **认证请求的总入口**：负责处理认证请求
-
   - **策略模式接口**：定义了认证的标准接口
 
 - 职责：
-
   - 接收一个未认证的 `Authentication` 对象（包含用户名/密码等凭证）
-
   - 验证凭证的有效性
-
   - 返回一个完全认证的 `Authentication` 对象（包含权限信息）
-
   - 抛出相应的认证异常
 
 `ProviderManager`：

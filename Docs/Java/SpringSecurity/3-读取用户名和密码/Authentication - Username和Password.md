@@ -1,8 +1,8 @@
 ## PasswordEncoder
 
-
-
-来自 Spring Security 文档：https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html
+> [!TIP] 
+>
+> 来自 Spring Security 文档：https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html
 
 | 编码器         | 安全等级   | 内存硬度   | GPU/ASIC抗性 | 性能 | 推荐场景             |
 | :------------- | :--------- | :--------- | :----------- | :--- | :------------------- |
@@ -11,8 +11,6 @@
 | **SCrypt**     | 高         | 高         | 高           | 慢   | 需要内存硬度的场景   |
 | **PBKDF2**     | 中         | 无         | 低           | 快   | 兼容性要求，FIPS环境 |
 | **Delegating** | 取决于组合 | 取决于组合 | 取决于组合   | 中等 | 迁移场景，多编码共存 |
-
-
 
 在下面示例中使用的 `User#withDefaultPasswordEncoder`  被认为在生产中是不安全的！
 

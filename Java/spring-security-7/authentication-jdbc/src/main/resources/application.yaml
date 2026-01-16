@@ -1,0 +1,48 @@
+server:
+  port: 8802
+
+spring:
+  application:
+    name: authentication-service
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:auth_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    username: sa
+    password:
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 20
+      minimum-idle: 10
+  sql:
+    init:
+      mode: always
+      # 移除默认的 Spring Security DDL，使用自己的初始化脚本
+      # schema-locations: classpath:org/springframework/security/core/userdetails/jdbc/users.ddl
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+# MyBatis Plus 配置
+mybatis-plus:
+  configuration:
+    # 下划线转驼峰
+    map-underscore-to-camel-case: true
+    # 打印 SQL 日志（开发环境使用）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 主键策略，数据库自增
+      id-type: auto
+  # XML 映射文件位置
+  mapper-locations: classpath:mapper/*.xml
+
+# 日志配置
+logging:
+  level:
+    com.example.security: debug
+    org.springframework.security: debug
